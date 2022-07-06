@@ -21,7 +21,6 @@ function useWindowSize() {
 }
 
 function Header(props) {
-  const [docsState, setDocsState] = useState({});
   return (
     <header className="header" style={{ width: props.winsize.width + "px" }}>
       <div className="tab-cont">
@@ -45,6 +44,7 @@ function Header(props) {
 }
 
 function App() {
+  const [docsState, setDocsState] = useState({});
   const winsize = useWindowSize();
   return (
     <div className="App">
@@ -92,7 +92,7 @@ function TextArea() {
 
   return (
     <div style={{ paddingTop: "36px" }}>
-      <div id="linecount-edit-cont" style={{ height: winsize.height - 45 }}>
+      <div id="linecount-edit-cont" style={{ height: winsize.height - 58 }}>
         {Array(textline).fill(1).map((_, i) =>
           <div id="linecount-edit-num">{i + 1}</div>
         )}
@@ -100,7 +100,7 @@ function TextArea() {
       <textarea
         style={{
           width: winsize.width - 46,
-          height: winsize.height - 48
+          height: winsize.height - 60
         }}
         onChange={handleTextChange}
         value={text}
