@@ -74,6 +74,14 @@
   font-size: 15px;
 }
 
+#tab-selected {
+  background-color: #646464;
+}
+
+#tab-selected:hover {
+  background-color: #515151;
+}
+
 .footer {
   height: 20px;
   position: fixed;

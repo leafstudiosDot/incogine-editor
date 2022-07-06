@@ -23,7 +23,7 @@ function useWindowSize() {
 function Header(props) {
   return (
     <header className="header" style={{ width: props.winsize.width + "px" }}>
-      <div className="tab-cont">
+      <div className="tab-cont" id="tab-selected">
         <span id="tab-title">
           Untitled
         </span>
