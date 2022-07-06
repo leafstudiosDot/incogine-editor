@@ -1,3 +1,11 @@
+.header {
+  height: 35px;
+  width: 100%;
+  margin: auto;
+  position: fixed;
+  background-color: #000000;
+}
+
 .code-edit {
   font-family: 'Nunito';
   resize: none;
