@@ -7,7 +7,7 @@
     "distDir": "../build"
   },
   "package": {
-    "productName": "incogine-editor",
+    "productName": "Incogine Editor",
     "version": "0.1.0"
   },
   "tauri": {
@@ -29,7 +29,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "com.leafstudiosdot.incogine.editor",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -56,10 +56,12 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 720,
+        "minHeight": 720,
         "resizable": true,
         "title": "Incogine Editor",
-        "width": 800
+        "width": 1280,
+        "minWidth": 1280
       }
     ]
   }
