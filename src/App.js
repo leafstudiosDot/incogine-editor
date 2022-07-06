@@ -47,6 +47,22 @@ function TextArea() {
   const [text, setText] = useState("");
   const [textline, settextline] = useState(1);
 
+  useEffect(() => {
+    const textareasel = document.getElementById("code-edit")
+    textareasel.addEventListener('keydown', (e) => {
+      if (e.keyCode === 9) {
+        e.preventDefault()
+    
+        textareasel.setRangeText(
+          '  ',
+          textareasel.selectionStart,
+          textareasel.selectionStart,
+          'end'
+        )
+      }
+    })
+  })
+
   function handleTextChange(e) {
     setText(e.target.value);
     settextline(e.target.value.split("\n").length);
@@ -72,6 +88,7 @@ function TextArea() {
         onChange={handleTextChange}
         value={text}
         onScroll={onScroll}
+        spellcheck="false"
         id="code-edit" />
     </div>
   )

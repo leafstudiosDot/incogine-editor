@@ -15,6 +15,8 @@
   margin-left: 40px;
   -webkit-overflow-scrolling: auto;
   position: relative;
+  outline: none;
+  border: none;
 }
 
 #linecount-edit-cont {
@@ -28,5 +30,4 @@
   color: white;
   text-align: end;
   font-size: 15px;
-
 }
