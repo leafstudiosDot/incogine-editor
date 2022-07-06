@@ -6,10 +6,27 @@
   background-color: #000000;
 }
 
-.code-edit {
+#code-edit {
   font-family: 'Nunito';
   resize: none;
   background-color: #2a2a2a;
   color: white;
   font-size: 15px;
+  margin-left: 40px;
+  -webkit-overflow-scrolling: auto;
+  position: relative;
+}
+
+#linecount-edit-cont {
+  position: absolute;
+  width: 40px;
+  margin-top: 3px;
+  overflow-y: hidden;
+}
+
+#linecount-edit-num {
+  color: white;
+  text-align: end;
+  font-size: 15px;
+
 }
