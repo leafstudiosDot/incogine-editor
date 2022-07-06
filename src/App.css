@@ -4,6 +4,48 @@
   margin: auto;
   position: fixed;
   background-color: #000000;
+  overflow-x: scroll;
+  display: inline-flex;
+  flex-direction: row;
+}
+
+.tab-cont {
+  color: white;
+  height: 30px;
+  min-width: 100px;
+  display: inline-flex;
+  vertical-align: middle;
+  justify-content: left;
+  align-items: center;
+  padding-left: 5px;
+  background-color: #474747;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  overflow: auto;
+  text-overflow: ellipsis;
+  flex-direction: row;
+}
+
+#tab-close {
+  color: rgb(148, 148, 148);
+  position: relative;
+  display: inline-flex;
+  float: right;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#tab-close:hover {
+  background-color: rgb(53, 53, 53);
+}
+
+.tab-cont:hover {
+  background-color: #5c5c5c;
+}
+
+#tab-title {
+  white-space: nowrap;
 }
 
 #code-edit {
@@ -30,4 +72,35 @@
   color: white;
   text-align: end;
   font-size: 15px;
+}
+
+.footer {
+  height: 20px;
+  position: fixed;
+  bottom: 0;
+  color: white;
+  background-color: #000000;
+  width: 100%;
+  font-size: 10px;
+  display: inline-flex;
+  vertical-align: middle;
+  justify-content: left;
+  align-items: center;
+}
+
+::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2e2e2e;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(99, 99, 99);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(54, 54, 54);
 }

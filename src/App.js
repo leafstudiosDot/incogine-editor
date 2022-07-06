@@ -20,10 +20,26 @@ function useWindowSize() {
   return windowSize;
 }
 
-function Header() {
+function Header(props) {
+  const [docsState, setDocsState] = useState({});
   return (
-    <header className="header">
-
+    <header className="header" style={{ width: props.winsize.width + "px" }}>
+      <div className="tab-cont">
+        <span id="tab-title">
+          Untitled
+        </span>
+        <span id="tab-close">
+          X
+        </span>
+      </div>
+      <div className="tab-cont">
+        <span id="tab-title">
+          Untitled-2
+        </span>
+        <span id="tab-close">
+          X
+        </span>
+      </div>
     </header>
   )
 }
@@ -32,12 +48,13 @@ function App() {
   const winsize = useWindowSize();
   return (
     <div className="App">
-      <Header />
+      <Header winsize={winsize} />
       <section >
         <article>
           <TextArea />
         </article>
       </section>
+      <Footer />
     </div>
   );
 }
@@ -52,7 +69,7 @@ function TextArea() {
     textareasel.addEventListener('keydown', (e) => {
       if (e.keyCode === 9) {
         e.preventDefault()
-    
+
         textareasel.setRangeText(
           '  ',
           textareasel.selectionStart,
@@ -76,7 +93,7 @@ function TextArea() {
   return (
     <div style={{ paddingTop: "36px" }}>
       <div id="linecount-edit-cont" style={{ height: winsize.height - 45 }}>
-        {Array(textline).fill(1).map((_, i) => 
+        {Array(textline).fill(1).map((_, i) =>
           <div id="linecount-edit-num">{i + 1}</div>
         )}
       </div>
@@ -91,6 +108,14 @@ function TextArea() {
         spellcheck="false"
         id="code-edit" />
     </div>
+  )
+}
+
+function Footer() {
+  return (
+    <footer className="footer">
+      (100, 100)
+    </footer>
   )
 }
 
