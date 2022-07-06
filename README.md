@@ -1,5 +1,5 @@
 # Incogine Editor
-A plain text editor made from scratch.
+A multipurpose code editor.
 
 # Getting Started with Create React App
 
