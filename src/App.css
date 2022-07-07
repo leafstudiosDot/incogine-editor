@@ -82,6 +82,22 @@
   background-color: #515151;
 }
 
+.tab-add {
+  color: white;
+  height: 30px;
+  min-width: 20px;
+  display: inline-flex;
+  vertical-align: middle;
+  justify-content: left;
+  align-items: center;
+  padding-left: 10px;
+  background-color: #313131;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  border-radius: 0px 5px 5px 0px;
+}
+
 .footer {
   height: 20px;
   position: fixed;

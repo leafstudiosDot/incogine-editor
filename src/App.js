@@ -40,6 +40,7 @@ function Header(props) {
           X
         </span>
       </div>
+      <div className="tab-add">+</div>
     </header>
   )
 }
