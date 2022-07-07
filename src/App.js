@@ -100,6 +100,12 @@ function App() {
   const [notifyNotTauri, setnotifyNotTauri] = useState(false);
 
   useEffect(() => {
+    if (!window.__TAURI__) {
+      setnotifyNotTauri(true)
+    }
+  }, [])
+
+  useEffect(() => {
     let oldprops = [...docsState.docs];
 
     function saveKeyDown(e) {
@@ -129,10 +135,6 @@ function App() {
     }
 
     document.addEventListener("keydown", saveKeyDown);
-
-    if (!window.__TAURI__) {
-      setnotifyNotTauri(true)
-    }
 
     return function () {
       document.removeEventListener("keydown", saveKeyDown);
