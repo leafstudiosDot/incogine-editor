@@ -24,35 +24,67 @@ function useWindowSize() {
 function Header(props) {
   return (
     <header className="header" style={{ width: props.winsize.width + "px" }}>
-      <div className="tab-cont" id="tab-selected">
-        <span id="tab-title">
-          Untitled
+      {props.docs.docs.map((doc, i) =>
+        <span>
+          <div onClick={() => props.setDocs({ selected: i, docs: [...props.docs.docs] })} className="tab-cont" id={i === props.docs.selected ? "tab-selected" : null}>
+            <span id="tab-title">{doc.title}</span><span>{doc.saved ? null : <sup>*</sup>}</span>
+            <span id="tab-close">X</span>
+          </div>
         </span>
-        <span id="tab-close">
-          X
-        </span>
-      </div>
-      <div className="tab-cont">
-        <span id="tab-title">
-          Untitled-2
-        </span>
-        <span id="tab-close">
-          X
-        </span>
-      </div>
+      )}
+
       <div className="tab-add">+</div>
     </header>
   )
 }
 
 function App() {
-  const [docsState, setDocsState] = useState({});
+  const [docsState, setDocsState] = useState({
+    selected: 0,
+    docs: [
+      {
+        title: "Untitled",
+        file: null,
+        content: "",
+        saved: true,
+        type: "text/code",
+      },
+      {
+        title: "Untitled-2",
+        file: null,
+        content: "",
+        saved: true,
+        type: "text/code",
+      },
+    ]
+  });
   const winsize = useWindowSize();
+
+  let oldprops = [...docsState.docs];
 
   function saveKeyDown(e) {
     if ((navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.keyCode === 83) {
       e.preventDefault();
-      console.log('Saved');
+
+      function savedfile() {
+        console.log('Saved ' + docsState.docs[docsState.selected].title);
+
+        oldprops[docsState.selected] = {
+          title: docsState.docs[docsState.selected].title,
+          file: docsState.docs[docsState.selected].file,
+          content: docsState.docs[docsState.selected].content,
+          saved: true,
+          type: docsState.docs[docsState.selected].type,
+        }
+
+        setDocsState({ selected: docsState.selected, docs: [...oldprops] })
+      }
+
+      if (docsState.docs[docsState.selected].file !== null) {
+        savedfile()
+      } else {
+        savedfile()
+      }
     }
   }
 
@@ -66,23 +98,28 @@ function App() {
 
   return (
     <div className="App">
-      <Header winsize={winsize} />
+      <Header winsize={winsize} docs={docsState} setDocs={setDocsState} />
       <section >
-        <article>
-          <TextArea />
+        <article style={{ paddingTop: "36px" }}>
+          {docsState.docs[docsState.selected].type === "text/code" ? <TextArea docs={docsState} setDocs={setDocsState} /> : null}
         </article>
       </section>
-      <Footer />
+      <Footer docs={docsState} />
     </div>
   );
 }
 
-function TextArea() {
+function TextArea(props) {
   const winsize = useWindowSize();
   const [text, setText] = useState("");
   const [textline, settextline] = useState(1);
 
+  let oldprops = [...props.docs.docs];
+
   useEffect(() => {
+    setText(props.docs.docs[props.docs.selected].content);
+    settextline(props.docs.docs[props.docs.selected].content.split("\n").length);
+
     const textareasel = document.getElementById("code-edit")
 
     function keydownTextArea(e) {
@@ -99,13 +136,25 @@ function TextArea() {
     }
 
     textareasel.addEventListener('keydown', keydownTextArea)
+
+
     return () => {
       textareasel.removeEventListener('keydown', keydownTextArea)
     }
-  })
+  }, [props.docs])
 
   function handleTextChange(e) {
     setText(e.target.value);
+
+    oldprops[props.docs.selected] = {
+      title: props.docs.docs[props.docs.selected].title,
+      file: props.docs.docs[props.docs.selected].file,
+      content: e.target.value,
+      saved: false,
+      type: props.docs.docs[props.docs.selected].type,
+    }
+
+    props.setDocs({ selected: props.docs.selected, docs: [...oldprops] });
     settextline(e.target.value.split("\n").length);
   }
 
@@ -115,7 +164,7 @@ function TextArea() {
   }
 
   return (
-    <div style={{ paddingTop: "36px" }}>
+    <div>
       <div id="linecount-edit-cont" style={{ height: winsize.height - 58 }}>
         {Array(textline).fill(1).map((_, i) =>
           <div id="linecount-edit-num">{i + 1}</div>
@@ -135,10 +184,10 @@ function TextArea() {
   )
 }
 
-function Footer() {
+function Footer(props) {
   return (
     <footer className="footer">
-      (100, 100)
+      {props.docs.docs[props.docs.selected].type === "text/code" ? <span>(100, 100)</span> : null}
     </footer>
   )
 }
