@@ -1,11 +1,11 @@
 [package]
-name = "app"
+name = "Incogine-Editor"
 version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
-default-run = "app"
+description = "A multipurpose text editor"
+authors = ["leafstudiosDot", "aliamanuba"]
+license = "MIT"
+repository = "incogine-editor"
+default-run = "Incogine-Editor"
 edition = "2021"
 rust-version = "1.57"
 
