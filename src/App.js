@@ -22,18 +22,59 @@ function useWindowSize() {
 }
 
 function Header(props) {
+  async function CloseTab(index) {
+    let oldprops = [...props.docs.docs];
+    oldprops.splice(index, 1);
+
+    if (index === props.docs.selected) {
+      if (props.docs.docs.length === 1) {
+        await oldprops.unshift({
+          title: "Untitled",
+          file: null,
+          content: "",
+          saved: true,
+          type: "text/code",
+        });
+        await props.setDocs({ selected: 0, docs: oldprops })
+      } else {
+        if (props.docs.docs.length - 1 === props.docs.selected) {
+          props.setDocs({ selected: props.docs.selected - 1, docs: oldprops })
+        } else {
+          props.setDocs({ selected: props.docs.selected, docs: oldprops })
+        }
+      }
+    } else {
+      if (index < props.docs.selected) {
+        props.setDocs({ selected: props.docs.selected - 1, docs: oldprops })
+      } else {
+        props.setDocs({ selected: props.docs.selected, docs: oldprops })
+      }
+    }
+  }
+
+  async function AddTab() {
+    let oldprops = [...props.docs.docs];
+    await oldprops.push({
+      title: "Untitled",
+      file: null,
+      content: "",
+      saved: true,
+      type: "text/code",
+    });
+    await props.setDocs({ selected: props.docs.selected, docs: oldprops })
+  }
+
   return (
     <header className="header" style={{ width: props.winsize.width + "px" }}>
       {props.docs.docs.map((doc, i) =>
         <span>
           <div onClick={() => props.setDocs({ selected: i, docs: [...props.docs.docs] })} className="tab-cont" id={i === props.docs.selected ? "tab-selected" : null}>
             <span id="tab-title">{doc.title}</span><span>{doc.saved ? null : <sup>*</sup>}</span>
-            <span id="tab-close">X</span>
           </div>
+          <span id={i === props.docs.selected ? "tab-close-selected" : "tab-close"} onClick={() => CloseTab(i)}>X</span>
         </span>
       )}
-
-      <div className="tab-add">+</div>
+      <div className="tab-add" onClick={() => AddTab()}>+</div>
     </header>
   )
 }
@@ -48,14 +89,7 @@ function App() {
         content: "",
         saved: true,
         type: "text/code",
-      },
-      {
-        title: "Untitled-2",
-        file: null,
-        content: "",
-        saved: true,
-        type: "text/code",
-      },
+      }
     ]
   });
   const winsize = useWindowSize();

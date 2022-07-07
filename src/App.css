@@ -34,9 +34,28 @@
   float: right;
   padding-left: 5px;
   padding-right: 5px;
+  cursor: pointer;
+  background-color: #474747;
+  height: 30px;
+}
+
+#tab-close-selected {
+  color: rgb(148, 148, 148);
+  position: relative;
+  display: inline-flex;
+  float: right;
+  padding-left: 5px;
+  padding-right: 5px;
+  cursor: pointer;
+  background-color: #646464;
+  height: 30px;
 }
 
 #tab-close:hover {
+  background-color: rgb(53, 53, 53);
+}
+
+#tab-close-selected:hover {
   background-color: rgb(53, 53, 53);
 }
 
