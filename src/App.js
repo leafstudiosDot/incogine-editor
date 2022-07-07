@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import './App.css';
 import { invoke } from '@tauri-apps/api/tauri'
+import NotifyWindow from './components/Notifications/notify'
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -94,41 +95,47 @@ function App() {
   });
   const winsize = useWindowSize();
 
-  let oldprops = [...docsState.docs];
-
-  function saveKeyDown(e) {
-    if ((navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.keyCode === 83) {
-      e.preventDefault();
-
-      function savedfile() {
-        console.log('Saved ' + docsState.docs[docsState.selected].title);
-
-        oldprops[docsState.selected] = {
-          title: docsState.docs[docsState.selected].title,
-          file: docsState.docs[docsState.selected].file,
-          content: docsState.docs[docsState.selected].content,
-          saved: true,
-          type: docsState.docs[docsState.selected].type,
-        }
-
-        setDocsState({ selected: docsState.selected, docs: [...oldprops] })
-      }
-
-      if (docsState.docs[docsState.selected].file !== null) {
-        savedfile()
-      } else {
-        savedfile()
-      }
-    }
-  }
+  const [notifyNotTauri, setnotifyNotTauri] = useState(false);
 
   useEffect(() => {
+    let oldprops = [...docsState.docs];
+
+    function saveKeyDown(e) {
+      if ((navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.keyCode === 83) {
+        e.preventDefault();
+
+        function savedfile() {
+          console.log('Saved ' + docsState.docs[docsState.selected].title);
+
+          oldprops[docsState.selected] = {
+            title: docsState.docs[docsState.selected].title,
+            file: docsState.docs[docsState.selected].file,
+            content: docsState.docs[docsState.selected].content,
+            saved: true,
+            type: docsState.docs[docsState.selected].type,
+          }
+
+          setDocsState({ selected: docsState.selected, docs: [...oldprops] })
+        }
+
+        if (docsState.docs[docsState.selected].file !== null) {
+          savedfile()
+        } else {
+          savedfile()
+        }
+      }
+    }
+
     document.addEventListener("keydown", saveKeyDown);
+
+    if (!window.__TAURI__) {
+      setnotifyNotTauri(true)
+    }
 
     return function () {
       document.removeEventListener("keydown", saveKeyDown);
     }
-  })
+  }, [docsState.docs, docsState.selected])
 
   return (
     <div className="App">
@@ -138,6 +145,7 @@ function App() {
           {docsState.docs[docsState.selected].type === "text/code" ? <TextArea docs={docsState} setDocs={setDocsState} /> : null}
         </article>
       </section>
+      {notifyNotTauri ? <NotifyWindow header={"You are using a browser version of Incogine Editor"} body={"Please switch to the application for more features"} accept={() => setnotifyNotTauri(false)} /> : null}
       <Footer docs={docsState} />
     </div>
   );

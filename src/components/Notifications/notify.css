@@ -1,0 +1,44 @@
+.notify-window-cont {
+    position: fixed;
+    z-index: 1;
+    right: 0;
+    bottom: 20px;
+    width: 440px;
+    height: 100px;
+    background-color: #3f3f3f;
+    box-shadow: #0000002b 0px 0px 6px 2px;
+}
+
+.notify-window-header {
+    margin: 5px;
+    width: 435px;
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 20px;
+}
+
+.notify-window-body {
+    margin: 10px;
+    font-size: 12px;
+    width: 430px;
+    text-overflow: ellipsis;
+    position: absolute;
+    display: inline-block;
+    height: 38px;
+    overflow-wrap: anywhere;
+    overflow-y: scroll;
+}
+
+#notify-window-button {
+    bottom: 0;
+    position: absolute;
+    right: 0;
+    padding: 3px;
+    font-size: 12px;
+    background-color: #5a8259;
+    border-radius: 4px;
+    margin: 10px;
+    cursor: pointer;
+}
