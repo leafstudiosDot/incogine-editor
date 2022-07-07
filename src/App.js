@@ -66,7 +66,8 @@ function TextArea() {
 
   useEffect(() => {
     const textareasel = document.getElementById("code-edit")
-    textareasel.addEventListener('keydown', (e) => {
+
+    function keydownTextArea(e) {
       if (e.keyCode === 9) {
         e.preventDefault()
 
@@ -77,7 +78,12 @@ function TextArea() {
           'end'
         )
       }
-    })
+    }
+
+    textareasel.addEventListener('keydown', keydownTextArea)
+    return () => {
+      textareasel.removeEventListener('keydown', keydownTextArea)
+    }
   })
 
   function handleTextChange(e) {
