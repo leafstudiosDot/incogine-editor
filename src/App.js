@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import './App.css';
+import { invoke } from '@tauri-apps/api/tauri'
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -46,6 +47,22 @@ function Header(props) {
 function App() {
   const [docsState, setDocsState] = useState({});
   const winsize = useWindowSize();
+
+  function saveKeyDown(e) {
+    if ((navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.keyCode === 83) {
+      e.preventDefault();
+      console.log('Saved');
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener("keydown", saveKeyDown);
+
+    return function () {
+      document.removeEventListener("keydown", saveKeyDown);
+    }
+  })
+
   return (
     <div className="App">
       <Header winsize={winsize} />
