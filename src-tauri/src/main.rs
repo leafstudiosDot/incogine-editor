@@ -11,6 +11,8 @@ fn main() {
 
   // Menu Bar
   let file_submenu = Submenu::new("File", Menu::new()
+    .add_item(CustomMenuItem::new("newtextfile".to_string(), "New Text File"))
+    .add_native_item(MenuItem::Separator)
     .add_item(CustomMenuItem::new("quit".to_string(), "Quit"))
   );
   let menu = Menu::new()
@@ -46,6 +48,9 @@ fn main() {
     .menu(menu)
     .on_menu_event(|event| {
       match event.menu_item_id() {
+        "newtextfile" => {
+          //webview.evaluate_script("window.AddTab()");;
+        }
         "quit" => {
           std::process::exit(0);
         }
