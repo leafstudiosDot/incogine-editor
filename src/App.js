@@ -205,7 +205,6 @@ function TextArea(props) {
   }
 
   function onScroll(e) {
-    console.log(e.target.scrollTop)
     document.getElementById("linecount-edit-cont").scrollTop = e.target.scrollTop;
   }
 
