@@ -53,17 +53,19 @@ function Header(props) {
     }
   }
 
-  async function AddTab() {
+  function AddTab() {
     let oldprops = [...props.docs.docs];
-    await oldprops.push({
+    oldprops.push({
       title: "Untitled",
       file: null,
       content: "",
       saved: true,
       type: "text/code",
     });
-    await props.setDocs({ selected: props.docs.selected, docs: oldprops })
+    props.setDocs({ selected: props.docs.selected, docs: oldprops })
   }
+
+  window.AddTab = AddTab;
 
   return (
     <header className="header" style={{ width: props.winsize.width + "px" }}>

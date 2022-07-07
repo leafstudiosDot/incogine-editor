@@ -53,6 +53,10 @@
     "updater": {
       "active": false
     },
+    "systemTray": {
+      "iconPath": "notificon.png",
+      "iconAsTemplate": true
+    },
     "windows": [
       {
         "fullscreen": false,
@@ -61,7 +65,7 @@
         "resizable": true,
         "title": "Incogine Editor",
         "width": 1280,
-        "minWidth": 1280
+        "minWidth": 720
       }
     ]
   }
