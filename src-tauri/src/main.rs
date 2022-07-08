@@ -6,6 +6,11 @@
 use tauri::{CustomMenuItem, Menu, MenuItem, Submenu, SystemTray, SystemTrayMenu, SystemTrayEvent};
 use tauri::Manager;
 
+#[tauri::command]
+fn printfromJS(invoke_message: String) {
+  println!("{}", invoke_message);
+}
+
 fn main() {
   let context = tauri::generate_context!();
 

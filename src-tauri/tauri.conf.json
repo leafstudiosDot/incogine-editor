@@ -65,7 +65,8 @@
         "resizable": true,
         "title": "Incogine Editor",
         "width": 1280,
-        "minWidth": 720
+        "minWidth": 720,
+        "fileDropEnabled": true
       }
     ]
   }

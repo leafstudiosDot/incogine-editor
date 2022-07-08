@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import './App.css';
 import { invoke } from '@tauri-apps/api/tauri'
+import { listen } from '@tauri-apps/api/event'
 import NotifyWindow from './components/Notifications/notify'
 
 function useWindowSize() {
@@ -150,7 +151,6 @@ function App() {
       e.preventDefault();
       e.stopPropagation();
       let files = e.dataTransfer.files;
-      //var items = e.target.files || e.dataTransfer.files
 
       for (var i = 0; i < files.length; i++) {
         if (e.dataTransfer.items[i].kind === "file") {
@@ -168,6 +168,10 @@ function App() {
         }
       }
     }
+
+    listen('file-drop', event => {
+      invoke('my_custom_command', { invokeMessage: event })
+    })
 
     document.addEventListener("keydown", saveKeyDown);
     document.addEventListener("drop", handleDropFile);
