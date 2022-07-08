@@ -40,6 +40,16 @@ const menuBar = [
       isMac ? { role: 'close' } : { role: 'quit' }
     ]
   },
+  {
+    label: 'Develop',
+    submenu: [
+      {
+        label: 'Open Chrome DevTools',
+        accelerator: 'CmdOrCtrl+Shift+I',
+        click: () => { mainWindow.webContents.openDevTools() }
+      }
+    ]
+  }
 ]
 
 const menu = Menu.buildFromTemplate(menuBar)
@@ -49,7 +59,7 @@ const touchBarDarwin = new TouchBar({
     new TouchBarButton({
       label: 'Add Tab',
       click: () => {
-        mainWindow.webContents.executeJavaScript('window.AddTab(false)') 
+        mainWindow.webContents.executeJavaScript('window.AddTab(false)')
       }
     }),
     new TouchBarSpacer({ size: 'large' })
