@@ -98,6 +98,10 @@
     "appId": "com.leafstudiosdot.incogine.editor",
     "productName": "Incogine Editor",
     "copyright": "© 2022 leafstudiosDot",
+    "win": {
+      "icon": "./electron/icons/icon.ico",
+      "publisherName": "leafstudiosDot"
+    },
     "mac": {
       "category": "public.app-category.developer-tools",
       "target": "dmg",
