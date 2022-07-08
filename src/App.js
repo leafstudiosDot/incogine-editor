@@ -53,16 +53,28 @@ function Header(props) {
     }
   }
 
-  function AddTab() {
-    let oldprops = [...props.docs.docs];
-    oldprops.push({
-      title: "Untitled",
-      file: null,
-      content: "",
-      saved: true,
-      type: "text/code",
-    });
-    props.setDocs({ selected: props.docs.selected, docs: oldprops })
+  function AddTab(hascontent, content) {
+    if (hascontent) {
+      let oldprops = [...props.docs.docs];
+      oldprops.push({
+        title: content.title,
+        file: content.file,
+        content: content.content,
+        saved: true,
+        type: "text/code",
+      });
+      props.setDocs({ selected: props.docs.selected, docs: oldprops })
+    } else {
+      let oldprops = [...props.docs.docs];
+      oldprops.push({
+        title: "Untitled",
+        file: null,
+        content: "",
+        saved: true,
+        type: "text/code",
+      });
+      props.setDocs({ selected: props.docs.selected, docs: oldprops })
+    }
   }
 
   window.AddTab = AddTab;
@@ -77,7 +89,7 @@ function Header(props) {
           <span id={i === props.docs.selected ? "tab-close-selected" : "tab-close"} onClick={() => CloseTab(i)}>X</span>
         </span>
       )}
-      <div className="tab-add" onClick={() => AddTab()}>+</div>
+      <div className="tab-add" onClick={() => AddTab(false)}>+</div>
     </header>
   )
 }
@@ -134,10 +146,35 @@ function App() {
       }
     }
 
+    async function handleDropFile(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      let files = e.dataTransfer.files;
+      //var items = e.target.files || e.dataTransfer.files
+
+      for (var i = 0; i < files.length; i++) {
+        if (e.dataTransfer.items[i].kind === "file") {
+          let reader = new FileReader();
+          let file = files[i]
+          console.log(file)
+          if (file.size < 1000000) {
+            reader.onload = async function (event) {
+              await window.AddTab(true, { title: file.name, file: file, content: event.target.result })
+            }
+            await reader.readAsText(file, "UTF-8");
+          } else {
+            console.error("File Too Large to Load, Maximum: 1MB")
+          }
+        }
+      }
+    }
+
     document.addEventListener("keydown", saveKeyDown);
+    document.addEventListener("drop", handleDropFile);
 
     return function () {
       document.removeEventListener("keydown", saveKeyDown);
+      document.removeEventListener("drop", handleDropFile);
     }
   }, [docsState.docs, docsState.selected])
 
