@@ -1,7 +1,12 @@
 {
   "name": "incogine-editor",
+  "description": "A multipurpose text editor",
   "version": "0.1.0",
   "private": true,
+  "author": "leafstudiosDot",
+  "copyright": "© 2022 leafstudiosDot",
+  "main": "./public/electron.js",
+  "homepage": ".",
   "dependencies": {
     "@tauri-apps/api": "^1.0.2",
     "@testing-library/jest-dom": "^5.16.4",
@@ -11,6 +16,7 @@
     "@types/node": "^18.0.3",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
+    "electron-is-dev": "^2.0.0",
     "jquery": "^3.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -23,6 +29,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "start-electron": "electron ./public/electron.js",
+    "build-electron": "electron-builder",
     "start-tauri": "tauri dev",
     "build-tauri": "tauri build"
   },
@@ -45,6 +53,56 @@
     ]
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^1.0.2"
+    "@tauri-apps/cli": "^1.0.2",
+    "concurrently": "^7.2.2",
+    "electron": "^19.0.8",
+    "electron-builder": "^23.1.0",
+    "wait-on": "^6.0.1"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "icon": "./electron/icons/icon.icns",
+        "appcopyright": "© 2022 leafstudiosDot",
+        "appBundleId": "com.leafstudios.incogine.editor",
+        "out": "./electron/build",
+        "overwrite": true,
+        "name": "Incogine Editor",
+        "asar": true
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "incogine_editor"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
+  },
+  "build": {
+    "appId": "com.leafstudiosdot.incogine.editor",
+    "productName": "Incogine Editor",
+    "copyright": "© 2022 leafstudiosDot",
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": "dmg",
+      "icon": "./electron/icons/icon.icns",
+      "type": "development"
+    }
   }
 }
