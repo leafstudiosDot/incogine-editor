@@ -113,10 +113,8 @@ function App() {
   const [notifyNotTauri, setnotifyNotTauri] = useState(false);
 
   useEffect(() => {
-    if (!(navigator.userAgent === 'IncogineEditor-Electron' || window.__TAURI_)) {
-      if (window.__TAURI_) {
-        setnotifyNotTauri(true)
-      }
+    if (!(navigator.userAgent === 'IncogineEditor-Electron')) {
+      setnotifyNotTauri(true)
     }
   }, [])
 
