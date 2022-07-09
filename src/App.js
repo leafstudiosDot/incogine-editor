@@ -4,6 +4,8 @@ import { invoke } from '@tauri-apps/api/tauri'
 import { listen } from '@tauri-apps/api/event'
 import NotifyWindow from './components/Notifications/notify'
 
+const { ipcRenderer } = require('electron');
+
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
     width: undefined,
@@ -124,7 +126,14 @@ function App() {
     if (docsState.docs[docsState.selected].file !== null) {
       savedFile()
     } else {
-      savedFile()
+      ipcRenderer.send('saveFileAs', {
+        fileName: docsState.docs[docsState.selected].title,
+      })
+      .then(res => {
+        savedFile()
+      })
+      .catch(err => console.log(err))
+      //savedFile()
     }
 
     function savedFile() {

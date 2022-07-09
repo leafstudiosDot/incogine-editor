@@ -3,6 +3,9 @@ const electron = require('electron'),
   session = electron.session,
   BrowserWindow = electron.BrowserWindow,
   Menu = electron.Menu,
+  dialog = electron.dialog, 
+  ipcMain = electron.ipcMain,
+  remote = electron.remote,
   TouchBar = electron.TouchBar;
 
 const { TouchBarLabel, TouchBarButton, TouchBarSpacer } = TouchBar
@@ -94,7 +97,8 @@ const createWindow = () => {
     icon: process.platform !== 'darwin' ? __dirname + `/icons/icon.icns` : __dirname + "/icons/icon.ico",
     webPreferences: {
       nodeIntegration: true,
-      nodeIntegrationInWorker: false,
+      contextIsolation: false,
+      enableRemoteModule: true
     }
   });
   const appUrl = isDev ? 'http://localhost:3613' : `file://${path.join(__dirname, '../build/index.html')}`
@@ -119,4 +123,8 @@ app.on('activate', () => {
   // If the app is still open, but no windows are open,
   // create one when the app comes into focus.
   if (mainWindow === null) { createWindow() }
+})
+
+ipcMain.on('saveFileAs', (event, data) => {
+  dialog.showSaveDialog(mainWindow, { title: "Save File: " + data.fileName, defaultPath: `${data.fileName}`, properties: ['createDirectory', 'showHiddenFiles'] })
 })

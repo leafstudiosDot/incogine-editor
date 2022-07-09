@@ -16,6 +16,7 @@
     "@types/node": "^18.0.3",
     "@types/react": "17.0.2",
     "@types/react-dom": "17.0.2",
+    "electron-is-dev": "^2.0.0",
     "fs-jetpack": "^4.3.1",
     "jquery": "^3.6.0",
     "path": "^0.12.7",
@@ -24,12 +25,12 @@
     "react-scripts": "4.0.3",
     "typescript": "^4.7.4",
     "web-vitals": "^2.1.4",
-    "electron-is-dev": "^2.0.0"
+    "webpack": "4.44.2"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "start-electron": "electron ./public/electron.js",
     "build-electron": "electron-builder",
@@ -59,43 +60,9 @@
     "concurrently": "^7.2.2",
     "electron": "^19.0.8",
     "electron-builder": "^23.1.0",
-    "wait-on": "^6.0.1",
-    "react-error-overlay": "^6.0.10"
-  },
-  "config": {
-    "forge": {
-      "packagerConfig": {
-        "icon": "./electron/icons/icon.icns",
-        "appcopyright": "© 2022 leafstudiosDot",
-        "appBundleId": "com.leafstudios.incogine.editor",
-        "out": "./electron/build",
-        "overwrite": true,
-        "name": "Incogine Editor",
-        "asar": true
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "incogine_editor"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
-    }
+    "react-app-rewired": "^2.2.1",
+    "react-error-overlay": "^6.0.10",
+    "wait-on": "^6.0.1"
   },
   "build": {
     "appId": "com.leafstudiosdot.incogine.editor",
