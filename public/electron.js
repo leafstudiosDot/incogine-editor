@@ -49,6 +49,12 @@ const menuBar = [
         click: () => { mainWindow.webContents.executeJavaScript('window.AddTab(false)') }
       },
       { type: 'separator' },
+      {
+        label: 'Save File',
+        accelerator: 'CmdOrCtrl+S',
+        click: () => { mainWindow.webContents.executeJavaScript('window.SaveFile()') }
+      },
+      { type: 'separator' },
       isMac ? { role: 'close' } : { role: 'quit' }
     ]
   },
