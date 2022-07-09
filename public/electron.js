@@ -26,7 +26,10 @@ const menuBar = [
   ...(isMac ? [{
     label: app.name,
     submenu: [
-      { role: 'about' },
+      {
+        label: 'About Incogine Editor',
+        role: 'about'
+      },
       { type: 'separator' },
       { role: 'services' },
       { type: 'separator' },
