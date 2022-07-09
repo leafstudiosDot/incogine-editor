@@ -125,6 +125,11 @@ app.on('activate', () => {
   if (mainWindow === null) { createWindow() }
 })
 
-ipcMain.on('saveFileAs', (event, data) => {
-  dialog.showSaveDialog(mainWindow, { title: "Save File: " + data.fileName, defaultPath: `${data.fileName}`, properties: ['createDirectory', 'showHiddenFiles'] })
+ipcMain.handle('saveFileAs', async (event, data) => {
+  var saveDialogRes = await dialog.showSaveDialog(mainWindow, { title: "Save File: " + data.fileName, defaultPath: `${data.fileName}`, properties: ['createDirectory', 'showHiddenFiles'] })
+  if (!saveDialogRes.canceled) {
+    return true
+  } else {
+    return false
+  }
 })

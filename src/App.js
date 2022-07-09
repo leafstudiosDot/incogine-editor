@@ -126,11 +126,16 @@ function App() {
     if (docsState.docs[docsState.selected].file !== null) {
       savedFile()
     } else {
-      ipcRenderer.send('saveFileAs', {
+      ipcRenderer.invoke('saveFileAs', {
         fileName: docsState.docs[docsState.selected].title,
       })
       .then(res => {
-        savedFile()
+        if (res) {
+          //res.filePath
+          savedFile()
+        } else {
+          console.log("File not saved")
+        }
       })
       .catch(err => console.log(err))
       //savedFile()
