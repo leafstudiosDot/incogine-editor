@@ -5,6 +5,8 @@ import { listen } from '@tauri-apps/api/event'
 import NotifyWindow from './components/Notifications/notify'
 
 const { ipcRenderer } = require('electron');
+const fs = require('fs');
+var path = require("path");
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -124,36 +126,39 @@ function App() {
     let oldprops = [...docsState.docs];
 
     if (docsState.docs[docsState.selected].file !== null) {
-      savedFile()
+      savedFile(docsState.docs[docsState.selected].file);
     } else {
       ipcRenderer.invoke('saveFileAs', {
         fileName: docsState.docs[docsState.selected].title,
       })
-      .then(res => {
-        if (res) {
-          //res.filePath
-          savedFile()
-        } else {
-          console.log("File not saved")
-        }
-      })
-      .catch(err => console.log(err))
-      //savedFile()
+        .then(res => {
+          if (res) {
+            savedFile(res)
+          } else {
+            console.error("File not saved: Cancelled by user")
+          }
+        })
+        .catch(err => console.log(err))
     }
 
-    function savedFile() {
+    function savedFile(paths) {
+      var newpath = paths?.toString()
+      fs.writeFile(newpath, docsState.docs[docsState.selected].content, (err, data) => {
+        if (err) {
+          console.error(err)
+        } else {
+          console.log('Saved ' + docsState.docs[docsState.selected].title);
+          oldprops[docsState.selected] = {
+            title: path.basename(newpath),
+            file: paths,
+            content: docsState.docs[docsState.selected].content,
+            saved: true,
+            type: docsState.docs[docsState.selected].type,
+          }
 
-      console.log('Saved ' + docsState.docs[docsState.selected].title);
-
-      oldprops[docsState.selected] = {
-        title: docsState.docs[docsState.selected].title,
-        file: docsState.docs[docsState.selected].file,
-        content: docsState.docs[docsState.selected].content,
-        saved: true,
-        type: docsState.docs[docsState.selected].type,
-      }
-
-      setDocsState({ selected: docsState.selected, docs: [...oldprops] })
+          setDocsState({ selected: docsState.selected, docs: [...oldprops] })
+        }
+      })
     }
   }
   window.SaveFile = SaveFile;
