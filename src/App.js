@@ -118,32 +118,38 @@ function App() {
     }
   }, [])
 
-  useEffect(() => {
+  function SaveFile() {
     let oldprops = [...docsState.docs];
+
+    if (docsState.docs[docsState.selected].file !== null) {
+      savedFile()
+    } else {
+      savedFile()
+    }
+
+    function savedFile() {
+
+      console.log('Saved ' + docsState.docs[docsState.selected].title);
+
+      oldprops[docsState.selected] = {
+        title: docsState.docs[docsState.selected].title,
+        file: docsState.docs[docsState.selected].file,
+        content: docsState.docs[docsState.selected].content,
+        saved: true,
+        type: docsState.docs[docsState.selected].type,
+      }
+
+      setDocsState({ selected: docsState.selected, docs: [...oldprops] })
+    }
+  }
+  window.SaveFile = SaveFile;
+
+  useEffect(() => {
 
     function saveKeyDown(e) {
       if ((navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.keyCode === 83) {
         e.preventDefault();
-
-        function savedfile() {
-          console.log('Saved ' + docsState.docs[docsState.selected].title);
-
-          oldprops[docsState.selected] = {
-            title: docsState.docs[docsState.selected].title,
-            file: docsState.docs[docsState.selected].file,
-            content: docsState.docs[docsState.selected].content,
-            saved: true,
-            type: docsState.docs[docsState.selected].type,
-          }
-
-          setDocsState({ selected: docsState.selected, docs: [...oldprops] })
-        }
-
-        if (docsState.docs[docsState.selected].file !== null) {
-          savedfile()
-        } else {
-          savedfile()
-        }
+        window.SaveFile();
       }
     }
 
@@ -156,10 +162,9 @@ function App() {
         if (e.dataTransfer.items[i].kind === "file") {
           let reader = new FileReader();
           let file = files[i]
-          console.log(file)
           if (file.size < 1000000) {
             reader.onload = async function (event) {
-              await window.AddTab(true, { title: file.name, file: file, content: event.target.result })
+              await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result })
             }
             await reader.readAsText(file, "UTF-8");
           } else {

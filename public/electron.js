@@ -1,5 +1,6 @@
 const electron = require('electron'),
   app = electron.app,
+  session = electron.session,
   BrowserWindow = electron.BrowserWindow,
   Menu = electron.Menu,
   TouchBar = electron.TouchBar;
@@ -8,6 +9,14 @@ const { TouchBarLabel, TouchBarButton, TouchBarSpacer } = TouchBar
 
 const path = require('path'),
   isDev = require('electron-is-dev');
+
+const os = require('os')
+
+const reactDevToolsPath = path.join(
+  os.homedir(),
+  '/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.24.7_4'
+)
+
 
 let mainWindow;
 
@@ -73,7 +82,11 @@ const createWindow = () => {
     minHeight: 720,
     minWidth: 720,
     resizable: true,
-    icon: process.platform !== 'darwin' ? __dirname + `/icons/icon.icns` : __dirname + "/icons/icon.ico"
+    icon: process.platform !== 'darwin' ? __dirname + `/icons/icon.icns` : __dirname + "/icons/icon.ico",
+    webPreferences: {
+      nodeIntegration: true,
+      nodeIntegrationInWorker: false,
+    }
   });
   const appUrl = isDev ? 'http://localhost:3613' : `file://${path.join(__dirname, '../build/index.html')}`
   Menu.setApplicationMenu(menu)
@@ -82,6 +95,9 @@ const createWindow = () => {
   mainWindow.maximize()
   mainWindow.on('closed', () => mainWindow = null)
 }
+app.whenReady().then(async () => {
+  await session.defaultSession.loadExtension(reactDevToolsPath)
+})
 app.on('ready', createWindow)
 app.on('window-all-closed', () => {
   // Follow OS convention on whether to quit app when
