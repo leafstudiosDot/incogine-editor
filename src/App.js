@@ -116,9 +116,9 @@ function App() {
 
   const [notifyNotTauri, setnotifyNotTauri] = useState(false);
 
-  window.SettingsPage = function () {
+  window.SettingsPage = function (content) {
     if (!docsState.docs.some(doc => doc.type === "settings")) {
-      window.AddTab(true, { title: "Settings", file: null, content: null, saved: true, type: "settings" })
+      window.AddTab(true, { title: "Settings", file: null, content: "about", saved: true, type: "settings" })
     }
   }
 
@@ -248,7 +248,7 @@ function App() {
       <section >
         <article style={{ paddingTop: "36px" }}>
           {docsState.docs[docsState.selected].type === "text/code" ? <TextArea docs={docsState} setDocs={setDocsState} /> : null}
-          {docsState.docs[docsState.selected].type === "settings" ? <Settings winsize={winsize} /> : null}
+          {docsState.docs[docsState.selected].type === "settings" ? <Settings winsize={winsize} docs={docsState} setDocs={setDocsState} /> : null}
         </article>
       </section>
       {notifyNotTauri ? <NotifyWindow header={"You are using a browser version of Incogine Editor"} body={"Please switch to the application for more features"} accept={() => setnotifyNotTauri(false)} /> : null}

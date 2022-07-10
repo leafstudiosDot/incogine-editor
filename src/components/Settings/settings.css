@@ -2,3 +2,39 @@
     position: fixed;
     background-color: rgb(66, 66, 66);
 }
+
+.settings-lists {
+    color: white;
+}
+
+.settings-lists ul {
+    list-style-type: none;
+    position: absolute;
+    margin: 0;
+    margin-top: 10px;
+    left: -30px;
+    width: 180px;
+    overflow-y: scroll;
+}
+
+.settings-lists li {
+    text-decoration: none;
+    background-color: #a2a2a2;
+    width: 150px;
+    padding: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    user-select: none;
+    cursor: pointer;
+}
+
+#settingWindowContent {
+    position: absolute;
+    top: 0px;
+    left: 190px;
+    background-color: #313131;
+    color: white;
+    padding-left: 10px;
+}

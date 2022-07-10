@@ -31,7 +31,9 @@ const menuBar = [
     submenu: [
       {
         label: 'About Incogine Editor',
-        role: 'about'
+        click: () => {
+          mainWindow.webContents.executeJavaScript('window.SettingsPage("about")')
+        }
       },
       { type: 'separator' },
       { role: 'services' },
