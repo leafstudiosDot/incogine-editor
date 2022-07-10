@@ -37,6 +37,7 @@
   float: right;
   position: absolute;
   transform: translate(-20px);
+  user-select: none;
 }
 
 #tab-close-selected {
@@ -49,6 +50,7 @@
   float: right;
   position: absolute;
   transform: translate(-20px);
+  user-select: none;
 }
 
 #tab-close:hover {
@@ -66,6 +68,7 @@
 #tab-title {
   white-space: nowrap;
   padding-right: 25px;
+  user-select: none;
 }
 
 #code-edit {
