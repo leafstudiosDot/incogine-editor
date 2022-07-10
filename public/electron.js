@@ -3,7 +3,7 @@ const electron = require('electron'),
   session = electron.session,
   BrowserWindow = electron.BrowserWindow,
   Menu = electron.Menu,
-  dialog = electron.dialog, 
+  dialog = electron.dialog,
   ipcMain = electron.ipcMain,
   remote = electron.remote,
   TouchBar = electron.TouchBar;
@@ -50,6 +50,12 @@ const menuBar = [
         label: 'New Text Tab',
         accelerator: 'CmdOrCtrl+N',
         click: () => { mainWindow.webContents.executeJavaScript('window.AddTab(false)') }
+      },
+      { type: 'separator' },
+      {
+        label: 'Open File',
+        accelerator: 'CmdOrCtrl+O',
+        click: () => { mainWindow.webContents.executeJavaScript('window.OpenFile()') }
       },
       { type: 'separator' },
       {
@@ -129,6 +135,44 @@ ipcMain.handle('saveFileAs', async (event, data) => {
   var saveDialogRes = await dialog.showSaveDialog(mainWindow, { title: "Save File: " + data.fileName, defaultPath: `${data.fileName}`, properties: ['createDirectory', 'showHiddenFiles'] })
   if (!saveDialogRes.canceled) {
     return saveDialogRes.filePath
+  } else {
+    return false
+  }
+})
+
+ipcMain.handle('openFile', async (event, data) => {
+  var openDialogRes = await dialog.showOpenDialog(mainWindow, {
+    title: "Open File", filters: [
+      {
+        "name": "all",
+        "extensions": ["*"]
+      },
+      {
+        "name": "Text File",
+        "extensions": ["txt", "text", "md", "markdown"]
+      },
+      {
+        "name": "Markdown File",
+        "extensions": ["md", "markdown"]
+      },
+      {
+        "name": "Website",
+        "extensions": ["htm", "html", "css", "js", "php"]
+      },
+      {
+        "name": "JavaScript",
+        "extensions": ["js", "json", "tsx", "ts"]
+      },
+      {
+        "name": "C++",
+        "extensions": ["cpp", "cc", "C", "cxx", "h", "hpp", "hxx"],
+      },
+    ], properties: ['openFile', 'showHiddenFiles', 'createDirectory']
+  })
+
+  if (!openDialogRes.canceled) {
+    console.log(openDialogRes)
+    return openDialogRes.filePaths
   } else {
     return false
   }

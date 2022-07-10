@@ -163,6 +163,34 @@ function App() {
   }
   window.SaveFile = SaveFile;
 
+  function OpenFile() {
+    ipcRenderer.invoke('openFile')
+      .then(res => {
+        if (res) {
+          openedFile(res)
+        } else {
+          console.error("File not opened: Cancelled by user")
+        }
+      }).catch(err => console.log(err))
+
+    function openedFile(paths) {
+      console.log(paths[0])
+      var stats = fs.statSync(paths[0])
+      if (stats["size"] < 1000000) {
+        fs.readFile(paths[0], "utf-8", function (err, data) {
+          if (!err) {
+            window.AddTab(true, {title: path.basename(paths[0]), file: paths[0], content: data})
+          } else {
+            console.error("File not opened: An error has occurred, " + err)
+          }
+        })
+      } else {
+        console.error("File not opened: Too large")
+      }
+    }
+  }
+  window.OpenFile = OpenFile;
+
   useEffect(() => {
 
     function saveKeyDown(e) {
