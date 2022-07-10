@@ -3,6 +3,7 @@ import './App.css';
 import { invoke } from '@tauri-apps/api/tauri'
 import { listen } from '@tauri-apps/api/event'
 import NotifyWindow from './components/Notifications/notify'
+import Settings from './components/Settings/settings'
 
 const { ipcRenderer } = require('electron');
 const fs = require('fs');
@@ -66,7 +67,7 @@ function Header(props) {
         file: content.file,
         content: content.content,
         saved: true,
-        type: "text/code",
+        type: content.type,
       });
       props.setDocs({ selected: props.docs.selected, docs: oldprops })
     } else {
@@ -116,6 +117,12 @@ function App() {
 
   const [notifyNotTauri, setnotifyNotTauri] = useState(false);
 
+  window.SettingsPage = function () {
+    if (!docsState.docs.some(doc => doc.type === "settings")) {
+      window.AddTab(true, { title: "Settings", file: null, content: null, saved: true, type: "settings" })
+    }
+  }
+
   useEffect(() => {
     if (!(navigator.userAgent === 'IncogineEditor-Electron')) {
       setnotifyNotTauri(true)
@@ -125,20 +132,22 @@ function App() {
   function SaveFile() {
     let oldprops = [...docsState.docs];
 
-    if (docsState.docs[docsState.selected].file !== null) {
-      savedFile(docsState.docs[docsState.selected].file);
-    } else {
-      ipcRenderer.invoke('saveFileAs', {
-        fileName: docsState.docs[docsState.selected].title,
-      })
-        .then(res => {
-          if (res) {
-            savedFile(res)
-          } else {
-            console.error("File not saved: Cancelled by user")
-          }
+    if (docsState.docs[docsState.selected].type === "text/code") {
+      if (docsState.docs[docsState.selected].file !== null) {
+        savedFile(docsState.docs[docsState.selected].file);
+      } else {
+        ipcRenderer.invoke('saveFileAs', {
+          fileName: docsState.docs[docsState.selected].title,
         })
-        .catch(err => console.log(err))
+          .then(res => {
+            if (res) {
+              savedFile(res)
+            } else {
+              console.error("File not saved: Cancelled by user")
+            }
+          })
+          .catch(err => console.log(err))
+      }
     }
 
     function savedFile(paths) {
@@ -179,7 +188,7 @@ function App() {
       if (stats["size"] < 1000000) {
         fs.readFile(paths[0], "utf-8", function (err, data) {
           if (!err) {
-            window.AddTab(true, {title: path.basename(paths[0]), file: paths[0], content: data})
+            window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: data, type: "text/code" })
           } else {
             console.error("File not opened: An error has occurred, " + err)
           }
@@ -211,7 +220,7 @@ function App() {
           let file = files[i]
           if (file.size < 1000000) {
             reader.onload = async function (event) {
-              await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result })
+              await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "text/code" })
             }
             await reader.readAsText(file, "UTF-8");
           } else {
@@ -240,6 +249,7 @@ function App() {
       <section >
         <article style={{ paddingTop: "36px" }}>
           {docsState.docs[docsState.selected].type === "text/code" ? <TextArea docs={docsState} setDocs={setDocsState} /> : null}
+          {docsState.docs[docsState.selected].type === "settings" ? <Settings winsize={winsize} /> : null}
         </article>
       </section>
       {notifyNotTauri ? <NotifyWindow header={"You are using a browser version of Incogine Editor"} body={"Please switch to the application for more features"} accept={() => setnotifyNotTauri(false)} /> : null}

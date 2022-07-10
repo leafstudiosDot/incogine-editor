@@ -64,6 +64,10 @@ const menuBar = [
         click: () => { mainWindow.webContents.executeJavaScript('window.SaveFile()') }
       },
       { type: 'separator' },
+      {
+        label: 'Settings',
+        click: () => { mainWindow.webContents.executeJavaScript('window.SettingsPage()') }
+      },
       isMac ? { role: 'close' } : { role: 'quit' }
     ]
   },
