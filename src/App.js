@@ -69,7 +69,7 @@ function Header(props) {
         saved: true,
         type: content.type,
       });
-      props.setDocs({ selected: props.docs.selected, docs: oldprops })
+      props.setDocs({ selected: props.docs.selected + 1, docs: oldprops })
     } else {
       let oldprops = [...props.docs.docs];
       oldprops.push({
@@ -79,10 +79,9 @@ function Header(props) {
         saved: true,
         type: "text/code",
       });
-      props.setDocs({ selected: props.docs.selected, docs: oldprops })
+      props.setDocs({ selected: props.docs.selected + 1, docs: oldprops })
     }
   }
-
   window.AddTab = AddTab;
 
   return (
