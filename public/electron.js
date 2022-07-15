@@ -5,8 +5,8 @@ const electron = require('electron'),
   Menu = electron.Menu,
   dialog = electron.dialog,
   ipcMain = electron.ipcMain,
-  remote = electron.remote,
-  TouchBar = electron.TouchBar;
+  TouchBar = electron.TouchBar,
+  Tray = electron.Tray;
 
 const { TouchBarLabel, TouchBarButton, TouchBarSpacer } = TouchBar
 
@@ -15,10 +15,10 @@ const path = require('path'),
 
 const os = require('os')
 
-const reactDevToolsPath = path.join(
+/*const reactDevToolsPath = path.join(
   os.homedir(),
   '/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.24.7_4'
-)
+)*/
 
 
 let mainWindow;
@@ -42,7 +42,7 @@ const menuBar = [
       { role: 'hideOthers' },
       { role: 'unhide' },
       { type: 'separator' },
-      { role: 'quit' }
+      { label: 'Quit Incogine Editor', role: 'quit' }
     ]
   }] : []),
   {
@@ -87,6 +87,8 @@ const menuBar = [
 
 const menu = Menu.buildFromTemplate(menuBar)
 
+let menutray = null
+
 const touchBarDarwin = new TouchBar({
   items: [
     new TouchBarButton({
@@ -120,8 +122,15 @@ const createWindow = () => {
   mainWindow.maximize()
   mainWindow.on('closed', () => mainWindow = null)
 }
-app.whenReady().then(async () => {
-  await session.defaultSession.loadExtension(reactDevToolsPath)
+app.whenReady().then(() => {
+  menutray = new Tray(isMac ? path.join(__dirname, `/tray_icon/trayTemplate.png`) : path.join(__dirname, `/tray_icon/tray.png`))
+  const contextMenu = Menu.buildFromTemplate([
+    { label: 'Quit Incogine Editor', role: 'quit' }
+  ])
+  menutray.setToolTip('Incogine Editor Menu')
+  menutray.setContextMenu(contextMenu)
+
+  //await session.defaultSession.loadExtension(reactDevToolsPath)
 })
 app.on('ready', createWindow)
 app.on('window-all-closed', () => {
