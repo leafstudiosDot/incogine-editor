@@ -13,6 +13,11 @@ const { TouchBarLabel, TouchBarButton, TouchBarSpacer } = TouchBar
 const path = require('path'),
   isDev = require('electron-is-dev');
 
+/*require('update-electron-app')({
+  repo: 'leafstudiosDot/incogine-editor',
+  updateInterval: '10 minutes'
+})*/
+
 const os = require('os')
 
 /*const reactDevToolsPath = path.join(
@@ -121,6 +126,8 @@ const createWindow = () => {
   mainWindow.loadURL(appUrl, { userAgent: 'IncogineEditor-Electron' });
   mainWindow.maximize()
   mainWindow.on('closed', () => mainWindow = null)
+
+  // Extra Events
 }
 app.whenReady().then(() => {
   menutray = new Tray(isMac ? path.join(__dirname, `/tray_icon/trayTemplate.png`) : path.join(__dirname, `/tray_icon/tray.png`))
