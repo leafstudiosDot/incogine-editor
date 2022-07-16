@@ -2,12 +2,15 @@ import { useState, useEffect } from "react";
 import './App.css';
 import { invoke } from '@tauri-apps/api/tauri'
 import { listen } from '@tauri-apps/api/event'
+import TitleBar from "./components/Title Bar/titlebar";
 import NotifyWindow from './components/Notifications/notify'
 import Settings from './components/Settings/settings'
 
 const { ipcRenderer } = require('electron');
 const fs = require('fs');
 var path = require("path");
+
+var titleMenuBarSpace = 25;
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -244,9 +247,10 @@ function App() {
 
   return (
     <div className="App">
+      <TitleBar winsize={winsize} titleMenuBarSpace={titleMenuBarSpace} />
       <Header winsize={winsize} docs={docsState} setDocs={setDocsState} />
       <section >
-        <article style={{ paddingTop: "36px" }}>
+        <article style={{ paddingTop: "36px", marginTop: titleMenuBarSpace }}>
           {docsState.docs[docsState.selected].type === "text/code" ? <TextArea docs={docsState} setDocs={setDocsState} /> : null}
           {docsState.docs[docsState.selected].type === "settings" ? <Settings winsize={winsize} docs={docsState} setDocs={setDocsState} /> : null}
         </article>
@@ -312,7 +316,7 @@ function TextArea(props) {
 
   return (
     <div>
-      <div id="linecount-edit-cont" style={{ height: winsize.height - 58 }}>
+      <div id="linecount-edit-cont" style={{ height: winsize.height - 58 - titleMenuBarSpace }}>
         {Array(textline).fill(1).map((_, i) =>
           <div id="linecount-edit-num">{i + 1}</div>
         )}
@@ -320,7 +324,7 @@ function TextArea(props) {
       <textarea
         style={{
           width: winsize.width - 46,
-          height: winsize.height - 60
+          height: winsize.height - 60 - titleMenuBarSpace
         }}
         onChange={handleTextChange}
         value={text}

@@ -1,0 +1,26 @@
+.titleBar {
+    position: fixed;
+    background-color: #1b1b1b;
+    top: 0;
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+}
+
+.titleBar-mac {
+    width: 65px;
+    height: 25px;
+    top: 0;
+    left: 0;
+    position: absolute;
+    user-select: none;
+}
+
+.titleBar-mac-greybutton {
+    width: 12px;
+    height: 12px;
+    background-color: #626262;
+    position: fixed;
+    border-radius: 12px;
+    top: 8px;
+    left: 8px;
+}

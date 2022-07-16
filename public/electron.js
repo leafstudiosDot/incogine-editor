@@ -114,6 +114,8 @@ const createWindow = () => {
     minWidth: 720,
     resizable: true,
     icon: process.platform !== 'darwin' ? __dirname + `/icons/icon.icns` : __dirname + "/icons/icon.ico",
+    frame: false,
+    titleBarStyle: 'customButtonsOnHover',
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
