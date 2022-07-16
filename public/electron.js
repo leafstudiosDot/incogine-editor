@@ -132,12 +132,23 @@ const createWindow = () => {
   // Extra Events
 }
 app.whenReady().then(() => {
+  // Tray
   menutray = new Tray(isMac ? path.join(__dirname, `/tray_icon/trayTemplate.png`) : path.join(__dirname, `/tray_icon/tray.png`))
   const contextMenu = Menu.buildFromTemplate([
     { label: 'Quit Incogine Editor', role: 'quit' }
   ])
   menutray.setToolTip('Incogine Editor Menu')
   menutray.setContextMenu(contextMenu)
+
+  // macOS Dock
+  if (isMac) {
+    app.dock.setMenu(Menu.buildFromTemplate([
+      {
+        label: 'Docking...',
+        click() { console.log('ash devil in a nutshell: hotdots.com') }
+      }
+    ]))
+  }
 
   //await session.defaultSession.loadExtension(reactDevToolsPath)
 })
