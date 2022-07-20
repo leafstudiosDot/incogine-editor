@@ -13,6 +13,9 @@ A multipurpose code editor.
 1. `yarn|npm start` (You can access the browser too but running in an Electron window has more features)
 2. `yarn|npm run start-electron`
 
+## Contributing
+See [Contributing file](https://github.com/leafstudiosDot/incogine-editor/blob/master/CONTRIBUTING.md) for further instructions at contributing.
+
 ## License
 
 © 2022 leafstudiosDot. All rights reserved.
