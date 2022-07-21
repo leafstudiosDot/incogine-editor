@@ -175,6 +175,16 @@ ipcMain.handle('saveFileAs', async (event, data) => {
   }
 })
 
+ipcMain.on(`display-app-menu`, function(e, args) {
+  if (mainWindow) {
+    menu.popup({
+      window: mainWindow,
+      x: args.x,
+      y: args.y
+    });
+  }
+});
+
 ipcMain.handle('openFile', async (event, data) => {
   var openDialogRes = await dialog.showOpenDialog(mainWindow, {
     title: "Open File", filters: [
@@ -212,3 +222,19 @@ ipcMain.handle('openFile', async (event, data) => {
     return false
   }
 })
+
+ipcMain.on("toggle-maximize-window", function(event) {
+  if(mainWindow.isMaximized()) {
+      mainWindow.unmaximize();
+  } else {
+      mainWindow.maximize();
+  }
+});
+
+ipcMain.on("window-minimize", function(event) {
+  mainWindow.minimize();
+});
+
+ipcMain.on("window-close", function(event) {
+  mainWindow.close();
+});

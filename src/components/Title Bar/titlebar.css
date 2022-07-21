@@ -24,3 +24,41 @@
     top: 8px;
     left: 8px;
 }
+
+.titleBar-onemenu {
+    width: 30px;
+    height: 25px;
+    color: white;
+    text-align: center;
+}
+
+.titleBar-onemenu:hover {
+    background-color: #2b2b2b;
+}
+
+.titleBar-buttons {
+    right: 0;
+    top: 0;
+    color: white;
+    position: absolute;
+    height: 25px;
+}
+
+.titleBar-button {
+    width: 25px;
+    height: 25px;
+    display: inline-block;
+    text-align: center;
+}
+
+#titleBar-minimize:hover {
+    background-color: #2b2b2b;
+}
+
+#titleBar-maximize:hover {
+    background-color: #2b2b2b;
+}
+
+#titleBar-close:hover {
+    background-color: #7f2323;
+}
