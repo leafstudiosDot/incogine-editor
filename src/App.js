@@ -36,6 +36,8 @@ function Header(props) {
     let oldprops = [...props.docs.docs];
     oldprops.splice(index, 1);
 
+    let UnsavedEditedDialog = ipcRenderer.invoke("UnsavedEditedChanges", props )
+
     if (index === props.docs.selected) {
       if (props.docs.docs.length === 1) {
         await oldprops.unshift({
@@ -45,19 +47,30 @@ function Header(props) {
           saved: true,
           type: "text/code",
         });
-        await props.setDocs({ selected: 0, docs: oldprops })
+        if (UnsavedEditedDialog) {
+          console.log(UnsavedEditedDialog.data)
+          props.setDocs({ selected: 0, docs: oldprops })
+        }
       } else {
         if (props.docs.docs.length - 1 === props.docs.selected) {
-          props.setDocs({ selected: props.docs.selected - 1, docs: oldprops })
+          if (UnsavedEditedDialog) {
+            props.setDocs({ selected: props.docs.selected - 1, docs: oldprops })
+          }
         } else {
-          props.setDocs({ selected: props.docs.selected, docs: oldprops })
+          if (UnsavedEditedDialog) {
+            props.setDocs({ selected: props.docs.selected, docs: oldprops })
+          }
         }
       }
     } else {
       if (index < props.docs.selected) {
-        props.setDocs({ selected: props.docs.selected - 1, docs: oldprops })
+        if (UnsavedEditedDialog) {
+          props.setDocs({ selected: props.docs.selected - 1, docs: oldprops })
+        }
       } else {
-        props.setDocs({ selected: props.docs.selected, docs: oldprops })
+        if (UnsavedEditedDialog) {
+          props.setDocs({ selected: props.docs.selected, docs: oldprops })
+        }
       }
     }
   }
@@ -131,7 +144,7 @@ function App() {
     }
   }, [])
 
-  function SaveFile() {
+  function SaveFile(after) {
     let oldprops = [...docsState.docs];
 
     if (docsState.docs[docsState.selected].type === "text/code") {
@@ -167,7 +180,11 @@ function App() {
             type: docsState.docs[docsState.selected].type,
           }
 
-          setDocsState({ selected: docsState.selected, docs: [...oldprops] })
+          if (after === "close") {
+            window.CloseTab(docsState.selected);
+          } else {
+            setDocsState({ selected: docsState.selected, docs: [...oldprops] })
+          }
         }
       })
     }

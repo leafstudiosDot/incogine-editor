@@ -20,10 +20,10 @@ const path = require('path'),
 
 const os = require('os')
 
-/*const reactDevToolsPath = path.join(
+const reactDevToolsPath = path.join(
   os.homedir(),
-  '/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.24.7_4'
-)*/
+  '/Library/Application Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.25.0_0'
+)
 
 
 let mainWindow;
@@ -131,7 +131,7 @@ const createWindow = () => {
 
   // Extra Events
 }
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   // Tray
   menutray = new Tray(isMac ? path.join(__dirname, `/tray_icon/trayTemplate.png`) : path.join(__dirname, `/tray_icon/tray.png`))
   const contextMenu = Menu.buildFromTemplate([
@@ -150,7 +150,7 @@ app.whenReady().then(() => {
     ]))
   }
 
-  //await session.defaultSession.loadExtension(reactDevToolsPath)
+  await session.defaultSession.loadExtension(reactDevToolsPath)
 })
 app.on('ready', createWindow)
 app.on('window-all-closed', () => {
@@ -175,7 +175,7 @@ ipcMain.handle('saveFileAs', async (event, data) => {
   }
 })
 
-ipcMain.on(`display-app-menu`, function(e, args) {
+ipcMain.on(`display-app-menu`, function (e, args) {
   if (mainWindow) {
     menu.popup({
       window: mainWindow,
@@ -223,18 +223,42 @@ ipcMain.handle('openFile', async (event, data) => {
   }
 })
 
-ipcMain.on("toggle-maximize-window", function(event) {
-  if(mainWindow.isMaximized()) {
-      mainWindow.unmaximize();
+ipcMain.handleOnce("UnsavedEditedChanges", async (event, data) => {
+  if (!data.docs.docs[data.docs.selected].saved) {
+    dialog.showMessageBox({
+      type: 'question',
+      buttons: ['Save', 'Discard', 'Cancel'],
+      defaultId: 0,
+      cancelId: 2,
+      message: 'You have unsaved changes',
+      detail: 'Do you want to save your changes?'
+    }, async (response) => {
+      if (response === 0) {
+        await mainWindow.webContents.executeJavaScript('window.SaveFile("close")')
+        return true
+      } else if (response === 1) {
+        return true
+      } else {
+        return false
+      }
+    })
   } else {
-      mainWindow.maximize();
+    return true
+  }
+})
+
+ipcMain.on("toggle-maximize-window", function (event) {
+  if (mainWindow.isMaximized()) {
+    mainWindow.unmaximize();
+  } else {
+    mainWindow.maximize();
   }
 });
 
-ipcMain.on("window-minimize", function(event) {
+ipcMain.on("window-minimize", function (event) {
   mainWindow.minimize();
 });
 
-ipcMain.on("window-close", function(event) {
+ipcMain.on("window-close", function (event) {
   mainWindow.close();
 });
