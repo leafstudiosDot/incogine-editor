@@ -330,6 +330,7 @@ function TextArea(props) {
         value={text}
         onScroll={onScroll}
         spellcheck="false"
+        wrap="false"
         id="code-edit" />
     </div>
   )
