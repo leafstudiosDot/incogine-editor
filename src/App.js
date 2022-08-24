@@ -5,6 +5,7 @@ import { listen } from '@tauri-apps/api/event'
 import TitleBar from "./components/Title Bar/titlebar";
 import NotifyWindow from './components/Notifications/notify'
 import Settings from './components/Settings/settings'
+import VideoPlayer from "./components/Video Player/videoplayer";
 
 const { ipcRenderer } = require('electron');
 const fs = require('fs');
@@ -272,6 +273,7 @@ function App() {
       <section >
         <article style={{ paddingTop: "36px", marginTop: titleMenuBarSpace }}>
           {docsState.docs[docsState.selected].type === "text/code" ? <TextArea docs={docsState} setDocs={setDocsState} /> : null}
+          {docsState.docs[docsState.selected].type === "media/video" ? <VideoPlayer winsize={winsize} docsState={docsState} setDocs={setDocsState} /> : null}
           {docsState.docs[docsState.selected].type === "settings" ? <Settings winsize={winsize} docs={docsState} setDocs={setDocsState} /> : null}
         </article>
       </section>
