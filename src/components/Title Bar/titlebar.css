@@ -10,6 +10,18 @@
     left: 30px;
     height: 24px;
     width: 89.3%;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+}
+
+.titleBar-draggable-mac {
+    position: fixed;
+    top: 0;
+    left: 65px;
+    height: 24px;
+    width: 100%;
+    user-select: none;
     -webkit-user-select: none;
     -webkit-app-region: drag;
 }
