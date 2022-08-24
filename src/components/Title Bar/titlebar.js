@@ -19,6 +19,7 @@ export default function TitleBar(props) {
                 <div className="titleBar-onemenu" onClick={() => openMenu(0, 5)}>
                     ☰
                 </div>
+		<div className="titleBar-draggable" />
                 <div className="titleBar-buttons">
                     <span className="titleBar-button" id="titleBar-minimize" onClick={() => ipcRenderer.send("window-minimize")}>_</span>
                     <span className="titleBar-button" id="titleBar-maximize" onClick={() => ipcRenderer.send("toggle-maximize-window")}>&#9634;</span>
