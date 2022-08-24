@@ -15,7 +15,6 @@ function SettingList(props) {
                         saved: true,
                         type: "settings",
                     }
-
                     props.setCateg({ selected: props.docs.selected, docs: [...oldprops] })
                 }}>About</li>
 
@@ -27,7 +26,7 @@ function SettingList(props) {
 function SettingWindow(props) {
     function AboutPage() {
         return (<div >
-            <h1>Incogine Editor v0.1.0</h1>
+            <h1>Incogine Editor v0.1.1</h1>
             <span>© 2022 leafstudiosDot</span>
         </div>)
     }
