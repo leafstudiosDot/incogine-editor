@@ -37,8 +37,7 @@ function Header(props) {
     let oldprops = [...props.docs.docs];
     oldprops.splice(index, 1);
 
-    await ipcRenderer.invoke('UnsavedEditedChanges', JSON.stringify({props: props, index: index}))
-    .then(async UnsavedEditedDialog => {
+    async function CloseTabAftDialog(choice) {
       if (index === props.docs.selected) {
         if (props.docs.docs.length === 1) {
           await oldprops.unshift({
@@ -48,33 +47,44 @@ function Header(props) {
             saved: true,
             type: "text/code",
           });
-          if (UnsavedEditedDialog) {
-            //console.log(UnsavedEditedDialog.data)
+          if (choice) {
             props.setDocs({ selected: 0, docs: oldprops })
           }
         } else {
           if (props.docs.docs.length - 1 === props.docs.selected) {
-            if (UnsavedEditedDialog) {
+            if (choice) {
               props.setDocs({ selected: props.docs.selected - 1, docs: oldprops })
             }
           } else {
-            if (UnsavedEditedDialog) {
+            if (choice) {
               props.setDocs({ selected: props.docs.selected, docs: oldprops })
             }
           }
         }
       } else {
         if (index < props.docs.selected) {
-          if (UnsavedEditedDialog) {
+          if (choice) {
             props.setDocs({ selected: props.docs.selected - 1, docs: oldprops })
           }
         } else {
-          if (UnsavedEditedDialog) {
+          if (choice) {
             props.setDocs({ selected: props.docs.selected, docs: oldprops })
           }
         }
       }
+    }
+
+    ipcRenderer.once('UnsavedEditedChoice', async (event, UnsavedEditedDialog) => {
+      if (UnsavedEditedDialog === 1) {
+        CloseTabAftDialog(true)
+      } else if (UnsavedEditedDialog === 2) {
+        CloseTabAftDialog(true)
+      } else if (UnsavedEditedDialog === 3) {
+        // Save and Close
+      }
     })
+
+    ipcRenderer.send('UnsavedEditedChanges', JSON.stringify({ props: props, index: index }))
   }
 
   function AddTab(hascontent, content) {

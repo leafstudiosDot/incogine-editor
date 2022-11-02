@@ -231,35 +231,34 @@ ipcMain.handle('openFile', async (event, data) => {
   }
 })
 
-ipcMain.handle('UnsavedEditedChanges', async (event, dataraw) => {
-  console.log(JSON.parse(dataraw))
+ipcMain.on('UnsavedEditedChanges', async (event, dataraw) => {
   var data = JSON.parse(dataraw).props
   var index = JSON.parse(dataraw).index
-  console.log(data.docs.selected)
   if (!data.docs.docs[index].saved) {
-    dialog.showMessageBox(mainWindow, {
+    var UnsavedDialog = dialog.showMessageBox(mainWindow, {
       type: 'question',
       buttons: ['Save', 'Discard', 'Cancel'],
       defaultId: 0,
       cancelId: 2,
       message: 'You have unsaved changes',
       detail: 'Do you want to save your changes?'
-    }, async (response) => {
-      console.log(response);
-      if (response === 0) {
-        await mainWindow.webContents.executeJavaScript('window.SaveFile("close")')
-        console.log("whatever1")
-        return true
-      } else if (response === 1) {
-        console.log("whatever2")
-        return true
-      } else {
-        console.log("whatever3")
-        return false
-      }
     })
+      .then(async UnsavedDialog => {
+        console.log(UnsavedDialog);
+        if (UnsavedDialog.response === 0) {
+          //await mainWindow.webContents.executeJavaScript('window.SaveFile("close")')
+          event.sender.send('UnsavedEditedChoice', 3);
+          return true
+        } else if (UnsavedDialog.response === 1) {
+          event.sender.send('UnsavedEditedChoice', 2);
+          return true
+        } else {
+          event.sender.send('UnsavedEditedChoice', 0);
+          return false
+        }
+      })
   } else {
-    console.log("whatever4")
+    event.sender.send('UnsavedEditedChoice', 1);
     return true
   }
 })
