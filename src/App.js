@@ -37,23 +37,34 @@ function Header(props) {
     let oldprops = [...props.docs.docs];
     oldprops.splice(index, 1);
 
-    let UnsavedEditedDialog = ipcRenderer.invoke("UnsavedEditedChanges", props )
-
-    if (index === props.docs.selected) {
-      if (props.docs.docs.length === 1) {
-        await oldprops.unshift({
-          title: "Untitled",
-          file: null,
-          content: "",
-          saved: true,
-          type: "text/code",
-        });
-        if (UnsavedEditedDialog) {
-          console.log(UnsavedEditedDialog.data)
-          props.setDocs({ selected: 0, docs: oldprops })
+    await ipcRenderer.invoke('UnsavedEditedChanges', JSON.stringify({props: props, index: index}))
+    .then(async UnsavedEditedDialog => {
+      if (index === props.docs.selected) {
+        if (props.docs.docs.length === 1) {
+          await oldprops.unshift({
+            title: "Untitled",
+            file: null,
+            content: "",
+            saved: true,
+            type: "text/code",
+          });
+          if (UnsavedEditedDialog) {
+            //console.log(UnsavedEditedDialog.data)
+            props.setDocs({ selected: 0, docs: oldprops })
+          }
+        } else {
+          if (props.docs.docs.length - 1 === props.docs.selected) {
+            if (UnsavedEditedDialog) {
+              props.setDocs({ selected: props.docs.selected - 1, docs: oldprops })
+            }
+          } else {
+            if (UnsavedEditedDialog) {
+              props.setDocs({ selected: props.docs.selected, docs: oldprops })
+            }
+          }
         }
       } else {
-        if (props.docs.docs.length - 1 === props.docs.selected) {
+        if (index < props.docs.selected) {
           if (UnsavedEditedDialog) {
             props.setDocs({ selected: props.docs.selected - 1, docs: oldprops })
           }
@@ -63,17 +74,7 @@ function Header(props) {
           }
         }
       }
-    } else {
-      if (index < props.docs.selected) {
-        if (UnsavedEditedDialog) {
-          props.setDocs({ selected: props.docs.selected - 1, docs: oldprops })
-        }
-      } else {
-        if (UnsavedEditedDialog) {
-          props.setDocs({ selected: props.docs.selected, docs: oldprops })
-        }
-      }
-    }
+    })
   }
 
   function AddTab(hascontent, content) {

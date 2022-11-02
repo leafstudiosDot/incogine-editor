@@ -158,7 +158,7 @@ app.whenReady().then(async () => {
     ]))
   }
 
-  await session.defaultSession.loadExtension(reactDevToolsPath)
+  //await session.defaultSession.loadExtension(reactDevToolsPath)
 })
 app.on('ready', createWindow)
 app.on('window-all-closed', () => {
@@ -231,9 +231,13 @@ ipcMain.handle('openFile', async (event, data) => {
   }
 })
 
-ipcMain.handleOnce("UnsavedEditedChanges", async (event, data) => {
-  if (!data.docs.docs[data.docs.selected].saved) {
-    dialog.showMessageBox({
+ipcMain.handle('UnsavedEditedChanges', async (event, dataraw) => {
+  console.log(JSON.parse(dataraw))
+  var data = JSON.parse(dataraw).props
+  var index = JSON.parse(dataraw).index
+  console.log(data.docs.selected)
+  if (!data.docs.docs[index].saved) {
+    dialog.showMessageBox(mainWindow, {
       type: 'question',
       buttons: ['Save', 'Discard', 'Cancel'],
       defaultId: 0,
@@ -241,16 +245,21 @@ ipcMain.handleOnce("UnsavedEditedChanges", async (event, data) => {
       message: 'You have unsaved changes',
       detail: 'Do you want to save your changes?'
     }, async (response) => {
+      console.log(response);
       if (response === 0) {
         await mainWindow.webContents.executeJavaScript('window.SaveFile("close")')
+        console.log("whatever1")
         return true
       } else if (response === 1) {
+        console.log("whatever2")
         return true
       } else {
+        console.log("whatever3")
         return false
       }
     })
   } else {
+    console.log("whatever4")
     return true
   }
 })
