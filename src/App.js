@@ -5,6 +5,7 @@ import { listen } from '@tauri-apps/api/event'
 import TitleBar from "./components/Title Bar/titlebar";
 import NotifyWindow from './components/Notifications/notify'
 import Settings from './components/Settings/settings'
+import VideoPlayer from "./components/Video Player/videoplayer";
 
 const { ipcRenderer } = require('electron');
 const fs = require('fs');
@@ -85,7 +86,7 @@ function Header(props) {
         saved: true,
         type: content.type,
       });
-      props.setDocs({ selected: props.docs.selected + 1, docs: oldprops })
+      props.setDocs({ selected: oldprops.length - 1, docs: oldprops })
     } else {
       let oldprops = [...props.docs.docs];
       oldprops.push({
@@ -95,7 +96,7 @@ function Header(props) {
         saved: true,
         type: "text/code",
       });
-      props.setDocs({ selected: props.docs.selected + 1, docs: oldprops })
+      props.setDocs({ selected: oldprops.length - 1, docs: oldprops })
     }
   }
   window.AddTab = AddTab;
@@ -205,9 +206,21 @@ function App() {
       console.log(paths[0])
       var stats = fs.statSync(paths[0])
       if (stats["size"] < 1000000) {
+        // 1 MB of File
         fs.readFile(paths[0], "utf-8", function (err, data) {
           if (!err) {
             window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: data, type: "text/code" })
+          } else {
+            console.error("File not opened: An error has occurred, " + err)
+          }
+        })
+      } else if (stats["size"] < ((1000000 * 1024) * 2)) {
+        // 2 GB of File
+        fs.readFile(paths[0], "base64", function (err, data) {
+          if (!err) {
+            if (path.basename(paths[0]).split(".").pop() === "mp4" || path.basename(paths[0]).split(".").pop() === "avi" || path.basename(paths[0]).split(".").pop() === "mov") {
+              window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: "data:video/mp4;base64," + data, type: "media/video" })
+            }
           } else {
             console.error("File not opened: An error has occurred, " + err)
           }
@@ -242,8 +255,16 @@ function App() {
               await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "text/code" })
             }
             await reader.readAsText(file, "UTF-8");
+          } else if (file.size < ((1000000 * 1024) * 2)) {
+            console.log(file)
+            reader.onload = async function (event) {
+              if (file.name.split(".").pop() === "mp4" || file.name.split(".").pop() === "avi" || file.name.split(".").pop() === "mov") {
+                await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "media/video" })
+              }
+            }
+            await reader.readAsDataURL(file);
           } else {
-            console.error("File Too Large to Load, Maximum: 1MB")
+            console.error("File Too Large to Load, Maximum: 1MB (text) / 1GB (media)")
           }
         }
       }
@@ -269,6 +290,7 @@ function App() {
       <section >
         <article style={{ paddingTop: "36px", marginTop: titleMenuBarSpace }}>
           {docsState.docs[docsState.selected].type === "text/code" ? <TextArea docs={docsState} setDocs={setDocsState} /> : null}
+          {docsState.docs[docsState.selected].type === "media/video" ? <VideoPlayer winsize={winsize} docsState={docsState} setDocs={setDocsState} /> : null}
           {docsState.docs[docsState.selected].type === "settings" ? <Settings winsize={winsize} docs={docsState} setDocs={setDocsState} /> : null}
         </article>
       </section>
@@ -347,6 +369,7 @@ function TextArea(props) {
         value={text}
         onScroll={onScroll}
         spellcheck="false"
+        wrap="false"
         id="code-edit" />
     </div>
   )

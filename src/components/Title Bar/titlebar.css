@@ -2,6 +2,26 @@
     position: fixed;
     background-color: #1b1b1b;
     top: 0;
+}
+
+.titleBar-draggable {
+    position: fixed;
+    top: 0;
+    left: 30px;
+    height: 24px;
+    width: 89.3%;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-app-region: drag;
+}
+
+.titleBar-draggable-mac {
+    position: fixed;
+    top: 0;
+    left: 65px;
+    height: 24px;
+    width: 100%;
+    user-select: none;
     -webkit-user-select: none;
     -webkit-app-region: drag;
 }
@@ -30,6 +50,8 @@
     height: 25px;
     color: white;
     text-align: center;
+    cursor: pointer;
+    user-select: none;
 }
 
 .titleBar-onemenu:hover {
@@ -42,6 +64,8 @@
     color: white;
     position: absolute;
     height: 25px;
+    cursor: pointer;
+    user-select: none;
 }
 
 .titleBar-button {

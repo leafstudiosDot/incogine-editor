@@ -82,6 +82,9 @@
   position: relative;
   outline: none;
   border: none;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: scroll;
 }
 
 #linecount-edit-cont {
@@ -89,6 +92,8 @@
   width: 40px;
   margin-top: 3px;
   overflow-y: hidden;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 #linecount-edit-num {

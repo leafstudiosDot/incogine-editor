@@ -1,7 +1,7 @@
 {
   "name": "incogine-editor",
   "description": "A multipurpose text editor",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "private": true,
   "author": "leafstudiosDot",
   "copyright": "© 2022 leafstudiosDot",
