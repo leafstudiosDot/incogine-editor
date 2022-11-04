@@ -146,9 +146,20 @@ function App() {
 
   window.SettingsPage = function (content) {
     if (!docsState.docs.some(doc => doc.type === "settings")) {
-      window.AddTab(true, { title: "Settings", file: null, content: "about", saved: true, type: "settings" })
+      if (content !== "" && content !== null && content !== undefined) {
+        window.AddTab(true, { title: "Settings", file: null, content: content, saved: true, type: "settings" })
+      } else {
+        window.AddTab(true, { title: "Settings", file: null, content: "about", saved: true, type: "settings" })
+      }
     } else {
-      setDocsState({ selected: docsState.docs.findIndex(doc => doc.type === "settings"), docs: [...docsState.docs] })
+      if (content !== "" && content !== null && content !== undefined) {
+        let oldprops = [...docsState.docs];
+        //oldprops.splice(docsState.docs.findIndex(doc => doc.type === "settings"), 1);
+        oldprops[docsState.docs.findIndex(doc => doc.type === "settings")].content = content;
+        setDocsState({ selected: docsState.docs.findIndex(doc => doc.type === "settings"), docs: oldprops })
+      } else {
+        setDocsState({ selected: docsState.docs.findIndex(doc => doc.type === "settings"), docs: [...docsState.docs] })
+      }
     }
   }
 
