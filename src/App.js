@@ -147,6 +147,8 @@ function App() {
   window.SettingsPage = function (content) {
     if (!docsState.docs.some(doc => doc.type === "settings")) {
       window.AddTab(true, { title: "Settings", file: null, content: "about", saved: true, type: "settings" })
+    } else {
+      setDocsState({ selected: docsState.docs.findIndex(doc => doc.type === "settings"), docs: [...docsState.docs] })
     }
   }
 

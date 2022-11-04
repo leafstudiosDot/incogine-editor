@@ -17,7 +17,7 @@ function SettingList(props) {
                     }
                     props.setCateg({ selected: props.docs.selected, docs: [...oldprops] })
                 }}>About</li>
-                {/*<li onClick={() => {
+                <li onClick={() => {
                     oldprops[props.docs.selected] = {
                         title: "Settings",
                         file: null,
@@ -26,7 +26,7 @@ function SettingList(props) {
                         type: "settings",
                     }
                     props.setCateg({ selected: props.docs.selected, docs: [...oldprops] })
-                }}>Theme</li>*/}
+                }}>Theme</li>
 
             </ul>
         </div>
