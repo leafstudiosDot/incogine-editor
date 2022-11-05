@@ -77,7 +77,8 @@
       "category": "public.app-category.developer-tools",
       "target": "dmg",
       "icon": "./electron/icons/icon.icns",
-      "type": "development"
+      "type": "development",
+      "mergeASARs": true
     }
   }
 }
