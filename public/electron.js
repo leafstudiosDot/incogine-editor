@@ -6,7 +6,8 @@ const electron = require('electron'),
   dialog = electron.dialog,
   ipcMain = electron.ipcMain,
   TouchBar = electron.TouchBar,
-  Tray = electron.Tray;
+  Tray = electron.Tray,
+  shell = electron.shell;
 
 const { TouchBarLabel, TouchBarButton, TouchBarSpacer } = TouchBar
 
@@ -102,6 +103,14 @@ const menu = Menu.buildFromTemplate(menuBar)
 
 let menutray = null
 
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient('incoedit', process.execPath, [path.resolve(process.argv[1])])
+  }
+} else {
+  app.setAsDefaultProtocolClient('incoedit');
+}
+
 const touchBarDarwin = new TouchBar({
   items: [
     new TouchBarButton({
@@ -139,6 +148,27 @@ const createWindow = () => {
 
   // Extra Events
 }
+
+// URL Protocol incoedit://{whatever}
+
+// Windows only
+if (app.requestSingleInstanceLock()) {
+  app.on('second-instance', (event, cmdline, workingDir) => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.focus()
+    }
+  })
+} else {
+  app.quit();
+}
+
+// Platforms as following when URL is opened
+app.on('open-url', (event, url) => {
+  let urlcontent = url.split('incoedit://')[1]
+})
+
+// Run App
 app.whenReady().then(async () => {
   // Tray
   menutray = new Tray(isMac ? path.join(__dirname, `/tray_icon/trayTemplate.png`) : path.join(__dirname, `/tray_icon/tray.png`))
