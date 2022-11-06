@@ -27,7 +27,10 @@ const reactDevToolsPath = path.join(
 )
 
 
-let mainWindow;
+let newWindow;
+let currentWindow;
+require('@electron/remote/main').initialize()
+const windows = new Set();
 
 const isMac = process.platform === 'darwin'
 
@@ -38,7 +41,7 @@ const menuBar = [
       {
         label: 'About Incogine Editor',
         click: () => {
-          mainWindow.webContents.executeJavaScript('window.SettingsPage("about")')
+          newWindow.webContents.executeJavaScript('window.SettingsPage("about")')
         }
       },
       { type: 'separator' },
@@ -57,24 +60,24 @@ const menuBar = [
       {
         label: 'New Text Tab',
         accelerator: 'CmdOrCtrl+N',
-        click: () => { mainWindow.webContents.executeJavaScript('window.AddTab(false)') }
+        click: () => { newWindow.webContents.executeJavaScript('window.AddTab(false)') }
       },
       { type: 'separator' },
       {
         label: 'Open File',
         accelerator: 'CmdOrCtrl+O',
-        click: () => { mainWindow.webContents.executeJavaScript('window.OpenFile()') }
+        click: () => { newWindow.webContents.executeJavaScript('window.OpenFile()') }
       },
       { type: 'separator' },
       {
         label: 'Save File',
         accelerator: 'CmdOrCtrl+S',
-        click: () => { mainWindow.webContents.executeJavaScript('window.SaveFile()') }
+        click: () => { newWindow.webContents.executeJavaScript('window.SaveFile()') }
       },
       { type: 'separator' },
       {
         label: 'Settings',
-        click: () => { mainWindow.webContents.executeJavaScript('window.SettingsPage()') }
+        click: () => { newWindow.webContents.executeJavaScript('window.SettingsPage()') }
       },
       isMac ? { role: 'close' } : { role: 'quit' }
     ]
@@ -93,7 +96,7 @@ const menuBar = [
       {
         label: 'Open Chrome DevTools',
         accelerator: 'CmdOrCtrl+Shift+I',
-        click: () => { mainWindow.webContents.openDevTools() }
+        click: () => { newWindow.webContents.openDevTools() }
       }
     ]
   }
@@ -116,7 +119,7 @@ const touchBarDarwin = new TouchBar({
     new TouchBarButton({
       label: 'Add Tab',
       click: () => {
-        mainWindow.webContents.executeJavaScript('window.AddTab(false)')
+        newWindow.webContents.executeJavaScript('window.AddTab(false)')
       }
     }),
     new TouchBarSpacer({ size: 'large' })
@@ -124,7 +127,10 @@ const touchBarDarwin = new TouchBar({
 })
 
 const createWindow = () => {
-  mainWindow = new BrowserWindow({
+
+  currentWindow = BrowserWindow.getFocusedWindow();
+
+  newWindow = new BrowserWindow({
     width: 1280,
     height: 720,
     minHeight: 720,
@@ -141,12 +147,25 @@ const createWindow = () => {
   });
   const appUrl = isDev ? 'http://localhost:3613' : `file://${path.join(__dirname, '../build/index.html')}`
   Menu.setApplicationMenu(menu)
-  mainWindow.setTouchBar(touchBarDarwin)
-  mainWindow.loadURL(appUrl, { userAgent: 'IncogineEditor-Electron' });
-  mainWindow.maximize()
-  mainWindow.on('closed', () => mainWindow = null)
+  newWindow.setTouchBar(touchBarDarwin)
+  newWindow.loadURL(appUrl, { userAgent: 'IncogineEditor-Electron' });
+  newWindow.maximize()
+
+  newWindow.once('ready-to-show', () => {
+    newWindow.show();
+  })
+
+  newWindow.on('closed', () => {
+    windows.delete(newWindow);
+    newWindow = null;
+  });
+
+  require("@electron/remote/main").enable(newWindow.webContents);
 
   // Extra Events
+
+  windows.add(newWindow);
+  return newWindow
 }
 
 // URL Protocol incoedit://{whatever}
@@ -154,9 +173,9 @@ const createWindow = () => {
 // Windows only
 if (app.requestSingleInstanceLock()) {
   app.on('second-instance', (event, cmdline, workingDir) => {
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore()
-      mainWindow.focus()
+    if (newWindow) {
+      if (newWindow.isMinimized()) newWindow.restore()
+      newWindow.focus()
     }
   })
 } else {
@@ -201,11 +220,12 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   // If the app is still open, but no windows are open,
   // create one when the app comes into focus.
-  if (mainWindow === null) { createWindow() }
+  if (newWindow === null) { createWindow() }
 })
 
 ipcMain.handle('saveFileAs', async (event, data) => {
-  var saveDialogRes = await dialog.showSaveDialog(mainWindow, { title: "Save File: " + data.fileName, defaultPath: `${data.fileName}`, properties: ['createDirectory', 'showHiddenFiles'] })
+  console.log(JSON.parse(data).window)
+  var saveDialogRes = await dialog.showSaveDialog(JSON.parse(data).window, { title: "Save File: " + JSON.parse(data).fileName, defaultPath: `${JSON.parse(data).fileName}`, properties: ['createDirectory', 'showHiddenFiles'] })
   if (!saveDialogRes.canceled) {
     return saveDialogRes.filePath
   } else {
@@ -214,9 +234,9 @@ ipcMain.handle('saveFileAs', async (event, data) => {
 })
 
 ipcMain.on(`display-app-menu`, function (e, args) {
-  if (mainWindow) {
+  if (newWindow) {
     menu.popup({
-      window: mainWindow,
+      window: newWindow,
       x: args.x,
       y: args.y
     });
@@ -224,7 +244,7 @@ ipcMain.on(`display-app-menu`, function (e, args) {
 });
 
 ipcMain.handle('openFile', async (event, data) => {
-  var openDialogRes = await dialog.showOpenDialog(mainWindow, {
+  var openDialogRes = await dialog.showOpenDialog(data.window, {
     title: "Open File", filters: [
       {
         "name": "all",
@@ -265,7 +285,7 @@ ipcMain.on('UnsavedEditedChanges', async (event, dataraw) => {
   var data = JSON.parse(dataraw).props
   var index = JSON.parse(dataraw).index
   if (!data.docs.docs[index].saved) {
-    var UnsavedDialog = dialog.showMessageBox(mainWindow, {
+    var UnsavedDialog = dialog.showMessageBox(JSON.parse(dataraw).window, {
       type: 'question',
       buttons: ['Save', 'Discard', 'Cancel'],
       defaultId: 0,
@@ -276,7 +296,7 @@ ipcMain.on('UnsavedEditedChanges', async (event, dataraw) => {
       .then(async UnsavedDialog => {
         console.log(UnsavedDialog);
         if (UnsavedDialog.response === 0) {
-          //await mainWindow.webContents.executeJavaScript('window.SaveFile("close")')
+          //await newWindow.webContents.executeJavaScript('window.SaveFile("close")')
           event.sender.send('UnsavedEditedChoice', 3);
           return true
         } else if (UnsavedDialog.response === 1) {
@@ -294,17 +314,17 @@ ipcMain.on('UnsavedEditedChanges', async (event, dataraw) => {
 })
 
 ipcMain.on("toggle-maximize-window", function (event) {
-  if (mainWindow.isMaximized()) {
-    mainWindow.unmaximize();
+  if (currentWindow.isMaximized()) {
+    currentWindow.unmaximize();
   } else {
-    mainWindow.maximize();
+    currentWindow.maximize();
   }
 });
 
 ipcMain.on("window-minimize", function (event) {
-  mainWindow.minimize();
+  currentWindow.minimize();
 });
 
 ipcMain.on("window-close", function (event) {
-  mainWindow.close();
+  currentWindow.close();
 });

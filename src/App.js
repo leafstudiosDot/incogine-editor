@@ -7,7 +7,9 @@ import NotifyWindow from './components/Notifications/notify'
 import Settings from './components/Settings/settings'
 import VideoPlayer from "./components/Video Player/videoplayer";
 
-const { ipcRenderer } = require('electron');
+const { remote, ipcRenderer } = require('electron');
+const { BrowserWindow } = require('@electron/remote')
+//const currentWindow = remote.getCurrentWindow();
 const fs = require('fs');
 var path = require("path");
 
@@ -84,7 +86,7 @@ function Header(props) {
       }
     })
 
-    ipcRenderer.send('UnsavedEditedChanges', JSON.stringify({ props: props, index: index }))
+    ipcRenderer.send('UnsavedEditedChanges', JSON.stringify({ "props": props, "index": index, "window": BrowserWindow.getFocusedWindow() }))
   }
 
   function AddTab(hascontent, content) {
@@ -176,9 +178,10 @@ function App() {
       if (docsState.docs[docsState.selected].file !== null) {
         savedFile(docsState.docs[docsState.selected].file);
       } else {
-        ipcRenderer.invoke('saveFileAs', {
-          fileName: docsState.docs[docsState.selected].title,
-        })
+        ipcRenderer.invoke('saveFileAs', JSON.stringify({
+          "fileName": docsState.docs[docsState.selected].title,
+          "window": BrowserWindow.getFocusedWindow()
+        }))
           .then(res => {
             if (res) {
               savedFile(res)
@@ -217,7 +220,7 @@ function App() {
   window.SaveFile = SaveFile;
 
   function OpenFile() {
-    ipcRenderer.invoke('openFile')
+    ipcRenderer.invoke('openFile', JSON.stringify({ "window": BrowserWindow.getFocusedWindow() }))
       .then(res => {
         if (res) {
           openedFile(res)
