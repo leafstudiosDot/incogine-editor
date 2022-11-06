@@ -41,13 +41,16 @@ const menuBar = [
       {
         label: 'About Incogine Editor',
         click: () => {
-          newWindow.webContents.executeJavaScript('window.SettingsPage("about")')
+          currentWindow.webContents.executeJavaScript('window.SettingsPage("about")')
         }
       },
       { type: 'separator' },
       { role: 'services' },
       { type: 'separator' },
-      { role: 'hide' },
+      {
+        label: 'Hide Incogine Editor',
+        role: 'hide'
+      },
       { role: 'hideOthers' },
       { role: 'unhide' },
       { type: 'separator' },
@@ -60,24 +63,29 @@ const menuBar = [
       {
         label: 'New Text Tab',
         accelerator: 'CmdOrCtrl+N',
-        click: () => { newWindow.webContents.executeJavaScript('window.AddTab(false)') }
+        click: () => { currentWindow.webContents.executeJavaScript('window.AddTab(false)') }
+      },
+      {
+        label: 'New Window',
+        accelerator: 'Shift+CmdOrCtrl+N',
+        click: () => { createWindow() }
       },
       { type: 'separator' },
       {
         label: 'Open File',
         accelerator: 'CmdOrCtrl+O',
-        click: () => { newWindow.webContents.executeJavaScript('window.OpenFile()') }
+        click: () => { currentWindow.webContents.executeJavaScript('window.OpenFile()') }
       },
       { type: 'separator' },
       {
         label: 'Save File',
         accelerator: 'CmdOrCtrl+S',
-        click: () => { newWindow.webContents.executeJavaScript('window.SaveFile()') }
+        click: () => { currentWindow.webContents.executeJavaScript('window.SaveFile()') }
       },
       { type: 'separator' },
       {
         label: 'Settings',
-        click: () => { newWindow.webContents.executeJavaScript('window.SettingsPage()') }
+        click: () => { currentWindow.webContents.executeJavaScript('window.SettingsPage()') }
       },
       isMac ? { role: 'close' } : { role: 'quit' }
     ]
@@ -96,7 +104,7 @@ const menuBar = [
       {
         label: 'Open Chrome DevTools',
         accelerator: 'CmdOrCtrl+Shift+I',
-        click: () => { newWindow.webContents.openDevTools() }
+        click: () => { currentWindow.webContents.openDevTools() }
       }
     ]
   }
@@ -119,12 +127,16 @@ const touchBarDarwin = new TouchBar({
     new TouchBarButton({
       label: 'Add Tab',
       click: () => {
-        newWindow.webContents.executeJavaScript('window.AddTab(false)')
+        currentWindow.webContents.executeJavaScript('window.AddTab(false)')
       }
     }),
     new TouchBarSpacer({ size: 'large' })
   ]
 })
+
+setInterval(function () {
+  currentWindow = BrowserWindow.getFocusedWindow();
+}, 200);
 
 const createWindow = () => {
 
@@ -192,6 +204,7 @@ app.whenReady().then(async () => {
   // Tray
   menutray = new Tray(isMac ? path.join(__dirname, `/tray_icon/trayTemplate.png`) : path.join(__dirname, `/tray_icon/tray.png`))
   const contextMenu = Menu.buildFromTemplate([
+    { label: 'New Window', click: () => { createWindow() } },
     { label: 'Quit Incogine Editor', role: 'quit' }
   ])
   menutray.setToolTip('Incogine Editor Menu')
@@ -203,6 +216,12 @@ app.whenReady().then(async () => {
       {
         label: 'Docking...',
         click() { console.log('ash devil in a nutshell: hotdots.com') }
+      },
+      {
+        label: 'New Window',
+        click() {
+          createWindow()
+        }
       }
     ]))
   }
@@ -217,10 +236,10 @@ app.on('window-all-closed', () => {
 
   }
 })
-app.on('activate', () => {
+app.on('activate', (event, hasviswin) => {
   // If the app is still open, but no windows are open,
   // create one when the app comes into focus.
-  if (newWindow === null) { createWindow() }
+  if (!hasviswin) { createWindow() }
 })
 
 ipcMain.on(`display-app-menu`, function (e, args) {
