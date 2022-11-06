@@ -166,6 +166,26 @@ if (app.requestSingleInstanceLock()) {
 // Platforms as following when URL is opened
 app.on('open-url', (event, url) => {
   let urlcontent = url.split('incoedit://')[1]
+  let content = urlcontent.split('?')[0]
+  let query = urlcontent.split('?')[1]
+  let query_item = query.split('&')
+
+  switch(content) {
+    case 'twitter':
+      console.log(query_item)
+      switch(query_item[0].split('=')[0]) {
+        case 'connect':
+          if (query_item[0].split('=')[1] === 'true') {
+            console.log("Twitter Connections connected as " + query_item[4].split('=')[1] + " successfully")
+          }
+          break;
+        default:
+          break;
+      }
+      break;
+    default:
+      break;
+  }
 })
 
 // Run App
