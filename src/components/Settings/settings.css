@@ -38,3 +38,25 @@
     color: white;
     padding-left: 10px;
 }
+
+.connection-list {
+    display: flex;
+    flex-direction: row;
+}
+
+.connection-connect {
+    background-color: #818181;
+    padding: 10px;
+    border-radius: 5px;
+    user-select: none;
+    cursor: pointer;
+}
+
+#connect-twitter {
+    background-color: #04b2ec;
+    color: black;
+}
+
+#connection-disconnect {
+    background-color: #ae0d0d;
+}

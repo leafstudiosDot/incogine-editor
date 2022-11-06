@@ -27,7 +27,16 @@ function SettingList(props) {
                     }
                     props.setCateg({ selected: props.docs.selected, docs: [...oldprops] })
                 }}>Theme</li>
-
+                <li onClick={() => {
+                    oldprops[props.docs.selected] = {
+                        title: "Settings",
+                        file: null,
+                        content: "connections",
+                        saved: true,
+                        type: "settings",
+                    }
+                    props.setCateg({ selected: props.docs.selected, docs: [...oldprops] })
+                }}>Connections</li>
             </ul>
         </div>
     )
@@ -47,10 +56,21 @@ function SettingWindow(props) {
         </div>)
     }
 
+    function ConnectionsPage() {
+        return (<div>
+            <h1>Connections</h1>
+            <div class="connection-list">
+                <div style={{width: localStorage.twitter_userid ? (props.size.width - 356) : (props.size.width - 231)}} class="connection-connect" id="connect-twitter" onClick={() => {}}>Connect to Twitter</div>
+                {localStorage.twitter_userid ? (<span><div style={{width: 100, marginLeft: 5}} class="connection-connect" id="connection-disconnect" onClick={() => {}}>Disconnect</div></span>) : (null)}
+            </div>
+        </div>)
+    }
+
     return (
         <div id="settingWindowContent" style={{ height: props.size.height - 57, width: props.size.width - 191 }}>
             {props.docs.docs[props.docs.selected].content === "about" ? <AboutPage /> : null}
             {props.docs.docs[props.docs.selected].content === "theme" ? <ThemePage /> : null}
+            {props.docs.docs[props.docs.selected].content === "connections" ? <ConnectionsPage /> : null}
         </div>
     )
 }

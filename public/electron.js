@@ -321,6 +321,12 @@ ipcMain.on('UnsavedEditedChanges', async (event, dataraw) => {
   }
 })
 
+// Connections Functions
+ipcMain.on('connections:twitter', async (event, data) => {
+  shell.openExternal("https://incoeditapi.hodots.com/connections/twitter")
+})
+
+// Misc Functions
 ipcMain.on("toggle-maximize-window", function (event) {
   if (mainWindow.isMaximized()) {
     mainWindow.unmaximize();
