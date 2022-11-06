@@ -8,8 +8,8 @@ import Settings from './components/Settings/settings'
 import VideoPlayer from "./components/Video Player/videoplayer";
 
 const { remote, ipcRenderer } = require('electron');
-const { BrowserWindow } = require('@electron/remote')
-//const currentWindow = remote.getCurrentWindow();
+const { dialog } = require('@electron/remote')
+const currentWindow = require('@electron/remote')
 const fs = require('fs');
 var path = require("path");
 
@@ -76,17 +76,36 @@ function Header(props) {
       }
     }
 
-    ipcRenderer.once('UnsavedEditedChoice', async (event, UnsavedEditedDialog) => {
-      if (UnsavedEditedDialog === 1) {
+    async function UnsavedEditedChanges(event, dataraw) {
+      var data = JSON.parse(dataraw).props
+      var index = JSON.parse(dataraw).index
+      if (!data.docs.docs[index].saved) {
+        var UnsavedDialog = dialog.showMessageBox(currentWindow.BrowserWindow.getFocusedWindow(), {
+          type: 'question',
+          buttons: ['Save', 'Discard', 'Cancel'],
+          defaultId: 0,
+          cancelId: 2,
+          message: 'You have unsaved changes',
+          detail: 'Do you want to save your changes?'
+        })
+          .then(async UnsavedDialog => {
+            console.log(UnsavedDialog);
+            if (UnsavedDialog.response === 0) {
+              // Save and Close
+              //await newWindow.webContents.executeJavaScript('window.SaveFile("close")')
+              //CloseTabAftDialog(true)
+            } else if (UnsavedDialog.response === 1) {
+              CloseTabAftDialog(true)
+            } else {
+              CloseTabAftDialog(false)
+            }
+          })
+      } else {
         CloseTabAftDialog(true)
-      } else if (UnsavedEditedDialog === 2) {
-        CloseTabAftDialog(true)
-      } else if (UnsavedEditedDialog === 3) {
-        // Save and Close
       }
-    })
+    }
 
-    ipcRenderer.send('UnsavedEditedChanges', JSON.stringify({ "props": props, "index": index, "window": BrowserWindow.getFocusedWindow() }))
+    UnsavedEditedChanges(null, JSON.stringify({ "props": props, "index": index }))
   }
 
   function AddTab(hascontent, content) {
@@ -174,13 +193,21 @@ function App() {
   function SaveFile(after) {
     let oldprops = [...docsState.docs];
 
+    async function saveFileAs(event, data) {
+      var saveDialogRes = await dialog.showSaveDialog(currentWindow.BrowserWindow.getFocusedWindow(), { title: "Save File: " + JSON.parse(data).fileName, defaultPath: `${JSON.parse(data).fileName}`, properties: ['createDirectory', 'showHiddenFiles'] })
+      if (!saveDialogRes.canceled) {
+        return saveDialogRes.filePath
+      } else {
+        return false
+      }
+    }
+
     if (docsState.docs[docsState.selected].type === "text/code") {
       if (docsState.docs[docsState.selected].file !== null) {
         savedFile(docsState.docs[docsState.selected].file);
       } else {
-        ipcRenderer.invoke('saveFileAs', JSON.stringify({
-          "fileName": docsState.docs[docsState.selected].title,
-          "window": BrowserWindow.getFocusedWindow()
+        saveFileAs(null, JSON.stringify({
+          "fileName": docsState.docs[docsState.selected].title
         }))
           .then(res => {
             if (res) {
@@ -220,7 +247,45 @@ function App() {
   window.SaveFile = SaveFile;
 
   function OpenFile() {
-    ipcRenderer.invoke('openFile', JSON.stringify({ "window": BrowserWindow.getFocusedWindow() }))
+    async function openFile(event, data) {
+      var openDialogRes = await dialog.showOpenDialog(currentWindow.BrowserWindow.getFocusedWindow(), {
+        title: "Open File", filters: [
+          {
+            "name": "all",
+            "extensions": ["*"]
+          },
+          {
+            "name": "Text File",
+            "extensions": ["txt", "text", "md", "markdown"]
+          },
+          {
+            "name": "Markdown File",
+            "extensions": ["md", "markdown"]
+          },
+          {
+            "name": "Website",
+            "extensions": ["htm", "html", "css", "js", "php"]
+          },
+          {
+            "name": "JavaScript",
+            "extensions": ["js", "json", "tsx", "ts"]
+          },
+          {
+            "name": "C++",
+            "extensions": ["cpp", "cc", "C", "cxx", "h", "hpp", "hxx"],
+          },
+        ], properties: ['openFile', 'showHiddenFiles', 'createDirectory']
+      })
+    
+      if (!openDialogRes.canceled) {
+        console.log(openDialogRes)
+        return openDialogRes.filePaths
+      } else {
+        return false
+      }
+    }
+
+    openFile()
       .then(res => {
         if (res) {
           openedFile(res)

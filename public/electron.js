@@ -223,16 +223,6 @@ app.on('activate', () => {
   if (newWindow === null) { createWindow() }
 })
 
-ipcMain.handle('saveFileAs', async (event, data) => {
-  console.log(JSON.parse(data).window)
-  var saveDialogRes = await dialog.showSaveDialog(JSON.parse(data).window, { title: "Save File: " + JSON.parse(data).fileName, defaultPath: `${JSON.parse(data).fileName}`, properties: ['createDirectory', 'showHiddenFiles'] })
-  if (!saveDialogRes.canceled) {
-    return saveDialogRes.filePath
-  } else {
-    return false
-  }
-})
-
 ipcMain.on(`display-app-menu`, function (e, args) {
   if (newWindow) {
     menu.popup({
@@ -242,76 +232,6 @@ ipcMain.on(`display-app-menu`, function (e, args) {
     });
   }
 });
-
-ipcMain.handle('openFile', async (event, data) => {
-  var openDialogRes = await dialog.showOpenDialog(data.window, {
-    title: "Open File", filters: [
-      {
-        "name": "all",
-        "extensions": ["*"]
-      },
-      {
-        "name": "Text File",
-        "extensions": ["txt", "text", "md", "markdown"]
-      },
-      {
-        "name": "Markdown File",
-        "extensions": ["md", "markdown"]
-      },
-      {
-        "name": "Website",
-        "extensions": ["htm", "html", "css", "js", "php"]
-      },
-      {
-        "name": "JavaScript",
-        "extensions": ["js", "json", "tsx", "ts"]
-      },
-      {
-        "name": "C++",
-        "extensions": ["cpp", "cc", "C", "cxx", "h", "hpp", "hxx"],
-      },
-    ], properties: ['openFile', 'showHiddenFiles', 'createDirectory']
-  })
-
-  if (!openDialogRes.canceled) {
-    console.log(openDialogRes)
-    return openDialogRes.filePaths
-  } else {
-    return false
-  }
-})
-
-ipcMain.on('UnsavedEditedChanges', async (event, dataraw) => {
-  var data = JSON.parse(dataraw).props
-  var index = JSON.parse(dataraw).index
-  if (!data.docs.docs[index].saved) {
-    var UnsavedDialog = dialog.showMessageBox(JSON.parse(dataraw).window, {
-      type: 'question',
-      buttons: ['Save', 'Discard', 'Cancel'],
-      defaultId: 0,
-      cancelId: 2,
-      message: 'You have unsaved changes',
-      detail: 'Do you want to save your changes?'
-    })
-      .then(async UnsavedDialog => {
-        console.log(UnsavedDialog);
-        if (UnsavedDialog.response === 0) {
-          //await newWindow.webContents.executeJavaScript('window.SaveFile("close")')
-          event.sender.send('UnsavedEditedChoice', 3);
-          return true
-        } else if (UnsavedDialog.response === 1) {
-          event.sender.send('UnsavedEditedChoice', 2);
-          return true
-        } else {
-          event.sender.send('UnsavedEditedChoice', 0);
-          return false
-        }
-      })
-  } else {
-    event.sender.send('UnsavedEditedChoice', 1);
-    return true
-  }
-})
 
 ipcMain.on("toggle-maximize-window", function (event) {
   if (currentWindow.isMaximized()) {
