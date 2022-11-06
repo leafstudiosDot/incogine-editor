@@ -172,7 +172,6 @@ app.on('open-url', (event, url) => {
 
   switch(content) {
     case 'twitter':
-      console.log(query_item)
       switch(query_item[0].split('=')[0]) {
         case 'connect':
           if (query_item[0].split('=')[1] === 'true') {
