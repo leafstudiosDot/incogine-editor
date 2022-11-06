@@ -9,6 +9,9 @@ const electron = require('electron'),
   Tray = electron.Tray,
   shell = electron.shell;
 
+const Store = require('electron-store')
+const store = new Store();
+
 const { TouchBarLabel, TouchBarButton, TouchBarSpacer } = TouchBar
 
 const path = require('path'),
@@ -175,6 +178,12 @@ app.on('open-url', (event, url) => {
       switch(query_item[0].split('=')[0]) {
         case 'connect':
           if (query_item[0].split('=')[1] === 'true') {
+            store.set('twitter_token', query_item[1].split('=')[1])
+            mainWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_token", "' + query_item[1].split('=')[1] + '")')
+            store.set('twitter_token_secret', query_item[2].split('=')[1])
+            mainWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_token_secret", "' + query_item[2].split('=')[1] + '")')
+            store.set('twitter_userid', query_item[3].split('=')[1])
+            mainWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_userid", "' + query_item[3].split('=')[1] + '")')
             console.log("Twitter Connections connected as " + query_item[4].split('=')[1] + " successfully")
           }
           break;
