@@ -32,6 +32,7 @@ const reactDevToolsPath = path.join(
 
 let newWindow;
 let currentWindow;
+let lastCurrentWindow;
 require('@electron/remote/main').initialize()
 const windows = new Set();
 
@@ -177,6 +178,9 @@ const touchBarDarwin = new TouchBar({
 
 setInterval(function () {
   currentWindow = BrowserWindow.getFocusedWindow();
+  if (currentWindow != null) {
+    lastCurrentWindow = currentWindow
+  }
 }, 200);
 
 const createWindow = () => {
@@ -248,14 +252,14 @@ app.on('open-url', (event, url) => {
         case 'connect':
           if (query_item[0].split('=')[1] === 'true') {
             store.set('twitter_token', query_item[1].split('=')[1])
-            mainWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_token", "' + query_item[1].split('=')[1] + '")')
+            lastCurrentWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_token", "' + query_item[1].split('=')[1] + '")')
             store.set('twitter_token_secret', query_item[2].split('=')[1])
-            mainWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_token_secret", "' + query_item[2].split('=')[1] + '")')
+            lastCurrentWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_token_secret", "' + query_item[2].split('=')[1] + '")')
             store.set('twitter_userid', query_item[3].split('=')[1])
-            mainWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_userid", "' + query_item[3].split('=')[1] + '")')
-            mainWindow.webContents.executeJavaScript('window.connection_ConnectTwitter(' + query_item[3].split('=')[1] + ')')
+            lastCurrentWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_userid", "' + query_item[3].split('=')[1] + '")')
+            lastCurrentWindow.webContents.executeJavaScript('window.connection_ConnectTwitter(' + query_item[3].split('=')[1] + ')')
             store.set('twitter_username', query_item[4].split('=')[1])
-            mainWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_username", "' + query_item[4].split('=')[1] + '")')
+            lastCurrentWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_username", "' + query_item[4].split('=')[1] + '")')
             console.log("Twitter Connections connected as " + query_item[4].split('=')[1] + " successfully")
           }
           break;
@@ -320,6 +324,18 @@ ipcMain.on(`display-app-menu`, function (e, args) {
     });
   }
 });
+
+ipcMain.on('connections-disconnect:twitter', async (event, data) => {
+  //shell.openExternal("https://incoeditapi.hodots.com/connections/twitter")
+  store.delete('twitter_token')
+  lastCurrentWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_token")')
+  store.delete('twitter_token_secret')
+  lastCurrentWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_token_secret")')
+  store.delete('twitter_userid')
+  lastCurrentWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_userid")')
+  store.delete('twitter_username')
+  lastCurrentWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_username")')
+})
 
 ipcMain.on("toggle-maximize-window", function (event) {
   if (currentWindow.isMaximized()) {
