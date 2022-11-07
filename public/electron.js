@@ -41,7 +41,11 @@ const menuBar = [
       {
         label: 'About Incogine Editor',
         click: () => {
-          currentWindow.webContents.executeJavaScript('window.SettingsPage("about")')
+          if (currentWindow != null) {
+            currentWindow.webContents.executeJavaScript('window.SettingsPage("about")')
+          } else {
+            dialog.showMessageBox(null, {message: "Please create a new window to see an about page."})
+          }
         }
       },
       { type: 'separator' },
@@ -63,7 +67,13 @@ const menuBar = [
       {
         label: 'New Text Tab',
         accelerator: 'CmdOrCtrl+N',
-        click: () => { currentWindow.webContents.executeJavaScript('window.AddTab(false)') }
+        click: () => { 
+          if (currentWindow != null) {
+            currentWindow.webContents.executeJavaScript('window.AddTab(false)') 
+          } else {
+            dialog.showMessageBox(null, {message: "Please create a new window to add tab."})
+          }
+        }
       },
       {
         label: 'New Window',
@@ -74,18 +84,36 @@ const menuBar = [
       {
         label: 'Open File',
         accelerator: 'CmdOrCtrl+O',
-        click: () => { currentWindow.webContents.executeJavaScript('window.OpenFile()') }
+        click: () => { 
+          if (currentWindow != null) {
+            currentWindow.webContents.executeJavaScript('window.OpenFile()') 
+          } else {
+            dialog.showMessageBox(null, {message: "Please create a new window to open a file."})
+          }
+        }
       },
       { type: 'separator' },
       {
         label: 'Save File',
         accelerator: 'CmdOrCtrl+S',
-        click: () => { currentWindow.webContents.executeJavaScript('window.SaveFile()') }
+        click: () => { 
+          if (currentWindow != null) {
+            currentWindow.webContents.executeJavaScript('window.SaveFile()') 
+          } else {
+            dialog.showMessageBox(null, {message: "Please create a new window to save."})
+          }
+        }
       },
       { type: 'separator' },
       {
         label: 'Settings',
-        click: () => { currentWindow.webContents.executeJavaScript('window.SettingsPage()') }
+        click: () => { 
+          if (currentWindow != null) {
+            currentWindow.webContents.executeJavaScript('window.SettingsPage()') 
+          } else {
+            dialog.showMessageBox(null, {message: "Please create a new window to check settings tab."})
+          }
+        }
       },
       isMac ? { role: 'close' } : { role: 'quit' }
     ]
@@ -104,7 +132,13 @@ const menuBar = [
       {
         label: 'Open Chrome DevTools',
         accelerator: 'CmdOrCtrl+Shift+I',
-        click: () => { currentWindow.webContents.openDevTools() }
+        click: () => { 
+          if (currentWindow != null) {
+            currentWindow.webContents.openDevTools() 
+          } else {
+            dialog.showMessageBox(null, {message: "Please create a new window to add tab."})
+          }
+        }
       }
     ]
   }
@@ -127,7 +161,11 @@ const touchBarDarwin = new TouchBar({
     new TouchBarButton({
       label: 'Add Tab',
       click: () => {
-        currentWindow.webContents.executeJavaScript('window.AddTab(false)')
+        if (currentWindow != null) {
+          currentWindow.webContents.executeJavaScript('window.AddTab(false)')
+        } else {
+          dialog.showMessageBox(null, {message: "Please create a new window to add tab."})
+        }
       }
     }),
     new TouchBarSpacer({ size: 'large' })
