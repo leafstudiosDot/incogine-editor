@@ -2,6 +2,8 @@ import { ipcRenderer } from 'electron';
 import { useState, useEffect } from 'react';
 import './settings.css';
 
+import twitterlogo from './connections_logo/twitter.svg';
+
 function SettingList(props) {
     let oldprops = [...props.docs.docs];
     return (
@@ -59,6 +61,7 @@ function SettingWindow(props) {
 
     function ConnectionsPage() {
         const [twitterConnected, setTwitterConnected] = useState(false);
+        const [twitterUsername, setTwitterUsername] = useState("");
 
         function connectTwitter(userid) {
             if (userid) {
@@ -81,7 +84,11 @@ function SettingWindow(props) {
         return (<div>
             <h1>Connections</h1>
             <div class="connection-list">
-                <div style={{width: twitterConnected ? (props.size.width - 356) : (props.size.width - 231)}} class="connection-connect" id="connect-twitter" onClick={() => {ipcRenderer.send('connections:twitter')}}>Connect to Twitter</div>
+                <div style={{width: twitterConnected ? (props.size.width - 356) : (props.size.width - 231)}} class="connection-connect" id="connect-twitter" onClick={() => {ipcRenderer.send('connections:twitter')}}><img style={{width: "30px", position: "absolute", marginTop: "-5px", marginLeft: "-5px"}} src={twitterlogo} alt="Twitter" /><span style={{marginLeft: 30}}>
+                    {twitterConnected ? (twitterUsername === "" ? (<span>Loading...</span>) : (
+                        <span>{twitterUsername}</span>
+                    )) : (<span>Connect to Twitter</span>)}
+                </span></div>
                 {twitterConnected ? (<span><div style={{width: 100, marginLeft: 5}} class="connection-connect" id="connection-disconnect" onClick={() => {disconnectTwitter()}}>Disconnect</div></span>) : (null)}
             </div>
         </div>)
