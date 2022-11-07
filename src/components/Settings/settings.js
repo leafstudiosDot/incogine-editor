@@ -66,6 +66,10 @@ function SettingWindow(props) {
         function connectTwitter(userid) {
             if (userid) {
                 setTwitterConnected(true);
+                setTwitterUsername("")
+                setTimeout(() => {
+                    setTwitterUsername(localStorage.getItem("twitter_username"));
+                }, 100)
             } else {
                 setTwitterConnected(false);
             }
@@ -76,7 +80,7 @@ function SettingWindow(props) {
             ipcRenderer.send('connections-disconnect:twitter');
             setTwitterConnected(false);
         }
-       
+
         useEffect(() => {
             connectTwitter(localStorage.getItem("twitter_userid"))
         }, [])
@@ -84,12 +88,16 @@ function SettingWindow(props) {
         return (<div>
             <h1>Connections</h1>
             <div class="connection-list">
-                <div style={{width: twitterConnected ? (props.size.width - 356) : (props.size.width - 231)}} class="connection-connect" id="connect-twitter" onClick={() => {ipcRenderer.send('connections:twitter')}}><img style={{width: "30px", position: "absolute", marginTop: "-5px", marginLeft: "-5px"}} src={twitterlogo} alt="Twitter" /><span style={{marginLeft: 30}}>
-                    {twitterConnected ? (twitterUsername === "" ? (<span>Loading...</span>) : (
-                        <span>{twitterUsername}</span>
-                    )) : (<span>Connect to Twitter</span>)}
-                </span></div>
-                {twitterConnected ? (<span><div style={{width: 100, marginLeft: 5}} class="connection-connect" id="connection-disconnect" onClick={() => {disconnectTwitter()}}>Disconnect</div></span>) : (null)}
+                <div style={{ width: twitterConnected ? (props.size.width - 356) : (props.size.width - 231) }} class="connection-connect" id="connect-twitter" onClick={() => {
+                    if (!twitterConnected) {
+                        ipcRenderer.send('connections:twitter')
+                    }
+                }}><img style={{ width: "30px", position: "absolute", marginTop: "-5px", marginLeft: "-5px" }} src={twitterlogo} alt="Twitter" /><span style={{ marginLeft: 30 }}>
+                        {twitterConnected ? (twitterUsername === "" ? (<span>Loading...</span>) : (
+                            <span>@{twitterUsername}</span>
+                        )) : (<span>Connect to Twitter</span>)}
+                    </span></div>
+                {twitterConnected ? (<span><div style={{ width: 100, marginLeft: 5 }} class="connection-connect" id="connection-disconnect" onClick={() => { disconnectTwitter() }}>Disconnect</div></span>) : (null)}
             </div>
         </div>)
     }

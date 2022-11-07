@@ -185,6 +185,8 @@ app.on('open-url', (event, url) => {
             store.set('twitter_userid', query_item[3].split('=')[1])
             mainWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_userid", "' + query_item[3].split('=')[1] + '")')
             mainWindow.webContents.executeJavaScript('window.connection_ConnectTwitter(' + query_item[3].split('=')[1] + ')')
+            store.set('twitter_username', query_item[4].split('=')[1])
+            mainWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_username", "' + query_item[4].split('=')[1] + '")')
             console.log("Twitter Connections connected as " + query_item[4].split('=')[1] + " successfully")
           }
           break;
@@ -334,6 +336,8 @@ ipcMain.on('connections-disconnect:twitter', async (event, data) => {
   mainWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_token_secret")')
   store.delete('twitter_userid')
   mainWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_userid")')
+  store.delete('twitter_username')
+  mainWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_username")')
 })
 
 // Misc Functions
