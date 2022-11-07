@@ -184,6 +184,7 @@ app.on('open-url', (event, url) => {
             mainWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_token_secret", "' + query_item[2].split('=')[1] + '")')
             store.set('twitter_userid', query_item[3].split('=')[1])
             mainWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_userid", "' + query_item[3].split('=')[1] + '")')
+            mainWindow.webContents.executeJavaScript('window.connection_ConnectTwitter(' + query_item[3].split('=')[1] + ')')
             console.log("Twitter Connections connected as " + query_item[4].split('=')[1] + " successfully")
           }
           break;
@@ -324,6 +325,15 @@ ipcMain.on('UnsavedEditedChanges', async (event, dataraw) => {
 // Connections Functions
 ipcMain.on('connections:twitter', async (event, data) => {
   shell.openExternal("https://incoeditapi.hodots.com/connections/twitter")
+})
+ipcMain.on('connections-disconnect:twitter', async (event, data) => {
+  //shell.openExternal("https://incoeditapi.hodots.com/connections/twitter")
+  store.delete('twitter_token')
+  mainWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_token")')
+  store.delete('twitter_token_secret')
+  mainWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_token_secret")')
+  store.delete('twitter_userid')
+  mainWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_userid")')
 })
 
 // Misc Functions
