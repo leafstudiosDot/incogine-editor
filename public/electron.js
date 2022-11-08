@@ -210,7 +210,8 @@ const createWindow = () => {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
-      enableRemoteModule: true
+      enableRemoteModule: true,
+      preload: path.join(__dirname, 'preload.js')
     }
   });
   const appUrl = isDev ? 'http://localhost:3613' : `file://${path.join(__dirname, '../build/index.html')}`
@@ -331,6 +332,16 @@ ipcMain.on(`display-app-menu`, function (e, args) {
     });
   }
 });
+
+ipcMain.on('get-fromstorage', function(e, {callbackname, key}) {
+  var value = ""
+  value = store.get(key)
+  e.sender.send('get-fromstorage-reply', callbackname + ";" + value)
+})
+
+ipcMain.once('set-fromstorage', function(e, {key, value}) {
+  store.set(key, value)
+})
 
 ipcMain.on('connections-disconnect:twitter', async (event, data) => {
   //shell.openExternal("https://incoeditapi.hodots.com/connections/twitter")
