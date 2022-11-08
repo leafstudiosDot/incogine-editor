@@ -445,6 +445,12 @@ function TextArea(props) {
     document.getElementById("linecount-edit-cont").scrollTop = e.target.scrollTop;
   }
 
+  function selectAllfromArea() {
+    document.getElementById("code-edit").focus();
+    document.getElementById("code-edit").select();
+  }
+  window.SelectAllFromArea = selectAllfromArea;
+
   return (
     <div>
       <div id="linecount-edit-cont" style={{ height: winsize.height - 58 - titleMenuBarSpace }}>

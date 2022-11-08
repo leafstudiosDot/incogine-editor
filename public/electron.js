@@ -48,7 +48,7 @@ const menuBar = [
           if (currentWindow != null) {
             currentWindow.webContents.executeJavaScript('window.SettingsPage("about")')
           } else {
-            dialog.showMessageBox(null, {message: "Please create a new window to see an about page."})
+            dialog.showMessageBox(null, { message: "Please create a new window to see an about page." })
           }
         }
       },
@@ -71,11 +71,11 @@ const menuBar = [
       {
         label: 'New Text Tab',
         accelerator: 'CmdOrCtrl+N',
-        click: () => { 
+        click: () => {
           if (currentWindow != null) {
-            currentWindow.webContents.executeJavaScript('window.AddTab(false)') 
+            currentWindow.webContents.executeJavaScript('window.AddTab(false)')
           } else {
-            dialog.showMessageBox(null, {message: "Please create a new window to add tab."})
+            dialog.showMessageBox(null, { message: "Please create a new window to add tab." })
           }
         }
       },
@@ -88,11 +88,11 @@ const menuBar = [
       {
         label: 'Open File',
         accelerator: 'CmdOrCtrl+O',
-        click: () => { 
+        click: () => {
           if (currentWindow != null) {
-            currentWindow.webContents.executeJavaScript('window.OpenFile()') 
+            currentWindow.webContents.executeJavaScript('window.OpenFile()')
           } else {
-            dialog.showMessageBox(null, {message: "Please create a new window to open a file."})
+            dialog.showMessageBox(null, { message: "Please create a new window to open a file." })
           }
         }
       },
@@ -100,22 +100,22 @@ const menuBar = [
       {
         label: 'Save File',
         accelerator: 'CmdOrCtrl+S',
-        click: () => { 
+        click: () => {
           if (currentWindow != null) {
-            currentWindow.webContents.executeJavaScript('window.SaveFile()') 
+            currentWindow.webContents.executeJavaScript('window.SaveFile()')
           } else {
-            dialog.showMessageBox(null, {message: "Please create a new window to save."})
+            dialog.showMessageBox(null, { message: "Please create a new window to save." })
           }
         }
       },
       { type: 'separator' },
       {
         label: 'Settings',
-        click: () => { 
+        click: () => {
           if (currentWindow != null) {
-            currentWindow.webContents.executeJavaScript('window.SettingsPage()') 
+            currentWindow.webContents.executeJavaScript('window.SettingsPage()')
           } else {
-            dialog.showMessageBox(null, {message: "Please create a new window to check settings tab."})
+            dialog.showMessageBox(null, { message: "Please create a new window to check settings tab." })
           }
         }
       },
@@ -131,6 +131,14 @@ const menuBar = [
       { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
       { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
       { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
+      { type: 'separator' },
+      {
+        label: "Select All", accelerator: "CmdOrCtrl+A", click: () => {
+          if (currentWindow != null) {
+            currentWindow.webContents.executeJavaScript('window.SelectAllFromArea()')
+          }
+        }
+      }
     ]
   },
   {
@@ -139,11 +147,11 @@ const menuBar = [
       {
         label: 'Open Chrome DevTools',
         accelerator: 'CmdOrCtrl+Shift+I',
-        click: () => { 
+        click: () => {
           if (currentWindow != null) {
-            currentWindow.webContents.openDevTools() 
+            currentWindow.webContents.openDevTools()
           } else {
-            dialog.showMessageBox(null, {message: "Please create a new window to add tab."})
+            dialog.showMessageBox(null, { message: "Please create a new window to add tab." })
           }
         }
       }
@@ -171,7 +179,7 @@ const touchBarDarwin = new TouchBar({
         if (currentWindow != null) {
           currentWindow.webContents.executeJavaScript('window.AddTab(false)')
         } else {
-          dialog.showMessageBox(null, {message: "Please create a new window to add tab."})
+          dialog.showMessageBox(null, { message: "Please create a new window to add tab." })
         }
       }
     }),
@@ -249,9 +257,9 @@ app.on('open-url', (event, url) => {
   let query = urlcontent.split('?')[1]
   let query_item = query.split('&')
 
-  switch(content) {
+  switch (content) {
     case 'twitter':
-      switch(query_item[0].split('=')[0]) {
+      switch (query_item[0].split('=')[0]) {
         case 'connect':
           if (query_item[0].split('=')[1] === 'true') {
             store.set('twitter_token', query_item[1].split('=')[1])
@@ -289,10 +297,6 @@ app.whenReady().then(async () => {
   // macOS Dock
   if (isMac) {
     app.dock.setMenu(Menu.buildFromTemplate([
-      {
-        label: 'Docking...',
-        click() { console.log('ash devil in a nutshell: hotdots.com') }
-      },
       {
         label: 'New Window',
         click() {
