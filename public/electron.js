@@ -131,6 +131,22 @@ const menuBar = [
     ]
   },
   {
+    label: 'Social',
+    submenu: [
+      {
+        label: "Twitter",
+        submenu: [
+          {
+            label: "New Tweet",
+            click: () => {
+              currentWindow.webContents.executeJavaScript('window.AddTab(true, { title: "New Tweet", file: null, content: "", saved: true, type: "twitter:tweet" })')
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
     label: 'Develop',
     submenu: [
       {
