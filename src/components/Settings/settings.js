@@ -20,6 +20,11 @@ function SettingList(props) {
             type: "button",
             label: "Connections",
             content: "connections"
+        }, 
+        {
+            type: "button",
+            label: "Miscaellaneous",
+            content: "misc"
         }
     ]
     let oldprops = [...props.docs.docs];
@@ -113,7 +118,9 @@ function SettingWindow(props) {
     }
 
     function MiscPage() {
-
+        return (<div>
+            <h1>Miscellaneous</h1>
+        </div>)
     }
 
     function renderSetting() {
@@ -124,6 +131,8 @@ function SettingWindow(props) {
                 return ThemePage()
             case "connections":
                 return ConnectionsPage()
+            case "misc":
+                return MiscPage()
             default:
                 return AboutPage()
         }
