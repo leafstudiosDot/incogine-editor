@@ -347,6 +347,10 @@ ipcMain.on('connections:twitter', async (event, data) => {
   shell.openExternal("https://incoeditapi.hodots.com/connections/twitter")
 })
 
+ipcMain.once('openLink', async (event, data) => {
+  shell.openExternal(data)
+})
+
 ipcMain.on('connections-disconnect:twitter', async (event, data) => {
   //shell.openExternal("https://incoeditapi.hodots.com/connections/twitter")
   store.delete('twitter_token')
