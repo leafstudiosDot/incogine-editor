@@ -102,11 +102,26 @@ function SettingWindow(props) {
         </div>)
     }
 
+    function MiscPage() {
+
+    }
+
+    function renderSetting() {
+        switch (props.docs.docs[props.docs.selected].content) {
+            case "about":
+                return AboutPage()
+            case "theme":
+                return ThemePage()
+            case "connections":
+                return ConnectionsPage()
+            default:
+                return AboutPage()
+        }
+    }
+
     return (
         <div id="settingWindowContent" style={{ height: props.size.height - 57, width: props.size.width - 191 }}>
-            {props.docs.docs[props.docs.selected].content === "about" ? <AboutPage /> : null}
-            {props.docs.docs[props.docs.selected].content === "theme" ? <ThemePage /> : null}
-            {props.docs.docs[props.docs.selected].content === "connections" ? <ConnectionsPage /> : null}
+            {renderSetting()}
         </div>
     )
 }
