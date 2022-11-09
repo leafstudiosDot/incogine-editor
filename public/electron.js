@@ -343,6 +343,10 @@ ipcMain.once('set-fromstorage', function(e, {key, value}) {
   store.set(key, value)
 })
 
+ipcMain.on('connections:twitter', async (event, data) => {
+  shell.openExternal("https://incoeditapi.hodots.com/connections/twitter")
+})
+
 ipcMain.on('connections-disconnect:twitter', async (event, data) => {
   //shell.openExternal("https://incoeditapi.hodots.com/connections/twitter")
   store.delete('twitter_token')
