@@ -339,7 +339,7 @@ ipcMain.on('get-fromstorage', function(e, {callbackname, key}) {
   e.sender.send('get-fromstorage-reply', callbackname + ";" + value)
 })
 
-ipcMain.once('set-fromstorage', function(e, {key, value}) {
+ipcMain.on('set-fromstorage', function(e, {key, value}) {
   store.set(key, value)
 })
 
@@ -347,7 +347,7 @@ ipcMain.on('connections:twitter', async (event, data) => {
   shell.openExternal("https://incoeditapi.hodots.com/connections/twitter")
 })
 
-ipcMain.once('openLink', async (event, data) => {
+ipcMain.on('openLink', async (event, data) => {
   shell.openExternal(data)
 })
 

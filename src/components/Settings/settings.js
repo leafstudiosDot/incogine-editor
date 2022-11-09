@@ -60,6 +60,49 @@ function SettingList(props) {
 }
 
 function SettingWindow(props) {
+    // States
+    // Connections
+    const [twitterConnected, setTwitterConnected] = useState(false);
+    const [twitterUsername, setTwitterUsername] = useState("");
+    // Misc
+    const [vimMode, setVimMode] = useState(false);
+    //End States
+
+    // Effects
+    useEffect(() => {
+        // Connections
+        connectTwitter(localStorage.getItem("twitter_userid"))
+        // Misc
+        ipcRenderer.send('get-fromstorage', {callbackname: 'vimmode', key: 'vimmode'})
+        ipcRenderer.on('get-fromstorage-reply', (event, got) => {
+            let realgot = String(got).split(";")
+            if (realgot[0] === "vimmode") {
+                if (realgot[1] === "true") {
+                    setVimMode(true)
+                } else {
+                    setVimMode(false)
+                }
+            }
+        })
+        return (() => {
+
+        })
+    }, [])
+
+    // Misc
+    function connectTwitter(userid) {
+        if (userid) {
+            setTwitterConnected(true);
+            setTwitterUsername("")
+            setTimeout(() => {
+                setTwitterUsername(localStorage.getItem("twitter_username"));
+            }, 100)
+        } else {
+            setTwitterConnected(false);
+        }
+    }
+    window.connection_ConnectTwitter = connectTwitter;
+
     function AboutPage() {
         return (<div >
             <h1>Incogine Editor v0.1.2</h1>
@@ -75,30 +118,10 @@ function SettingWindow(props) {
     }
 
     function ConnectionsPage() {
-        const [twitterConnected, setTwitterConnected] = useState(false);
-        const [twitterUsername, setTwitterUsername] = useState("");
-
-        function connectTwitter(userid) {
-            if (userid) {
-                setTwitterConnected(true);
-                setTwitterUsername("")
-                setTimeout(() => {
-                    setTwitterUsername(localStorage.getItem("twitter_username"));
-                }, 100)
-            } else {
-                setTwitterConnected(false);
-            }
-        }
-        window.connection_ConnectTwitter = connectTwitter;
-
         function disconnectTwitter() {
             ipcRenderer.send('connections-disconnect:twitter');
             setTwitterConnected(false);
         }
-
-        useEffect(() => {
-            connectTwitter(localStorage.getItem("twitter_userid"))
-        }, [])
 
         return (<div>
             <h1>Connections</h1>
@@ -118,18 +141,16 @@ function SettingWindow(props) {
     }
 
     function MiscPage() {
-        const [vimMode, setVimMode] = useState(false);
         function ToggleVimMode(sure) {
             setVimMode(sure)
-
-            if (sure) {
-                
-            }
+            ipcRenderer.send('set-fromstorage', {key: 'vimmode', value: sure})
+            ipcRenderer.send('get-fromstorage', {callbackname: 'vimmode', key: 'vimmode'})
         }
+
         return (<div>
             <h1>Miscellaneous</h1>
             <div class="settings-checkmark">
-                <span id="settings-checkmark" style={{ backgroundColor: vimMode ? ("#00ae0f") : (null) }} onClick={() => {setVimMode(vimMode ? (false) : (true))}}></span>
+                <span id="settings-checkmark" style={{ backgroundColor: vimMode ? ("#00ae0f") : (null) }} onClick={() => {ToggleVimMode(vimMode ? (false) : (true))}}></span>
                 <span style={{ position: "absolute", marginTop: "-1px"}}>
                     Vim Mode
                 </span>
