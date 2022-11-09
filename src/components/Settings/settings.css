@@ -64,3 +64,20 @@
 #connection-disconnect {
     background-color: #ae0d0d;
 }
+
+.settings-checkmark {
+    display: block;
+    position: relative;
+    user-select: none;
+}
+
+#settings-checkmark {
+    left: 0;
+    display: inline-block;
+    background-color: #838383;
+    height: 18px;
+    width: 18px;
+    cursor: pointer;
+    margin-right: 10px;
+    border-radius: 10px;
+}

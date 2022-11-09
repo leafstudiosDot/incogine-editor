@@ -118,8 +118,22 @@ function SettingWindow(props) {
     }
 
     function MiscPage() {
+        const [vimMode, setVimMode] = useState(false);
+        function ToggleVimMode(sure) {
+            setVimMode(sure)
+
+            if (sure) {
+                
+            }
+        }
         return (<div>
             <h1>Miscellaneous</h1>
+            <div class="settings-checkmark">
+                <span id="settings-checkmark" style={{ backgroundColor: vimMode ? ("#00ae0f") : (null) }} onClick={() => {setVimMode(vimMode ? (false) : (true))}}></span>
+                <span style={{ position: "absolute", marginTop: "-1px"}}>
+                    Vim Mode
+                </span>
+            </div>
         </div>)
     }
 
