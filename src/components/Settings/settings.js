@@ -5,41 +5,50 @@ import './settings.css';
 import twitterlogo from './connections_logo/twitter.svg';
 
 function SettingList(props) {
+    var settingList = [
+        {
+            type: "button",
+            label: "About",
+            content: "about"
+        },
+        {
+            type: "button",
+            label: "Theme",
+            content: "theme"
+        },
+        {
+            type: "button",
+            label: "Connections",
+            content: "connections"
+        }
+    ]
     let oldprops = [...props.docs.docs];
+    function SettingButton(type, label, content) {
+        switch (type) {
+            case "button":
+                return (
+                    <li style={{backgroundColor: oldprops[props.docs.selected].content === content ? "#535353" : null}} onClick={() => {
+                        oldprops[props.docs.selected] = {
+                            title: "Settings - " + label,
+                            file: null,
+                            content: content,
+                            saved: true,
+                            type: "settings",
+                        }
+                        props.setCateg({ selected: props.docs.selected, docs: [...oldprops] })
+                    }}>{label}</li>
+                )
+            default:
+                return null
+        }
+
+    }
     return (
         <div className="settings-lists">
             <ul style={{ height: props.size.height - 67 }}>
-
-                <li onClick={() => {
-                    oldprops[props.docs.selected] = {
-                        title: "Settings",
-                        file: null,
-                        content: "about",
-                        saved: true,
-                        type: "settings",
-                    }
-                    props.setCateg({ selected: props.docs.selected, docs: [...oldprops] })
-                }}>About</li>
-                <li onClick={() => {
-                    oldprops[props.docs.selected] = {
-                        title: "Settings",
-                        file: null,
-                        content: "theme",
-                        saved: true,
-                        type: "settings",
-                    }
-                    props.setCateg({ selected: props.docs.selected, docs: [...oldprops] })
-                }}>Theme</li>
-                <li onClick={() => {
-                    oldprops[props.docs.selected] = {
-                        title: "Settings",
-                        file: null,
-                        content: "connections",
-                        saved: true,
-                        type: "settings",
-                    }
-                    props.setCateg({ selected: props.docs.selected, docs: [...oldprops] })
-                }}>Connections</li>
+                {settingList.map((setting, index) => {
+                    return SettingButton(setting.type, setting.label, setting.content)
+                })}
             </ul>
         </div>
     )

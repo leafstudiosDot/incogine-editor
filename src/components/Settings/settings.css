@@ -19,7 +19,7 @@
 
 .settings-lists li {
     text-decoration: none;
-    background-color: #a2a2a2;
+    background-color: #717171;
     width: 150px;
     padding: 10px;
     padding-top: 5px;
@@ -28,6 +28,10 @@
     border-radius: 5px;
     user-select: none;
     cursor: pointer;
+}
+
+.settings-lists li:hover {
+    background-color: #929292;
 }
 
 #settingWindowContent {
