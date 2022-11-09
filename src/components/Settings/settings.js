@@ -104,10 +104,10 @@ function SettingWindow(props) {
     window.connection_ConnectTwitter = connectTwitter;
 
     function AboutPage() {
-        return (<div >
+        return (<div>
             <h1>Incogine Editor v0.1.2</h1>
             <span>© 2022 leafstudiosDot. All rights reserved</span><br />
-            <span>Incogine Editor is made powered by <span onClick={() => ipcRenderer.send('openLink', 'https://www.electronjs.org/')}>Electron</span> and other open-source projects</span>
+            <span>Incogine Editor powered by <span onClick={() => ipcRenderer.send('openLink', 'https://www.electronjs.org/')}>Electron</span> and other open-source projects</span>
         </div>)
     }
 
