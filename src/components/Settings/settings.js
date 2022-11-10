@@ -152,7 +152,7 @@ function SettingWindow(props) {
             <div class="settings-checkmark">
                 <span id="settings-checkmark" style={{ backgroundColor: vimMode ? ("#00ae0f") : (null) }} onClick={() => {ToggleVimMode(vimMode ? (false) : (true))}}></span>
                 <span style={{ position: "absolute", marginTop: "-1px"}}>
-                    Vim Mode
+                    Vim Mode (Not working yet)
                 </span>
             </div>
         </div>)
