@@ -7,6 +7,10 @@ import twitterlogo from './connections_logo/twitter.svg';
 function SettingList(props) {
     var settingList = [
         {
+            type: "grplbl",
+            label: "Incogine Editor"
+        },
+        {
             type: "button",
             label: "About",
             content: "about"
@@ -42,6 +46,14 @@ function SettingList(props) {
                         }
                         props.setCateg({ selected: props.docs.selected, docs: [...oldprops] })
                     }}>{label}</li>
+                )
+            case "grplbl":
+                return (
+                    <span style={{
+                        fontSize: "10px",
+                        position: "relative",
+                        top: "-5px"
+                    }}>{label}</span>
                 )
             default:
                 return null
