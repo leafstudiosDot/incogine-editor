@@ -27,7 +27,7 @@ function SettingList(props) {
         }, 
         {
             type: "button",
-            label: "Miscaellaneous",
+            label: "Miscellaneous",
             content: "misc"
         }
     ]
