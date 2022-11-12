@@ -299,7 +299,7 @@ app.on('open-url', (event, url) => {
       switch (query_item[0].split('=')[0]) {
         case 'connect':
           if (query_item[0].split('=')[1] === 'true') {
-            
+            //twitter2?connect=true&access_token={access_token}&refresh_token={refresh_token}
           }
           break;
         default:
@@ -371,7 +371,8 @@ ipcMain.on('set-fromstorage', function(e, {key, value}) {
 })
 
 ipcMain.on('connections:twitter', async (event, data) => {
-  shell.openExternal("https://incoeditapi.hodots.com/connections/twitter")
+  //shell.openExternal("https://incoeditapi.hodots.com/connections/twitter")
+  shell.openExternal("https://incoeditapi.hodots.com/connections/twitter2")
 })
 
 ipcMain.on('openLink', async (event, data) => {
