@@ -295,6 +295,17 @@ app.on('open-url', (event, url) => {
           break;
       }
       break;
+    case 'twitter2':
+      switch (query_item[0].split('=')[0]) {
+        case 'connect':
+          if (query_item[0].split('=')[1] === 'true') {
+            
+          }
+          break;
+        default:
+          break;
+      }
+      break;
     default:
       break;
   }
