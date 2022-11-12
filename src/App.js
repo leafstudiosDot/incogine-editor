@@ -326,6 +326,8 @@ function App() {
 
   useEffect(() => {
 
+    window.changeInputTextAreaLocation(0, 0)
+
     function saveKeyDown(e) {
       if ((navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.keyCode === 83) {
         e.preventDefault();
@@ -445,6 +447,19 @@ function TextArea(props) {
     document.getElementById("linecount-edit-cont").scrollTop = e.target.scrollTop;
   }
 
+  function selectAllfromArea() {
+    document.getElementById("code-edit").focus();
+    document.getElementById("code-edit").select();
+  }
+  window.SelectAllFromArea = selectAllfromArea;
+
+  function getLineNumberAndColumn() {
+    var textLines = document.getElementById("code-edit").value.substr(0, document.getElementById("code-edit").selectionStart).split("\n");
+    var lineNumber = textLines.length;
+    var columnIndex = textLines[textLines.length-1].length;
+    window.changeInputTextAreaLocation(lineNumber, columnIndex);
+ }
+
   return (
     <div>
       <div id="linecount-edit-cont" style={{ height: winsize.height - 58 - titleMenuBarSpace }}>
@@ -460,6 +475,8 @@ function TextArea(props) {
         onChange={handleTextChange}
         value={text}
         onScroll={onScroll}
+        onKeyUp={getLineNumberAndColumn}
+        onMouseUp={getLineNumberAndColumn}
         spellcheck="false"
         wrap="false"
         id="code-edit" />
@@ -468,9 +485,23 @@ function TextArea(props) {
 }
 
 function Footer(props) {
+  const [inputLocationTextArea, setInputLocationTextArea] = useState("(0, 0)")
+  function InputLocationTextArea(line, col) {
+    if (line === null || line === undefined) {
+      line = 0
+    }
+    if (col === null || col === undefined) {
+      col = 0
+    }
+    setInputLocationTextArea("(" + line + ", " + col + ")")
+    return "(" + line + ", " + col + ")"
+  }
+
+  window.changeInputTextAreaLocation = InputLocationTextArea
+
   return (
     <footer className="footer">
-      {props.docs.docs[props.docs.selected].type === "text/code" ? <span>(100, 100)</span> : null}
+      {props.docs.docs[props.docs.selected].type === "text/code" ? <span style={{position: "absolute", right: "5px"}}>{inputLocationTextArea}</span> : null}
     </footer>
   )
 }

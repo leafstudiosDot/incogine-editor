@@ -5,51 +5,121 @@ import './settings.css';
 import twitterlogo from './connections_logo/twitter.svg';
 
 function SettingList(props) {
+    var settingList = [
+        {
+            type: "grplbl",
+            label: "Incogine Editor"
+        },
+        {
+            type: "button",
+            label: "About",
+            content: "about"
+        },
+        {
+            type: "button",
+            label: "Theme",
+            content: "theme"
+        },
+        {
+            type: "button",
+            label: "Connections",
+            content: "connections"
+        }, 
+        {
+            type: "button",
+            label: "Miscellaneous",
+            content: "misc"
+        }
+    ]
     let oldprops = [...props.docs.docs];
+    function SettingButton(type, label, content) {
+        switch (type) {
+            case "button":
+                return (
+                    <li style={{backgroundColor: oldprops[props.docs.selected].content === content ? "#535353" : null}} onClick={() => {
+                        oldprops[props.docs.selected] = {
+                            title: "Settings - " + label,
+                            file: null,
+                            content: content,
+                            saved: true,
+                            type: "settings",
+                        }
+                        props.setCateg({ selected: props.docs.selected, docs: [...oldprops] })
+                    }}>{label}</li>
+                )
+            case "grplbl":
+                return (
+                    <span style={{
+                        fontSize: "10px",
+                        position: "relative",
+                        top: "-5px"
+                    }}>{label}</span>
+                )
+            default:
+                return null
+        }
+
+    }
     return (
         <div className="settings-lists">
             <ul style={{ height: props.size.height - 67 }}>
-
-                <li onClick={() => {
-                    oldprops[props.docs.selected] = {
-                        title: "Settings",
-                        file: null,
-                        content: "about",
-                        saved: true,
-                        type: "settings",
-                    }
-                    props.setCateg({ selected: props.docs.selected, docs: [...oldprops] })
-                }}>About</li>
-                <li onClick={() => {
-                    oldprops[props.docs.selected] = {
-                        title: "Settings",
-                        file: null,
-                        content: "theme",
-                        saved: true,
-                        type: "settings",
-                    }
-                    props.setCateg({ selected: props.docs.selected, docs: [...oldprops] })
-                }}>Theme</li>
-                <li onClick={() => {
-                    oldprops[props.docs.selected] = {
-                        title: "Settings",
-                        file: null,
-                        content: "connections",
-                        saved: true,
-                        type: "settings",
-                    }
-                    props.setCateg({ selected: props.docs.selected, docs: [...oldprops] })
-                }}>Connections</li>
+                {settingList.map((setting, index) => {
+                    return SettingButton(setting.type, setting.label, setting.content)
+                })}
             </ul>
         </div>
     )
 }
 
 function SettingWindow(props) {
+    // States
+    // Connections
+    const [twitterConnected, setTwitterConnected] = useState(false);
+    const [twitterUsername, setTwitterUsername] = useState("");
+    // Misc
+    const [vimMode, setVimMode] = useState(false);
+    //End States
+
+    // Effects
+    useEffect(() => {
+        // Connections
+        connectTwitter(localStorage.getItem("twitter_userid"))
+        // Misc
+        ipcRenderer.send('get-fromstorage', {callbackname: 'vimmode', key: 'vimmode'})
+        ipcRenderer.on('get-fromstorage-reply', (event, got) => {
+            let realgot = String(got).split(";")
+            if (realgot[0] === "vimmode") {
+                if (realgot[1] === "true") {
+                    setVimMode(true)
+                } else {
+                    setVimMode(false)
+                }
+            }
+        })
+        return (() => {
+
+        })
+    }, [])
+
+    // Misc
+    function connectTwitter(userid) {
+        if (userid) {
+            setTwitterConnected(true);
+            setTwitterUsername("")
+            setTimeout(() => {
+                setTwitterUsername(localStorage.getItem("twitter_username"));
+            }, 100)
+        } else {
+            setTwitterConnected(false);
+        }
+    }
+    window.connection_ConnectTwitter = connectTwitter;
+
     function AboutPage() {
-        return (<div >
+        return (<div>
             <h1>Incogine Editor v0.1.2</h1>
-            <span>© 2022 leafstudiosDot</span>
+            <span>© 2022 leafstudiosDot. All rights reserved</span><br />
+            <span>Incogine Editor powered by <span onClick={() => ipcRenderer.send('openLink', 'https://www.electronjs.org/')}>Electron</span> and other open-source projects</span>
         </div>)
     }
 
@@ -60,30 +130,10 @@ function SettingWindow(props) {
     }
 
     function ConnectionsPage() {
-        const [twitterConnected, setTwitterConnected] = useState(false);
-        const [twitterUsername, setTwitterUsername] = useState("");
-
-        function connectTwitter(userid) {
-            if (userid) {
-                setTwitterConnected(true);
-                setTwitterUsername("")
-                setTimeout(() => {
-                    setTwitterUsername(localStorage.getItem("twitter_username"));
-                }, 100)
-            } else {
-                setTwitterConnected(false);
-            }
-        }
-        window.connection_ConnectTwitter = connectTwitter;
-
         function disconnectTwitter() {
             ipcRenderer.send('connections-disconnect:twitter');
             setTwitterConnected(false);
         }
-
-        useEffect(() => {
-            connectTwitter(localStorage.getItem("twitter_userid"))
-        }, [])
 
         return (<div>
             <h1>Connections</h1>
@@ -102,11 +152,42 @@ function SettingWindow(props) {
         </div>)
     }
 
+    function MiscPage() {
+        function ToggleVimMode(sure) {
+            setVimMode(sure)
+            ipcRenderer.send('set-fromstorage', {key: 'vimmode', value: sure})
+            ipcRenderer.send('get-fromstorage', {callbackname: 'vimmode', key: 'vimmode'})
+        }
+
+        return (<div>
+            <h1>Miscellaneous</h1>
+            <div class="settings-checkmark">
+                <span id="settings-checkmark" style={{ backgroundColor: vimMode ? ("#00ae0f") : (null) }} onClick={() => {ToggleVimMode(vimMode ? (false) : (true))}}></span>
+                <span style={{ position: "absolute", marginTop: "-1px"}}>
+                    Vim Mode (Not working yet)
+                </span>
+            </div>
+        </div>)
+    }
+
+    function renderSetting() {
+        switch (props.docs.docs[props.docs.selected].content) {
+            case "about":
+                return AboutPage()
+            case "theme":
+                return ThemePage()
+            case "connections":
+                return ConnectionsPage()
+            case "misc":
+                return MiscPage()
+            default:
+                return AboutPage()
+        }
+    }
+
     return (
         <div id="settingWindowContent" style={{ height: props.size.height - 57, width: props.size.width - 191 }}>
-            {props.docs.docs[props.docs.selected].content === "about" ? <AboutPage /> : null}
-            {props.docs.docs[props.docs.selected].content === "theme" ? <ThemePage /> : null}
-            {props.docs.docs[props.docs.selected].content === "connections" ? <ConnectionsPage /> : null}
+            {renderSetting()}
         </div>
     )
 }
