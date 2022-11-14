@@ -1,6 +1,6 @@
 {
   "name": "incogine-editor",
-  "description": "A multipurpose text editor",
+  "description": "A multipurpose code editor",
   "version": "0.1.2",
   "private": true,
   "author": "leafstudiosDot",
@@ -81,7 +81,25 @@
       "target": "dmg",
       "icon": "./electron/icons/icon.icns",
       "type": "development",
-      "mergeASARs": true
+      "mergeASARs": true,
+      "darkModeSupport": true
+    },
+    "dmg": {
+      "backgroundColor": "#8a8a8a",
+      "icon": "./electron/icons/icon.icns",
+      "title": "Incogine Editor - A Multipurpose Code Editor"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "freebsd",
+        "snap"
+      ],
+      "maintainer": "leafstudiosDot",
+      "vendor": "leafstudiosDot",
+      "icon": "./electron/icons/icon.png",
+      "category": "Development"
     }
   }
 }
