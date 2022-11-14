@@ -227,7 +227,8 @@ const createWindow = () => {
       nodeIntegration: true,
       contextIsolation: false,
       enableRemoteModule: true,
-      preload: path.join(__dirname, 'preload.js')
+      preload: path.join(__dirname, 'preload.js'),
+      webSecurity: false
     }
   });
   const appUrl = isDev ? 'http://localhost:3613' : `file://${path.join(__dirname, '../build/index.html')}`
@@ -390,6 +391,8 @@ ipcMain.on('connections-disconnect:twitter', async (event, data) => {
   store.delete('twitter_token')
   lastCurrentWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_token")')
   store.delete('twitter_token_secret')
+  lastCurrentWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_refresh_token")')
+  store.delete('twitter_refresh_token')
   lastCurrentWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_token_secret")')
   store.delete('twitter_userid')
   lastCurrentWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_userid")')
