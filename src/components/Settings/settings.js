@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron';
 import { useState, useEffect } from 'react';
+import axios from 'axios'
 import './settings.css';
 
 import twitterlogo from './connections_logo/twitter.svg';
@@ -83,7 +84,7 @@ function SettingWindow(props) {
     // Effects
     useEffect(() => {
         // Connections
-        connectTwitter(localStorage.getItem("twitter_userid"))
+        connectTwitter(localStorage.getItem("twitter_token"))
         // Misc
         ipcRenderer.send('get-fromstorage', {callbackname: 'vimmode', key: 'vimmode'})
         ipcRenderer.on('get-fromstorage-reply', (event, got) => {
@@ -102,12 +103,27 @@ function SettingWindow(props) {
     }, [])
 
     // Misc
-    function connectTwitter(userid) {
-        if (userid) {
+    function connectTwitter(token) {
+        if (token) {
             setTwitterConnected(true);
             setTwitterUsername("")
+
+            fetch("https://incoeditapi.hodots.com/connections/twitter2/user?access_token=" + localStorage.getItem("twitter_token"), {
+                method: "GET",
+                mode: 'no-cors',
+                headers: new Headers({
+                    'Content-Type': 'application/json',
+                }),
+                withCredentials: true,
+                credentials: 'same-origin', 
+            })
+            .then(res => res.json())
+            .then(data => {
+                setTwitterUsername(data.data.username)
+            })
+
             setTimeout(() => {
-                setTwitterUsername(localStorage.getItem("twitter_username"));
+                setTwitterUsername("");
             }, 100)
         } else {
             setTwitterConnected(false);
