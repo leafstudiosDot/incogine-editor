@@ -83,7 +83,7 @@ function SettingWindow(props) {
     // Effects
     useEffect(() => {
         // Connections
-        connectTwitter(localStorage.getItem("twitter_userid"))
+        connectTwitter(localStorage.getItem("twitter_token"))
         // Misc
         ipcRenderer.send('get-fromstorage', {callbackname: 'vimmode', key: 'vimmode'})
         ipcRenderer.on('get-fromstorage-reply', (event, got) => {
@@ -102,12 +102,12 @@ function SettingWindow(props) {
     }, [])
 
     // Misc
-    function connectTwitter(userid) {
-        if (userid) {
+    function connectTwitter(token) {
+        if (token) {
             setTwitterConnected(true);
             setTwitterUsername("")
             setTimeout(() => {
-                setTwitterUsername(localStorage.getItem("twitter_username"));
+                setTwitterUsername("");
             }, 100)
         } else {
             setTwitterConnected(false);

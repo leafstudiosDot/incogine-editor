@@ -300,6 +300,12 @@ app.on('open-url', (event, url) => {
         case 'connect':
           if (query_item[0].split('=')[1] === 'true') {
             //twitter2?connect=true&access_token={access_token}&refresh_token={refresh_token}
+            store.set('twitter_token', query_item[1].split('=')[1])
+            lastCurrentWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_token", "' + query_item[1].split('=')[1] + '")')
+            lastCurrentWindow.webContents.executeJavaScript('window.connection_ConnectTwitter(' + query_item[1].split('=')[1] + ')')
+            store.set('twitter_refresh_token', query_item[2].split('=')[1])
+            lastCurrentWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_refresh_token", "' + query_item[2].split('=')[1] + '")')
+            console.log("Twitter Connections connected successfully")
           }
           break;
         default:
