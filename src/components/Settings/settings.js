@@ -48,7 +48,7 @@ function SettingList(props) {
                     oldsetlist.push({
                         type: extsetting.type,
                         label: extsetting.label,
-                        content: extsetting.content
+                        content: ext.detail.extid
                     })
                     setSettingList(oldsetlist)
                 })
@@ -230,6 +230,22 @@ function SettingWindow(props) {
                 render: MiscPage()
             }
         ])
+
+        useEffect(() => {
+            let oldsetlist = [...renderList]
+            ipcRenderer.on('getExtSettings-reply', async function (e, got) {
+                console.log("data", got)
+    
+                got.map((ext) => {
+                    return oldsetlist.push({
+                        content: ext.detail.extid,
+                        render: <div dangerouslySetInnerHTML={{ __html: ext.settings.render}}/>
+                    })
+                })
+                setRenderList(oldsetlist)
+    
+            })
+        }, [renderList])
 
         var matchrend = renderList.filter(rend => {
             return rend.content === props.docs.docs[props.docs.selected].content
