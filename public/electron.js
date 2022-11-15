@@ -31,17 +31,28 @@ function ReadExtensions(window) {
     fs.mkdirSync(incoeditExtensionsLocation)
   }
 
-  for (const extensiondir of fs.readdirSync(incoeditExtensionsLocation)) {
-    if (!["", " ", ".DS_Store", ".git"].includes(extensiondir)) {
-      const extension = incoeditExtensionsLocation + "/" + extensiondir
-      for (const extfile of fs.readdirSync(extension)) {
-        if (!["", " ", ".DS_Store", ".git", ".gitignore", "user.json"].includes(extfile)) {
-          console.log(extfile);
-          //window.webContents.executeJavaScript("")
+  function ReadingExtensionList() {
+    let extensionsArr = []
+    for (const extensiondir of fs.readdirSync(incoeditExtensionsLocation)) {
+      let command;
+      if (!["", " ", ".DS_Store", ".git", "\n", "‎"].includes(extensiondir)) {
+        const extension = incoeditExtensionsLocation + "/" + extensiondir
+        for (const extfile of fs.readdirSync(extension)) {
+          if (!["", " ", ".DS_Store", ".git", ".gitignore", "user.json", "\n", "‎"].includes(extfile)) {
+            command = require(incoeditExtensionsLocation + "/" + extensiondir + "/main.js")
+            //window.webContents.executeJavaScript("")
+            
+          }
         }
       }
+      extensionsArr.push(command)
     }
+    if (process.platform === 'darwin') {
+      extensionsArr.shift()
+    }
+    return extensionsArr
   }
+  console.log(ReadingExtensionList())
 }
 
 const reactDevToolsPath = path.join(
