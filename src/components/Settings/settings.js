@@ -211,24 +211,40 @@ function SettingWindow(props) {
         </div>)
     }
 
-    function renderSetting() {
-        switch (props.docs.docs[props.docs.selected].content) {
-            case "about":
-                return AboutPage()
-            case "theme":
-                return ThemePage()
-            case "connections":
-                return ConnectionsPage()
-            case "misc":
-                return MiscPage()
-            default:
-                return AboutPage()
+    function RenderSetting() {
+        var [renderList, setRenderList] = useState([
+            {
+                content: "about",
+                render: AboutPage()
+            },
+            {
+                content: "theme",
+                render: ThemePage()
+            },
+            {
+                content: "connections",
+                render: ConnectionsPage()
+            },
+            {
+                content: "misc",
+                render: MiscPage()
+            }
+        ])
+
+        var matchrend = renderList.filter(rend => {
+            return rend.content === props.docs.docs[props.docs.selected].content
+        })
+
+        if (matchrend.length > 0) {
+            return matchrend[0].render
+        } else {
+            return AboutPage()
         }
     }
 
     return (
         <div id="settingWindowContent" style={{ height: props.size.height - 57, width: props.size.width - 191 }}>
-            {renderSetting()}
+            {RenderSetting()}
         </div>
     )
 }
