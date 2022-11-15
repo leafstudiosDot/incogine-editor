@@ -37,7 +37,6 @@ function SettingList(props) {
         let oldsetlist = [...settingList]
         ipcRenderer.send('getExtSettings')
         ipcRenderer.on('getExtSettings-reply', async function (e, got) {
-            console.log("data", got)
 
             got.map((ext) => {
                 oldsetlist.push({
@@ -234,7 +233,6 @@ function SettingWindow(props) {
         useEffect(() => {
             let oldsetlist = [...renderList]
             ipcRenderer.on('getExtSettings-reply', async function (e, got) {
-                console.log("data", got)
     
                 got.map((ext) => {
                     return oldsetlist.push({

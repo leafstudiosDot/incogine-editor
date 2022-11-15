@@ -52,7 +52,6 @@ function ReadExtensions(window) {
     }
     return extensionsArr
   }
-  console.log(ReadingExtensionList())
   return ReadingExtensionList()
 }
 
