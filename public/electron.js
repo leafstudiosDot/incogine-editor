@@ -25,10 +25,23 @@ const path = require('path'),
 
 const os = require('os')
 
+function ReadExtensions(window) {
+  const incoeditExtensionsLocation = app.getPath('userData') + "/extensions"
+  if (!fs.existsSync(incoeditExtensionsLocation)) {
+    fs.mkdirSync(incoeditExtensionsLocation)
+  }
 
-//console.log(app.getPath('userData'))
-if (!fs.existsSync(app.getPath('userData') + "/extensions")) {
-  fs.mkdirSync(app.getPath('userData') + "/extensions")
+  for (const extensiondir of fs.readdirSync(incoeditExtensionsLocation)) {
+    if (!["", " ", ".DS_Store", ".git"].includes(extensiondir)) {
+      const extension = incoeditExtensionsLocation + "/" + extensiondir
+      for (const extfile of fs.readdirSync(extension)) {
+        if (!["", " ", ".DS_Store", ".git", ".gitignore", "user.json"].includes(extfile)) {
+          console.log(extfile);
+          //window.webContents.executeJavaScript("")
+        }
+      }
+    }
+  }
 }
 
 const reactDevToolsPath = path.join(
@@ -257,6 +270,8 @@ const createWindow = () => {
 
   // Extra Events
 
+  ReadExtensions(newWindow)
+
   windows.add(newWindow);
   return newWindow
 }
@@ -374,13 +389,13 @@ ipcMain.on(`display-app-menu`, function (e, args) {
   }
 });
 
-ipcMain.on('get-fromstorage', function(e, {callbackname, key}) {
+ipcMain.on('get-fromstorage', function (e, { callbackname, key }) {
   var value = ""
   value = store.get(key)
   e.sender.send('get-fromstorage-reply', callbackname + ";" + value)
 })
 
-ipcMain.on('set-fromstorage', function(e, {key, value}) {
+ipcMain.on('set-fromstorage', function (e, { key, value }) {
   store.set(key, value)
 })
 
