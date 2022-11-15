@@ -53,6 +53,7 @@ function ReadExtensions(window) {
     return extensionsArr
   }
   console.log(ReadingExtensionList())
+  return ReadingExtensionList()
 }
 
 const reactDevToolsPath = path.join(
@@ -408,6 +409,10 @@ ipcMain.on('get-fromstorage', function (e, { callbackname, key }) {
 
 ipcMain.on('set-fromstorage', function (e, { key, value }) {
   store.set(key, value)
+})
+
+ipcMain.on('getExtSettings', function (e) {
+  e.sender.send('getExtSettings-reply', ReadExtensions())
 })
 
 ipcMain.on('connections:twitter', async (event, data) => {

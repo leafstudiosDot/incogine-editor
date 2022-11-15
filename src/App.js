@@ -502,6 +502,7 @@ function Footer(props) {
   return (
     <footer className="footer">
       {props.docs.docs[props.docs.selected].type === "text/code" ? <span style={{position: "absolute", right: "5px"}}>{inputLocationTextArea}</span> : null}
+      {props.docs.docs[props.docs.selected].type === "settings" ? <span style={{position: "absolute", left: "5px"}}></span> : null}
     </footer>
   )
 }

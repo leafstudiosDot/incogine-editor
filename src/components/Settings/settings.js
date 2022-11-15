@@ -6,7 +6,7 @@ import './settings.css';
 import twitterlogo from './connections_logo/twitter.svg';
 
 function SettingList(props) {
-    var settingList = [
+    var [settingList, setSettingList] = useState([
         {
             type: "grplbl",
             label: "Incogine Editor"
@@ -25,19 +25,44 @@ function SettingList(props) {
             type: "button",
             label: "Connections",
             content: "connections"
-        }, 
+        },
         {
             type: "button",
             label: "Miscellaneous",
             content: "misc"
         }
-    ]
+    ])
+
+    useEffect(() => {
+        let oldsetlist = [...settingList]
+        ipcRenderer.send('getExtSettings')
+        ipcRenderer.on('getExtSettings-reply', async function (e, got) {
+            console.log("data", got)
+
+            got.map((ext) => {
+                oldsetlist.push({
+                    type: "grplbl",
+                    label: ext.settings.title
+                })
+                return ext.settings.content.map(async (extsetting) => {
+                    oldsetlist.push({
+                        type: extsetting.type,
+                        label: extsetting.label,
+                        content: extsetting.content
+                    })
+                    setSettingList(oldsetlist)
+                })
+            })
+
+        })
+    }, [])
+
     let oldprops = [...props.docs.docs];
     function SettingButton(type, label, content) {
         switch (type) {
             case "button":
                 return (
-                    <li style={{backgroundColor: oldprops[props.docs.selected].content === content ? "#535353" : null}} onClick={() => {
+                    <li style={{ backgroundColor: oldprops[props.docs.selected].content === content ? "#535353" : null }} onClick={() => {
                         oldprops[props.docs.selected] = {
                             title: "Settings - " + label,
                             file: null,
@@ -86,7 +111,7 @@ function SettingWindow(props) {
         // Connections
         connectTwitter(localStorage.getItem("twitter_token"))
         // Misc
-        ipcRenderer.send('get-fromstorage', {callbackname: 'vimmode', key: 'vimmode'})
+        ipcRenderer.send('get-fromstorage', { callbackname: 'vimmode', key: 'vimmode' })
         ipcRenderer.on('get-fromstorage-reply', (event, got) => {
             let realgot = String(got).split(";")
             if (realgot[0] === "vimmode") {
@@ -115,12 +140,12 @@ function SettingWindow(props) {
                     'Content-Type': 'application/json',
                 }),
                 withCredentials: true,
-                credentials: 'same-origin', 
+                credentials: 'same-origin',
             })
-            .then(res => res.json())
-            .then(data => {
-                setTwitterUsername(data.data.username)
-            })
+                .then(res => res.json())
+                .then(data => {
+                    setTwitterUsername(data.data.username)
+                })
 
             setTimeout(() => {
                 setTwitterUsername("");
@@ -171,15 +196,15 @@ function SettingWindow(props) {
     function MiscPage() {
         function ToggleVimMode(sure) {
             setVimMode(sure)
-            ipcRenderer.send('set-fromstorage', {key: 'vimmode', value: sure})
-            ipcRenderer.send('get-fromstorage', {callbackname: 'vimmode', key: 'vimmode'})
+            ipcRenderer.send('set-fromstorage', { key: 'vimmode', value: sure })
+            ipcRenderer.send('get-fromstorage', { callbackname: 'vimmode', key: 'vimmode' })
         }
 
         return (<div>
             <h1>Miscellaneous</h1>
             <div class="settings-checkmark">
-                <span id="settings-checkmark" style={{ backgroundColor: vimMode ? ("#00ae0f") : (null) }} onClick={() => {ToggleVimMode(vimMode ? (false) : (true))}}></span>
-                <span style={{ position: "absolute", marginTop: "-1px"}}>
+                <span id="settings-checkmark" style={{ backgroundColor: vimMode ? ("#00ae0f") : (null) }} onClick={() => { ToggleVimMode(vimMode ? (false) : (true)) }}></span>
+                <span style={{ position: "absolute", marginTop: "-1px" }}>
                     Vim Mode (Not working yet)
                 </span>
             </div>
