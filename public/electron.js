@@ -15,6 +15,7 @@ const store = new Store();
 const { TouchBarLabel, TouchBarButton, TouchBarSpacer } = TouchBar
 
 const path = require('path'),
+  fs = require('fs'),
   isDev = require('electron-is-dev');
 
 /*require('update-electron-app')({
@@ -23,6 +24,12 @@ const path = require('path'),
 })*/
 
 const os = require('os')
+
+
+//console.log(app.getPath('userData'))
+if (!fs.existsSync(app.getPath('userData') + "/extensions")) {
+  fs.mkdirSync(app.getPath('userData') + "/extensions")
+}
 
 const reactDevToolsPath = path.join(
   os.homedir(),
