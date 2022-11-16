@@ -29,4 +29,4 @@ These files are not supposed to be changed in your pull request in one of the fo
 - CONTRIBUTING.md
 - README.md
 - .github/*
-- Icon
+- Icon (Folder icon for macOS users, causing errors at first)
