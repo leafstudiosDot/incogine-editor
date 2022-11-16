@@ -1,5 +1,18 @@
-# Incogine Editor
-A multipurpose code editor.
+<div id="header" align="center">
+  <br />
+  <img src="./electron/icons/icon.png" alt="Incogine Editor" width="200"/>
+  <img src="./src-tauri/icons/Square310x310Logo.png" alt="Incogine Editor (macOS)" width="220"/>
+  
+  <h1>Incogine Editor</h1>
+  A multipurpose code editor for all artists, writers, mostly for developers, etc.
+</div>
+<br />
+<div id="badges" align="center">
+  
+  [![current release](https://img.shields.io/github/release/leafstudiosDot/incogine-editor.svg)](https://github.com/leafstudiosDot/incogine-editor/releases)
+  [![license](https://img.shields.io/github/license/leafstudiosDot/incogine-editor.svg)](https://github.com/leafstudiosDot/incogine-editor/blob/master/LICENSE)
+  
+</div>
 
 ## Possible Ported Software Framework
 - Tauri (Rust, hoping for every Electron features)
