@@ -16,9 +16,9 @@ If you are done with the following along with the feature, our members and contr
 The base should be `master`
 
 ## Platforms
-The following Operating Systems should be compatible at contibuting in one of the following:
-- Windows 10, Windows 11
-- macOS 12 and above
+The following Operating Systems and architecture in one should be compatible at contibuting in one of the following:
+- Windows 10, Windows 11 (x86-64 or Arm)
+- macOS 12 and above (Intel-based or Apple silicon M1 & M2)
 - Linux (Ubuntu 2022 and other Debian distros)
 Any operating system not mentioned here but compatible, you can open an issue and show the features are all working.
 
