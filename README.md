@@ -16,6 +16,9 @@ A multipurpose code editor.
 ## Contributing
 See [Contributing file](https://github.com/leafstudiosDot/incogine-editor/blob/master/CONTRIBUTING.md) for further instructions at contributing.
 
+## Donate
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/I3I0GEOUS)
+
 ## License
 
 © 2022 leafstudiosDot. All rights reserved.
