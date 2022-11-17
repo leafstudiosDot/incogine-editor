@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios'
 import './settings.css';
 
@@ -110,7 +110,6 @@ function SettingWindow(props) {
         // Connections
         connectTwitter(localStorage.getItem("twitter_token"))
         // Misc
-        ipcRenderer.send('get-fromstorage', { callbackname: 'vimmode', key: 'vimmode' })
         ipcRenderer.on('get-fromstorage-reply', (event, got) => {
             let realgot = String(got).split(";")
             if (realgot[0] === "vimmode") {
@@ -120,9 +119,6 @@ function SettingWindow(props) {
                     setVimMode(false)
                 }
             }
-        })
-        return (() => {
-
         })
     }, [])
 
@@ -145,6 +141,9 @@ function SettingWindow(props) {
                 .then(data => {
                     setTwitterUsername(data.data.username)
                 })
+                .catch(err => {
+                    console.error("Twitter connection error.")
+                })
 
             setTimeout(() => {
                 setTwitterUsername("");
@@ -166,6 +165,10 @@ function SettingWindow(props) {
     function ThemePage() {
         return (<div>
             <h1>Theme</h1>
+            <select name="incoedit-theme" id="dropdown-settings" style={{ width: props.size.width - 220 }}>
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+            </select>
         </div>)
     }
 
@@ -210,38 +213,20 @@ function SettingWindow(props) {
         </div>)
     }
 
-    function RenderSetting() {
-        var [renderList, setRenderList] = useState([
-            {
-                content: "about",
-                render: AboutPage()
-            },
-            {
-                content: "theme",
-                render: ThemePage()
-            },
-            {
-                content: "connections",
-                render: ConnectionsPage()
-            },
-            {
-                content: "misc",
-                render: MiscPage()
-            }
-        ])
+    function RenderSetting(props) {
+        var [renderList, setRenderList] = useState([])
 
         useEffect(() => {
             let oldsetlist = [...renderList]
             ipcRenderer.on('getExtSettings-reply', async function (e, got) {
-    
+
                 got.map((ext) => {
                     return oldsetlist.push({
                         content: ext.detail.extid,
-                        render: <div dangerouslySetInnerHTML={{ __html: ext.settings.render}}/>
+                        render: <div dangerouslySetInnerHTML={{ __html: ext.settings.render }} />
                     })
                 })
                 setRenderList(oldsetlist)
-    
             })
         }, [renderList])
 
@@ -249,21 +234,35 @@ function SettingWindow(props) {
             return rend.content === props.docs.docs[props.docs.selected].content
         })
 
-        if (matchrend.length > 0) {
-            return matchrend[0].render
-        } else {
-            return AboutPage()
+        switch (props.docs.docs[props.docs.selected].content) {
+            case "about":
+                return AboutPage()
+            case "theme":
+                return ThemePage()
+            case "connections":
+                return ConnectionsPage()
+            case "misc":
+                return MiscPage()
+            default:
+                if (matchrend.length > 0) {
+                    return matchrend[0].render
+                } else {
+                    return AboutPage()
+                }
         }
     }
 
     return (
         <div id="settingWindowContent" style={{ height: props.size.height - 57, width: props.size.width - 191 }}>
-            {RenderSetting()}
+            {RenderSetting(props)}
         </div>
     )
 }
 
 export default function SettingsPage(props) {
+    useEffect(() => {
+        ipcRenderer.send('get-fromstorage', { callbackname: 'vimmode', key: 'vimmode' })
+    })
     return (
         <div className="settingspage-cont" style={{
             width: props.winsize.width,

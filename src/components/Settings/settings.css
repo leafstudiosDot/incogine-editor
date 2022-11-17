@@ -81,3 +81,10 @@
     margin-right: 10px;
     border-radius: 10px;
 }
+
+#dropdown-settings {
+    background: #7e7e7e;
+    border: none;
+    padding: 7px;
+    border-radius: 8px;
+}
