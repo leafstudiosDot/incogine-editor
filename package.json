@@ -37,7 +37,7 @@
     "test": "react-app-rewired --openssl-legacy-provider test",
     "eject": "react-scripts --openssl-legacy-provider eject",
     "start-electron": "electron ./public/electron.js",
-    "build-electron": "electron-builder",
+    "build-electron": "electron-builder -mwl",
     "start-tauri": "tauri dev",
     "build-tauri": "tauri build"
   },
