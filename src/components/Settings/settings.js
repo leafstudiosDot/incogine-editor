@@ -124,6 +124,7 @@ function SettingWindow(props) {
             console.log(realgot)
             if (realgot[0] === "theme") {
                 setTheme(realgot[1])
+                document.documentElement.setAttribute("data-theme", realgot[1]);
             } else {
                 setTheme("dark")
             }
@@ -173,6 +174,7 @@ function SettingWindow(props) {
     function ThemePage() {
         function ThemeChange(theme) {
             setTheme(theme.target.value)
+            document.documentElement.setAttribute("data-theme", theme.target.value);
             ipcRenderer.send('set-fromstorage', { key: 'theme', value: theme.target.value })
             ipcRenderer.send('get-fromstorage', { callbackname: 'theme', key: 'theme' })
         }

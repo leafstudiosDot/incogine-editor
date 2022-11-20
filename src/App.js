@@ -7,6 +7,8 @@ import NotifyWindow from './components/Notifications/notify'
 import Settings from './components/Settings/settings'
 import VideoPlayer from "./components/Video Player/videoplayer";
 
+import './App.dark.css';
+
 const { remote, ipcRenderer } = require('electron');
 const { dialog } = require('@electron/remote')
 const currentWindow = require('@electron/remote')
@@ -188,6 +190,15 @@ function App() {
     if (!(navigator.userAgent === 'IncogineEditor-Electron')) {
       setnotifyNotTauri(true)
     }
+    ipcRenderer.send('get-fromstorage', { callbackname: 'theme', key: 'theme' })
+
+    ipcRenderer.on('get-fromstorage-reply', (event, got) => {
+      let realgot = String(got).split(";")
+      console.log(realgot)
+      if (realgot[0] === "theme") {
+        document.documentElement.setAttribute("data-theme", realgot[1]);
+      }
+    })
   }, [])
 
   function SaveFile(after) {
@@ -276,7 +287,7 @@ function App() {
           },
         ], properties: ['openFile', 'showHiddenFiles', 'createDirectory']
       })
-    
+
       if (!openDialogRes.canceled) {
         console.log(openDialogRes)
         return openDialogRes.filePaths
@@ -456,9 +467,9 @@ function TextArea(props) {
   function getLineNumberAndColumn() {
     var textLines = document.getElementById("code-edit").value.substr(0, document.getElementById("code-edit").selectionStart).split("\n");
     var lineNumber = textLines.length;
-    var columnIndex = textLines[textLines.length-1].length;
+    var columnIndex = textLines[textLines.length - 1].length;
     window.changeInputTextAreaLocation(lineNumber, columnIndex);
- }
+  }
 
   return (
     <div>
@@ -501,8 +512,8 @@ function Footer(props) {
 
   return (
     <footer className="footer">
-      {props.docs.docs[props.docs.selected].type === "text/code" ? <span style={{position: "absolute", right: "5px"}}>{inputLocationTextArea}</span> : null}
-      {props.docs.docs[props.docs.selected].type === "settings" ? <span style={{position: "absolute", left: "5px"}}></span> : null}
+      {props.docs.docs[props.docs.selected].type === "text/code" ? <span style={{ position: "absolute", right: "5px" }}>{inputLocationTextArea}</span> : null}
+      {props.docs.docs[props.docs.selected].type === "settings" ? <span style={{ position: "absolute", left: "5px" }}></span> : null}
     </footer>
   )
 }
