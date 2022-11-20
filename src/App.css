@@ -156,3 +156,7 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgb(54, 54, 54);
 }
+
+@media (prefers-color-scheme: light) {
+
+}

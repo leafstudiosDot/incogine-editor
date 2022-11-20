@@ -103,6 +103,7 @@ function SettingWindow(props) {
     const [twitterUsername, setTwitterUsername] = useState("");
     // Misc
     const [vimMode, setVimMode] = useState(false);
+    const [themeSet, setTheme] = useState("dark");
     //End States
 
     // Effects
@@ -118,6 +119,13 @@ function SettingWindow(props) {
                 } else {
                     setVimMode(false)
                 }
+            }
+
+            console.log(realgot)
+            if (realgot[0] === "theme") {
+                setTheme(realgot[1])
+            } else {
+                setTheme("dark")
             }
         })
     }, [])
@@ -163,9 +171,15 @@ function SettingWindow(props) {
     }
 
     function ThemePage() {
+        function ThemeChange(theme) {
+            setTheme(theme.target.value)
+            ipcRenderer.send('set-fromstorage', { key: 'theme', value: theme.target.value })
+            ipcRenderer.send('get-fromstorage', { callbackname: 'theme', key: 'theme' })
+        }
+
         return (<div>
             <h1>Theme</h1>
-            <select name="incoedit-theme" id="dropdown-settings" style={{ width: props.size.width - 220 }}>
+            <select name="incoedit-theme" id="dropdown-settings" value={themeSet} onChange={(e) => ThemeChange(e)} style={{ width: props.size.width - 220 }}>
                 <option value="dark">Dark</option>
                 <option value="light">Light</option>
             </select>
@@ -262,6 +276,10 @@ function SettingWindow(props) {
 export default function SettingsPage(props) {
     useEffect(() => {
         ipcRenderer.send('get-fromstorage', { callbackname: 'vimmode', key: 'vimmode' })
+        ipcRenderer.send('get-fromstorage', { callbackname: 'theme', key: 'theme' })
+        return () => {
+            ipcRenderer.removeAllListeners('get-fromstorage-reply')
+        }
     })
     return (
         <div className="settingspage-cont" style={{
