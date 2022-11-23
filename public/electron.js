@@ -173,22 +173,6 @@ const menuBar = [
     ]
   },
   {
-    label: 'Social',
-    submenu: [
-      {
-        label: "Twitter",
-        submenu: [
-          {
-            label: "New Tweet",
-            click: () => {
-              currentWindow.webContents.executeJavaScript('window.AddTab(true, { title: "New Tweet", file: null, content: "", saved: true, type: "twitter:tweet" })')
-            }
-          }
-        ]
-      }
-    ]
-  },
-  {
     label: 'Develop',
     submenu: [
       {
@@ -309,43 +293,6 @@ app.on('open-url', (event, url) => {
   let query_item = query.split('&')
 
   switch (content) {
-    case 'twitter':
-      switch (query_item[0].split('=')[0]) {
-        case 'connect':
-          if (query_item[0].split('=')[1] === 'true') {
-            store.set('twitter_token', query_item[1].split('=')[1])
-            lastCurrentWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_token", "' + query_item[1].split('=')[1] + '")')
-            store.set('twitter_token_secret', query_item[2].split('=')[1])
-            lastCurrentWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_token_secret", "' + query_item[2].split('=')[1] + '")')
-            store.set('twitter_userid', query_item[3].split('=')[1])
-            lastCurrentWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_userid", "' + query_item[3].split('=')[1] + '")')
-            lastCurrentWindow.webContents.executeJavaScript('window.connection_ConnectTwitter(' + query_item[3].split('=')[1] + ')')
-            store.set('twitter_username', query_item[4].split('=')[1])
-            lastCurrentWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_username", "' + query_item[4].split('=')[1] + '")')
-            console.log("Twitter Connections connected as " + query_item[4].split('=')[1] + " successfully")
-          }
-          break;
-        default:
-          break;
-      }
-      break;
-    case 'twitter2':
-      switch (query_item[0].split('=')[0]) {
-        case 'connect':
-          if (query_item[0].split('=')[1] === 'true') {
-            //twitter2?connect=true&access_token={access_token}&refresh_token={refresh_token}
-            store.set('twitter_token', query_item[1].split('=')[1])
-            lastCurrentWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_token", "' + query_item[1].split('=')[1] + '")')
-            lastCurrentWindow.webContents.executeJavaScript('window.connection_ConnectTwitter(' + query_item[1].split('=')[1] + ')')
-            store.set('twitter_refresh_token', query_item[2].split('=')[1])
-            lastCurrentWindow.webContents.executeJavaScript('window.localStorage.setItem("twitter_refresh_token", "' + query_item[2].split('=')[1] + '")')
-            console.log("Twitter Connections connected successfully")
-          }
-          break;
-        default:
-          break;
-      }
-      break;
     default:
       break;
   }
@@ -414,27 +361,8 @@ ipcMain.on('getExtSettings', function (e) {
   e.sender.send('getExtSettings-reply', ReadExtensions())
 })
 
-ipcMain.on('connections:twitter', async (event, data) => {
-  //shell.openExternal("https://incoeditapi.hodots.com/connections/twitter")
-  shell.openExternal("https://incoeditapi.hodots.com/connections/twitter2")
-})
-
 ipcMain.on('openLink', async (event, data) => {
   shell.openExternal(data)
-})
-
-ipcMain.on('connections-disconnect:twitter', async (event, data) => {
-  //shell.openExternal("https://incoeditapi.hodots.com/connections/twitter")
-  store.delete('twitter_token')
-  lastCurrentWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_token")')
-  store.delete('twitter_token_secret')
-  lastCurrentWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_refresh_token")')
-  store.delete('twitter_refresh_token')
-  lastCurrentWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_token_secret")')
-  store.delete('twitter_userid')
-  lastCurrentWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_userid")')
-  store.delete('twitter_username')
-  lastCurrentWindow.webContents.executeJavaScript('window.localStorage.removeItem("twitter_username")')
 })
 
 ipcMain.on("toggle-maximize-window", function (event) {
