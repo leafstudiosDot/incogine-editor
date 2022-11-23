@@ -3,8 +3,6 @@ import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios'
 import './settings.css';
 
-import twitterlogo from './connections_logo/twitter.svg';
-
 function SettingList(props) {
     var [settingList, setSettingList] = useState([
         {
@@ -20,11 +18,6 @@ function SettingList(props) {
             type: "button",
             label: "Theme",
             content: "theme"
-        },
-        {
-            type: "button",
-            label: "Connections",
-            content: "connections"
         },
         {
             type: "button",
@@ -98,9 +91,6 @@ function SettingList(props) {
 
 function SettingWindow(props) {
     // States
-    // Connections
-    const [twitterConnected, setTwitterConnected] = useState(false);
-    const [twitterUsername, setTwitterUsername] = useState("");
     // Misc
     const [vimMode, setVimMode] = useState(false);
     const [themeSet, setTheme] = useState("dark");
@@ -108,8 +98,6 @@ function SettingWindow(props) {
 
     // Effects
     useEffect(() => {
-        // Connections
-        connectTwitter(localStorage.getItem("twitter_token"))
         // Misc
         ipcRenderer.on('get-fromstorage-reply', (event, got) => {
             let realgot = String(got).split(";")
@@ -132,37 +120,6 @@ function SettingWindow(props) {
     }, [])
 
     // Misc
-    function connectTwitter(token) {
-        if (token) {
-            setTwitterConnected(true);
-            setTwitterUsername("")
-
-            fetch("https://incoeditapi.hodots.com/connections/twitter2/user?access_token=" + localStorage.getItem("twitter_token"), {
-                method: "GET",
-                mode: 'no-cors',
-                headers: new Headers({
-                    'Content-Type': 'application/json',
-                }),
-                withCredentials: true,
-                credentials: 'same-origin',
-            })
-                .then(res => res.json())
-                .then(data => {
-                    setTwitterUsername(data.data.username)
-                })
-                .catch(err => {
-                    console.error("Twitter connection error.")
-                })
-
-            setTimeout(() => {
-                setTwitterUsername("");
-            }, 100)
-        } else {
-            setTwitterConnected(false);
-        }
-    }
-    window.connection_ConnectTwitter = connectTwitter;
-
     function AboutPage() {
         return (<div>
             <h1>Incogine Editor v0.1.2</h1>
@@ -185,29 +142,6 @@ function SettingWindow(props) {
                 <option value="dark">Dark</option>
                 <option value="light">Light</option>
             </select>
-        </div>)
-    }
-
-    function ConnectionsPage() {
-        function disconnectTwitter() {
-            ipcRenderer.send('connections-disconnect:twitter');
-            setTwitterConnected(false);
-        }
-
-        return (<div>
-            <h1>Connections</h1>
-            <div class="connection-list">
-                <div style={{ width: twitterConnected ? (props.size.width - 356) : (props.size.width - 231) }} class="connection-connect" id="connect-twitter" onClick={() => {
-                    if (!twitterConnected) {
-                        ipcRenderer.send('connections:twitter')
-                    }
-                }}><img style={{ width: "30px", position: "absolute", marginTop: "-5px", marginLeft: "-5px" }} src={twitterlogo} alt="Twitter" /><span style={{ marginLeft: 30 }}>
-                        {twitterConnected ? (twitterUsername === "" ? (<span>Loading...</span>) : (
-                            <span>@{twitterUsername}</span>
-                        )) : (<span>Connect to Twitter</span>)}
-                    </span></div>
-                {twitterConnected ? (<span><div style={{ width: 100, marginLeft: 5 }} class="connection-connect" id="connection-disconnect" onClick={() => { disconnectTwitter() }}>Disconnect</div></span>) : (null)}
-            </div>
         </div>)
     }
 
@@ -255,8 +189,6 @@ function SettingWindow(props) {
                 return AboutPage()
             case "theme":
                 return ThemePage()
-            case "connections":
-                return ConnectionsPage()
             case "misc":
                 return MiscPage()
             default:
