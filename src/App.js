@@ -9,11 +9,11 @@ import VideoPlayer from "./components/Video Player/videoplayer";
 
 import './App.dark.css';
 
-const { remote, ipcRenderer } = require('electron');
-const { dialog } = require('@electron/remote')
-const currentWindow = require('@electron/remote')
-const fs = require('fs');
-var path = require("path");
+import { remote, ipcRenderer } from 'electron';
+import { dialog } from '@electron/remote'
+import  currentWindow from '@electron/remote'
+import fs from 'fs'
+import path from "path"
 
 var titleMenuBarSpace = 25;
 
