@@ -1,7 +1,7 @@
 {
   "name": "incogine-editor-oss",
   "description": "A multipurpose code editor",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": true,
   "author": "leafstudiosDot",
   "copyright": "© 2022 leafstudiosDot",
