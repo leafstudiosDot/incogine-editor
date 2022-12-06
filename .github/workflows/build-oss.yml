@@ -1,0 +1,81 @@
+name: Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  Linux:
+  
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - name: Node JS CI
+      uses: actions/setup-node@v3
+      with:
+        node-version: '19.x'
+    - run: npm ci
+    - name: Build React
+      run: npm run build
+    - name: Build Electron
+      run: npm run build-electron
+    - name: Upload to Build Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Build Artifacts (Linux/FreeBSD)
+        path: |
+          dist/*.deb
+          dist/*.snap
+          dist/*.freebsd
+          dist/*.AppImage
+        
+  macOS:
+  
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - name: Node JS CI
+      uses: actions/setup-node@v3
+      with:
+        node-version: '19.x'
+    - run: npm ci
+    - name: Build React
+      run: npm run build
+    - name: Build Electron
+      run: npm run build-electron-mac
+    - name: Upload to Build Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Build Artifacts (macOS)
+        path: dist/*.dmg
+        
+  Windows:
+  
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: true
+    - name: Node JS CI
+      uses: actions/setup-node@v3
+      with:
+        node-version: '19.x'
+    - run: npm ci
+    - name: Build React
+      run: npm run build
+    - name: Build Electron
+      run: npm run build-electron
+    - name: Upload to Build Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Build Artifacts (Windows)
+        path: dist/*.exe
