@@ -39,6 +39,8 @@
     "start-electron": "electron ./public/electron.js",
     "build-electron": "electron-builder -wl",
     "build-electron-mac": "electron-builder -m --universal",
+    "build-electron-cl": "electron-builder -wl --publish=never",
+    "build-electron-mac-cl": "electron-builder -m --universal --publish=never",
     "start-tauri": "tauri dev",
     "build-tauri": "tauri build"
   },

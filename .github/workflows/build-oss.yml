@@ -31,7 +31,7 @@ jobs:
         sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu $(lsb_release -cs) main"
         sudo apt install --install-recommends winehq-stable
     - name: Build Electron
-      run: npm run build-electron
+      run: npm run build-electron-cl
     - name: Upload to Build Artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -59,7 +59,7 @@ jobs:
     - name: Build React
       run: CI=false npm run build
     - name: Build Electron
-      run: npm run build-electron-mac
+      run: npm run build-electron-mac-cl
     - name: Upload to Build Artifacts
       uses: actions/upload-artifact@v2
       with:
@@ -83,7 +83,7 @@ jobs:
     - name: Build React
       run: $env:CI=$false; npm run build
     - name: Build Electron
-      run: npm run build-electron
+      run: npm run build-electron-cl
     - name: Upload to Build Artifacts
       uses: actions/upload-artifact@v2
       with:
