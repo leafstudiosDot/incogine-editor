@@ -30,6 +30,7 @@
 See [Contributing file](https://github.com/leafstudiosDot/incogine-editor/blob/master/CONTRIBUTING.md) for further instructions at contributing.
 
 ## Donate
+Sponsor this project with GitHub Sponsors or donate via Ko-Fi
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/I3I0GEOUS)
 
 ## License
