@@ -36,4 +36,11 @@
     position: relative;
     display: inline-block;
     width: 40px;
+    user-select: none;
+    font-size: 25px;
+    border-radius: 20px;
+    border: black 2px;
+    background: #00000017;
+    color: #ffffff;
+    cursor: pointer;
 }

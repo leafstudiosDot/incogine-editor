@@ -62,8 +62,8 @@ export default function PDFReader(props) {
 
             <nav id="PDFReader_PDFNav">
                 <div id="PDFReader_PDFNav_Btns">
-                    <button id="PDFReader_PDFNav_Btn" onClick={goToPrevPage}>←</button>
-				    <button id="PDFReader_PDFNav_Btn" onClick={goToNextPage}>→</button>
+                    {props.docsState.docs[props.docsState.selected].content.page - 1 < 1 ? null : <button id="PDFReader_PDFNav_Btn" onClick={goToPrevPage}>←</button>}
+				    {props.docsState.docs[props.docsState.selected].content.page >= props.docsState.docs[props.docsState.selected].content.totalpage ? null : <button id="PDFReader_PDFNav_Btn" onClick={goToNextPage}>→</button>}
                 </div>
 			</nav>
         </div>
