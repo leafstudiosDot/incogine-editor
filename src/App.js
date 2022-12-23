@@ -333,7 +333,7 @@ function App() {
                 window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: "data:video/mp4;base64," + data, type: "media/video" })
               break;
               case "pdf":
-                window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: {file: "data:application/pdf;base64," + data, page: 0}, type: "document/pdf" })
+                window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: {file: "data:application/pdf;base64," + data, page: 1}, type: "document/pdf" })
               break;
               default:
                 console.error("File not opened: File unknown or can't read by Incogine Editor")
@@ -384,7 +384,7 @@ function App() {
                   await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "media/video" })
                   break;
                 case "pdf":
-                  await window.AddTab(true, { title: file.name, file: file.path, content: {file: event.target.result, page: 0}, type: "document/pdf" })
+                  await window.AddTab(true, { title: file.name, file: file.path, content: {file: event.target.result, page: 1}, type: "document/pdf" })
                   break;
                 default:
                 console.error("File not opened: File unknown or can't read by Incogine Editor")
