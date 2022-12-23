@@ -6,6 +6,7 @@ import TitleBar from "./components/Title Bar/titlebar";
 import NotifyWindow from './components/Notifications/notify'
 import Settings from './components/Settings/settings'
 import VideoPlayer from "./components/Video Player/videoplayer";
+import PDFReader from './components/PDF Reader/pdfreader';
 
 import './App.dark.css';
 
@@ -285,6 +286,10 @@ function App() {
             "name": "C++",
             "extensions": ["cpp", "cc", "C", "cxx", "h", "hpp", "hxx"],
           },
+          {
+            "name": "PDF File",
+            "extensions": ["pdf"]
+          }
         ], properties: ['openFile', 'showHiddenFiles', 'createDirectory']
       })
 
@@ -321,15 +326,24 @@ function App() {
         // 2 GB of File
         fs.readFile(paths[0], "base64", function (err, data) {
           if (!err) {
-            if (path.basename(paths[0]).split(".").pop() === "mp4" || path.basename(paths[0]).split(".").pop() === "avi" || path.basename(paths[0]).split(".").pop() === "mov") {
-              window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: "data:video/mp4;base64," + data, type: "media/video" })
+            switch(path.basename(paths[0]).split(".").pop()) {
+              case "mp4":
+              case "avi":
+              case "mov":
+                window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: "data:video/mp4;base64," + data, type: "media/video" })
+              break;
+              case "pdf":
+                window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: "data:application/pdf;base64," + data, type: "document/pdf" })
+              break;
+              default:
+                console.error("File not opened: File unknown or can't read by Incogine Editor")
             }
           } else {
             console.error("File not opened: An error has occurred, " + err)
           }
         })
       } else {
-        console.error("File not opened: Too large")
+        console.error("File not opened: Too large or file can't read by Incogine Editor")
       }
     }
   }
