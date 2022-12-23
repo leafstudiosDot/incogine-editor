@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import './pdfreader.css'
 import {Document, Page} from 'react-pdf/dist/entry.webpack';
 
@@ -19,6 +19,25 @@ export default function PDFReader(props) {
 
 		props.setDocs({ selected: props.docsState.selected, docs: [...oldprops] });
 	};
+
+    function keyPressPDF(e) {
+        switch(e.key) {
+            case "ArrowLeft":
+                goToPrevPage();
+                break;
+            case "ArrowRight":
+                goToNextPage();
+                break;
+            default:
+        }
+    }
+
+    useEffect(() => {
+        document.addEventListener("keydown", keyPressPDF, false);
+        return () => {
+            document.removeEventListener("keydown", keyPressPDF, false);
+        }
+    })
 
     const goToPrevPage = () => {
         oldprops[props.docsState.selected] = {
