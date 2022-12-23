@@ -1,3 +1,18 @@
 .PDFReader {
     position: fixed;
+    background-color: #0e0e0e;
+    color: white;
+}
+
+.react-pdf__Page {
+    height: 100%;
+    text-align: -webkit-center;
+}
+
+.react-pdf__Document {
+    height: 100%;
+}
+
+.react-pdf__Page__canvas {
+
 }

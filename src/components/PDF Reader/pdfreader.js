@@ -3,9 +3,21 @@ import './pdfreader.css'
 import {Document, Page} from 'react-pdf/dist/entry.webpack';
 
 export default function PDFReader(props) {
-    const [numPages, setNumPages] = useState(null);
+    let oldprops = [...props.docsState.docs];
     const onDocumentLoadSuccess = ({ numPages }) => {
-		setNumPages(numPages);
+        oldprops[props.docsState.selected] = {
+            title: props.docsState.docs[props.docsState.selected].title,
+            file: props.docsState.docs[props.docsState.selected].file,
+            content: {
+                file: props.docsState.docs[props.docsState.selected].content.file,
+                page: 1,
+                totalpage: numPages
+            },
+            saved: true,
+            type: "document/pdf",
+        }
+
+		props.setDocs({ selected: props.docsState.selected, docs: [...oldprops] });
 	};
 
     return (
@@ -13,7 +25,8 @@ export default function PDFReader(props) {
             {/*<div ref={containerRef} width={props.winsize.width} height={"100%"} />*/}
             <Document
 				file={props.docsState.docs[props.docsState.selected].content.file} onLoadSuccess={onDocumentLoadSuccess}>
-				<Page pageNumber={props.docsState.docs[props.docsState.selected].content.page} />
+				<Page pageNumber={props.docsState.docs[props.docsState.selected].content.page}
+                height={props.winsize.height - 81} />
 			</Document>
         </div>
     )
