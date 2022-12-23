@@ -10,7 +10,7 @@ export default function PDFReader(props) {
             file: props.docsState.docs[props.docsState.selected].file,
             content: {
                 file: props.docsState.docs[props.docsState.selected].content.file,
-                page: 1,
+                page: props.docsState.docs[props.docsState.selected].content.page ? props.docsState.docs[props.docsState.selected].content.page : 1,
                 totalpage: numPages
             },
             saved: true,
