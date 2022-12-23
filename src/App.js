@@ -333,7 +333,7 @@ function App() {
                 window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: "data:video/mp4;base64," + data, type: "media/video" })
               break;
               case "pdf":
-                window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: "data:application/pdf;base64," + data, type: "document/pdf" })
+                window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: {file: "data:application/pdf;base64," + data, page: 0}, type: "document/pdf" })
               break;
               default:
                 console.error("File not opened: File unknown or can't read by Incogine Editor")
@@ -377,8 +377,17 @@ function App() {
           } else if (file.size < ((1000000 * 1024) * 2)) {
             console.log(file)
             reader.onload = async function (event) {
-              if (file.name.split(".").pop() === "mp4" || file.name.split(".").pop() === "avi" || file.name.split(".").pop() === "mov") {
-                await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "media/video" })
+              switch(file.name.split(".").pop()) {
+                case "mp4":
+                case "avi":
+                case "mov":
+                  await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "media/video" })
+                  break;
+                case "pdf":
+                  await window.AddTab(true, { title: file.name, file: file.path, content: {file: event.target.result, page: 0}, type: "document/pdf" })
+                  break;
+                default:
+                console.error("File not opened: File unknown or can't read by Incogine Editor")
               }
             }
             await reader.readAsDataURL(file);
@@ -410,6 +419,7 @@ function App() {
         <article style={{ paddingTop: "36px", marginTop: titleMenuBarSpace }}>
           {docsState.docs[docsState.selected].type === "text/code" ? <TextArea docs={docsState} setDocs={setDocsState} /> : null}
           {docsState.docs[docsState.selected].type === "media/video" ? <VideoPlayer winsize={winsize} docsState={docsState} setDocs={setDocsState} /> : null}
+          {docsState.docs[docsState.selected].type === "document/pdf" ? <PDFReader winsize={winsize} docsState={docsState} setDocs={setDocsState} /> : null}
           {docsState.docs[docsState.selected].type === "settings" ? <Settings winsize={winsize} docs={docsState} setDocs={setDocsState} /> : null}
         </article>
       </section>
