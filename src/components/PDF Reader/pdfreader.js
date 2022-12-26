@@ -34,8 +34,30 @@ export default function PDFReader(props) {
 
     useEffect(() => {
         document.addEventListener("keydown", keyPressPDF, false);
+
+        var PDFControlCont = document.getElementById("PDFReader_PDFNav");
+        var vptimeout;
+
+        function _HideControl() {
+            ShowControls();
+            clearTimeout(vptimeout);
+            vptimeout = setTimeout(function () {
+                HideControls();
+            }, 900)
+        }
+
+        function ShowControls() {
+            PDFControlCont.style.bottom = "25px";
+        }
+        function HideControls() {
+            PDFControlCont.style.bottom = "-25px";
+        }
+
+        document.getElementById("PDFReaderID").addEventListener('mousemove', _HideControl)
+
         return () => {
             document.removeEventListener("keydown", keyPressPDF, false);
+            document.getElementById("PDFReaderID").removeEventListener('mousemove', _HideControl)
         }
     })
 
@@ -104,7 +126,7 @@ export default function PDFReader(props) {
     }
 
     return (
-        <div className="PDFReader" style={{ width: props.winsize.width, height: props.winsize.height - 56 }}>
+        <div className="PDFReader" id="PDFReaderID" style={{ width: props.winsize.width, height: props.winsize.height - 56 }}>
             <Document
 				file={props.docsState.docs[props.docsState.selected].content.file} onLoadSuccess={onDocumentLoadSuccess}>
 				<Page pageNumber={props.docsState.docs[props.docsState.selected].content.page}
