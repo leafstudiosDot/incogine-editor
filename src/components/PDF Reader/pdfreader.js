@@ -23,10 +23,10 @@ export default function PDFReader(props) {
     function keyPressPDF(e) {
         switch(e.key) {
             case "ArrowLeft":
-                goToPrevPage();
+                e.shiftKey ? goToFirstPage() : goToPrevPage();
                 break;
             case "ArrowRight":
-                goToNextPage();
+                e.shiftKey ? goToLastPage() : goToNextPage();
                 break;
             default:
         }
@@ -38,6 +38,22 @@ export default function PDFReader(props) {
             document.removeEventListener("keydown", keyPressPDF, false);
         }
     })
+
+    const goToFirstPage = () => {
+        oldprops[props.docsState.selected] = {
+            title: props.docsState.docs[props.docsState.selected].title,
+            file: props.docsState.docs[props.docsState.selected].file,
+            content: {
+                file: props.docsState.docs[props.docsState.selected].content.file,
+                page: 1,
+                totalpage: props.docsState.docs[props.docsState.selected].content.totalpage
+            },
+            saved: true,
+            type: "document/pdf",
+        }
+
+		props.setDocs({ selected: props.docsState.selected, docs: [...oldprops] });
+    }
 
     const goToPrevPage = () => {
         oldprops[props.docsState.selected] = {
@@ -71,6 +87,22 @@ export default function PDFReader(props) {
 		props.setDocs({ selected: props.docsState.selected, docs: [...oldprops] });
     }
 
+    const goToLastPage = () => {
+        oldprops[props.docsState.selected] = {
+            title: props.docsState.docs[props.docsState.selected].title,
+            file: props.docsState.docs[props.docsState.selected].file,
+            content: {
+                file: props.docsState.docs[props.docsState.selected].content.file,
+                page: props.docsState.docs[props.docsState.selected].content.totalpage,
+                totalpage: props.docsState.docs[props.docsState.selected].content.totalpage
+            },
+            saved: true,
+            type: "document/pdf",
+        }
+
+		props.setDocs({ selected: props.docsState.selected, docs: [...oldprops] });
+    }
+
     return (
         <div className="PDFReader" style={{ width: props.winsize.width, height: props.winsize.height - 56 }}>
             <Document
@@ -81,8 +113,10 @@ export default function PDFReader(props) {
 
             <nav id="PDFReader_PDFNav">
                 <div id="PDFReader_PDFNav_Btns">
+                    {props.docsState.docs[props.docsState.selected].content.page !== 1 ? <button id="PDFReader_PDFNav_Btn" onClick={goToFirstPage}>F</button> : null}
                     {props.docsState.docs[props.docsState.selected].content.page - 1 < 1 ? null : <button id="PDFReader_PDFNav_Btn" onClick={goToPrevPage}>←</button>}
 				    {props.docsState.docs[props.docsState.selected].content.page >= props.docsState.docs[props.docsState.selected].content.totalpage ? null : <button id="PDFReader_PDFNav_Btn" onClick={goToNextPage}>→</button>}
+                    {props.docsState.docs[props.docsState.selected].content.page !== props.docsState.docs[props.docsState.selected].content.totalpage ? <button id="PDFReader_PDFNav_Btn" onClick={goToLastPage}>L</button> : null}
                 </div>
 			</nav>
         </div>
