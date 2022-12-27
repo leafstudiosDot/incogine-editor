@@ -55,6 +55,53 @@ export default function PDFReader(props) {
 
         document.getElementById("PDFReaderID").addEventListener('mousemove', _HideControl)
 
+
+        var gestScale = 0;
+        var scaleval = 1;
+        var PDFDocumentCont = document.querySelector(".react-pdf__Document");
+
+        document.getElementById("PDFReaderID").addEventListener('wheel', function (e) {
+            e.preventDefault();
+
+            if (e.deltaY > 0) {
+                scaleval -= 0.1;
+            } else {
+                scaleval += 0.1;
+            }
+
+            rendScale();
+        })
+
+        document.getElementById("PDFReaderID").addEventListener('gesturestart', function (e) {
+            e.preventDefault();
+
+            gestScale = scaleval;
+        })
+
+        document.getElementById("PDFReaderID").addEventListener('gesturechange', function (e) {
+            e.preventDefault();
+
+            scaleval = gestScale * e.scale;
+
+            rendScale();
+        })
+
+        document.getElementById("PDFReaderID").addEventListener('gestureend', function (e) {
+            e.preventDefault();
+        })
+
+        function rendScale() {
+            window.requestAnimationFrame(() => {
+                if (scaleval >= 5) {
+                    scaleval = 5;
+                } else if (scaleval <= 1) {
+                    scaleval = 1;
+                }
+                var scval = `scale(${scaleval})`
+                PDFDocumentCont.style.transform = scval
+            })
+        }
+
         return () => {
             document.removeEventListener("keydown", keyPressPDF, false);
             document.getElementById("PDFReaderID").removeEventListener('mousemove', _HideControl)
