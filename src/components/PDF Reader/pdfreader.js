@@ -32,17 +32,61 @@ export default function PDFReader(props) {
         }
     }
 
+    var gestScale = 0;
+    var scaleval = 1;
+    var posXval = 0;
+    var posYval = 0;
+    var geststartX;
+    var geststartY;
+    var PDFDocumentCont = document.querySelector(".react-pdf__Document");
+    var PDFPageCont;
+
+    function keyPressMoveSizePDF(e) {
+        switch(e.key) {
+            case "r":
+                gestScale = 0;
+                geststartX = 0;
+                geststartY = 0;
+                scaleval = 1;
+                posXval = 0;
+                posYval = 0;
+                rendScale();
+                break;
+            default:
+        }
+    }
+
+    function rendScale() {
+        console.log(scaleval)
+        if (scaleval >= 5) {
+            scaleval = 5;
+        } else if (scaleval <= 1) {
+            scaleval = 1;
+        }
+
+        if ((PDFDocumentCont.offsetWidth/4.5)*scaleval < posXval) {
+            posXval = (PDFDocumentCont.offsetWidth/4.5)*scaleval;
+        }
+
+        if ((-1)*(PDFDocumentCont.offsetWidth/4.5)*scaleval > posXval) {
+            posXval = (-1)*(PDFDocumentCont.offsetWidth/4.5)*scaleval;
+        }
+
+        /*console.log("PageWidth:" + PDFPageCont.width + ", PageHeight:" + PDFPageCont.height)
+        console.log("ContWidth:" + PDFDocumentCont.offsetWidth + ", ContHeight:" + PDFDocumentCont.offsetHeight)
+        console.log("PosX:" + posXval + ", PosY:" + posYval)*/
+
+        window.requestAnimationFrame(() => {
+            var scval = `translate3D(${posXval}px, ${posYval}px, 0px) rotate(0deg) scale(${scaleval})`
+            PDFDocumentCont.style.transform = scval
+        })
+    }
+
     function setEventForLoadedPage(PDFControlCont, _HideControl) {
         document.getElementById("PDFReaderID").addEventListener('mousemove', _HideControl)
 
-        var gestScale = 0;
-        var scaleval = 1;
-        var posXval = 0;
-        var posYval = 0;
-        var geststartX;
-        var geststartY;
-        var PDFDocumentCont = document.querySelector(".react-pdf__Document");
-        var PDFPageCont = document.querySelector(".react-pdf__Page__canvas");
+        PDFDocumentCont = document.querySelector(".react-pdf__Document");
+        PDFPageCont = document.querySelector(".react-pdf__Page__canvas");
 
         document.getElementById("PDFReaderID").addEventListener('wheel', function (e) {
             e.preventDefault();
@@ -85,31 +129,11 @@ export default function PDFReader(props) {
             e.preventDefault();
         })
 
-        function rendScale() {
-            console.log(scaleval)
-            if (scaleval >= 5) {
-                scaleval = 5;
-            } else if (scaleval <= 1) {
-                scaleval = 1;
-            }
+        document.addEventListener("keydown", keyPressMoveSizePDF, false);
+    }
 
-            if ((PDFDocumentCont.offsetWidth/4.5)*scaleval < posXval) {
-                posXval = (PDFDocumentCont.offsetWidth/4.5)*scaleval;
-            }
-
-            if ((-1)*(PDFDocumentCont.offsetWidth/4.5)*scaleval > posXval) {
-                posXval = (-1)*(PDFDocumentCont.offsetWidth/4.5)*scaleval;
-            }
-
-            /*console.log("PageWidth:" + PDFPageCont.width + ", PageHeight:" + PDFPageCont.height)
-            console.log("ContWidth:" + PDFDocumentCont.offsetWidth + ", ContHeight:" + PDFDocumentCont.offsetHeight)
-            console.log("PosX:" + posXval + ", PosY:" + posYval)*/
-
-            window.requestAnimationFrame(() => {
-                var scval = `translate3D(${posXval}px, ${posYval}px, 0px) rotate(0deg) scale(${scaleval})`
-                PDFDocumentCont.style.transform = scval
-            })
-        }
+    function removeEventForLoadedPage() {
+        document.removeEventListener("keydown", keyPressMoveSizePDF, false);
     }
 
     useEffect(() => {
@@ -138,6 +162,7 @@ export default function PDFReader(props) {
         return () => {
             document.removeEventListener("keydown", keyPressPDF, false);
             document.getElementById("PDFReaderID").removeEventListener('mousemove', _HideControl)
+            removeEventForLoadedPage();
         }
     })
 
