@@ -34,6 +34,6 @@ See [Contributing file](https://github.com/leafstudiosDot/incogine-editor/blob/m
 
 ## License
 
-© 2022 leafstudiosDot. All rights reserved.
+© 2023 leafstudiosDot. All rights reserved.
 
 Licensed under the [MIT](LICENSE.md) license.

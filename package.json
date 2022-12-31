@@ -4,7 +4,7 @@
   "version": "0.1.4",
   "private": true,
   "author": "leafstudiosDot",
-  "copyright": "© 2022 leafstudiosDot",
+  "copyright": "© 2023 leafstudiosDot",
   "main": "./public/electron.js",
   "homepage": ".",
   "dependencies": {
