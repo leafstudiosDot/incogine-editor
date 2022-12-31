@@ -32,29 +32,8 @@ export default function PDFReader(props) {
         }
     }
 
-    useEffect(() => {
-        document.addEventListener("keydown", keyPressPDF, false);
-
-        var PDFControlCont = document.getElementById("PDFReader_PDFNav");
-        var vptimeout;
-
-        function _HideControl() {
-            ShowControls();
-            clearTimeout(vptimeout);
-            vptimeout = setTimeout(function () {
-                HideControls();
-            }, 900)
-        }
-
-        function ShowControls() {
-            PDFControlCont.style.bottom = "25px";
-        }
-        function HideControls() {
-            PDFControlCont.style.bottom = "-25px";
-        }
-
+    function setEventForLoadedPage(PDFControlCont, _HideControl) {
         document.getElementById("PDFReaderID").addEventListener('mousemove', _HideControl)
-
 
         var gestScale = 0;
         var scaleval = 1;
@@ -114,13 +93,47 @@ export default function PDFReader(props) {
                 scaleval = 1;
             }
 
-            //console.log(PDFPageCont.offsetWidth, PDFPageCont.offsetHeight)
+            if ((PDFDocumentCont.offsetWidth/4.5)*scaleval < posXval) {
+                posXval = (PDFDocumentCont.offsetWidth/4.5)*scaleval;
+            }
+
+            if ((-1)*(PDFDocumentCont.offsetWidth/4.5)*scaleval > posXval) {
+                posXval = (-1)*(PDFDocumentCont.offsetWidth/4.5)*scaleval;
+            }
+
+            /*console.log("PageWidth:" + PDFPageCont.width + ", PageHeight:" + PDFPageCont.height)
+            console.log("ContWidth:" + PDFDocumentCont.offsetWidth + ", ContHeight:" + PDFDocumentCont.offsetHeight)
+            console.log("PosX:" + posXval + ", PosY:" + posYval)*/
 
             window.requestAnimationFrame(() => {
                 var scval = `translate3D(${posXval}px, ${posYval}px, 0px) rotate(0deg) scale(${scaleval})`
                 PDFDocumentCont.style.transform = scval
             })
         }
+    }
+
+    useEffect(() => {
+        document.addEventListener("keydown", keyPressPDF, false);
+
+        var PDFControlCont = document.getElementById("PDFReader_PDFNav");
+        var vptimeout;
+
+        function _HideControl() {
+            ShowControls();
+            clearTimeout(vptimeout);
+            vptimeout = setTimeout(function () {
+                HideControls();
+            }, 900)
+        }
+
+        function ShowControls() {
+            PDFControlCont.style.bottom = "25px";
+        }
+        function HideControls() {
+            PDFControlCont.style.bottom = "-25px";
+        }
+
+        setEventForLoadedPage(PDFControlCont, _HideControl);
 
         return () => {
             document.removeEventListener("keydown", keyPressPDF, false);
@@ -195,7 +208,7 @@ export default function PDFReader(props) {
     return (
         <div className="PDFReader" id="PDFReaderID" style={{ width: props.winsize.width, height: props.winsize.height - 56 }}>
             <Document
-				file={props.docsState.docs[props.docsState.selected].content.file} onLoadSuccess={onDocumentLoadSuccess}>
+				file={props.docsState.docs[props.docsState.selected].content.file} onLoadSuccess={onDocumentLoadSuccess} onRenderSuccess={setEventForLoadedPage}>
 				<Page pageNumber={props.docsState.docs[props.docsState.selected].content.page}
                 height={props.winsize.height - 81} />
 			</Document>
