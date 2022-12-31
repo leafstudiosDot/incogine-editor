@@ -58,15 +58,25 @@ export default function PDFReader(props) {
 
         var gestScale = 0;
         var scaleval = 1;
+        var posXval = 0;
+        var posYval = 0;
+        var geststartX;
+        var geststartY;
         var PDFDocumentCont = document.querySelector(".react-pdf__Document");
+        var PDFPageCont = document.querySelector(".react-pdf__Page__canvas");
 
         document.getElementById("PDFReaderID").addEventListener('wheel', function (e) {
             e.preventDefault();
 
-            if (e.deltaY > 0) {
-                scaleval -= 0.1;
+            if (navigator.platform.toUpperCase().indexOf('MAC') >= 0 ? e.metaKey : e.ctrlKey) {
+                if (e.deltaY > 0) {
+                    scaleval -= 0.1;
+                } else {
+                    scaleval += 0.1;
+                }
             } else {
-                scaleval += 0.1;
+                posXval -= e.deltaX * 1;
+                posYval -= e.deltaY * 1;
             }
 
             rendScale();
@@ -76,12 +86,18 @@ export default function PDFReader(props) {
             e.preventDefault();
 
             gestScale = scaleval;
+
+            geststartX = e.pageX - posXval;
+            geststartY = e.pageY - posYval;
         })
 
         document.getElementById("PDFReaderID").addEventListener('gesturechange', function (e) {
             e.preventDefault();
 
             scaleval = gestScale * e.scale;
+
+            posXval = e.pageX - geststartX;
+            posYval = e.pageY - geststartY;
 
             rendScale();
         })
@@ -91,13 +107,17 @@ export default function PDFReader(props) {
         })
 
         function rendScale() {
+            console.log(scaleval)
+            if (scaleval >= 5) {
+                scaleval = 5;
+            } else if (scaleval <= 1) {
+                scaleval = 1;
+            }
+
+            //console.log(PDFPageCont.offsetWidth, PDFPageCont.offsetHeight)
+
             window.requestAnimationFrame(() => {
-                if (scaleval >= 5) {
-                    scaleval = 5;
-                } else if (scaleval <= 1) {
-                    scaleval = 1;
-                }
-                var scval = `scale(${scaleval})`
+                var scval = `translate3D(${posXval}px, ${posYval}px, 0px) rotate(0deg) scale(${scaleval})`
                 PDFDocumentCont.style.transform = scval
             })
         }
