@@ -20,7 +20,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '19.x'
-    - run: npm ci
+    - run: npm ci --force
     - name: Build React
       run: CI=false npm run build
     - name: Wine 
@@ -55,7 +55,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '19.x'
-    - run: npm ci
+    - run: npm ci --force
     - name: Build React
       run: CI=false npm run build
     - name: Build Electron
@@ -79,7 +79,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '19.x'
-    - run: npm ci
+    - run: npm ci --force
     - name: Build React
       run: CI=false npm run build
     - name: Wine 
