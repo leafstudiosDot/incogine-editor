@@ -11,8 +11,15 @@
   
   [![current release](https://img.shields.io/github/release/leafstudiosDot/incogine-editor.svg)](https://github.com/leafstudiosDot/incogine-editor/releases)
   [![license](https://img.shields.io/github/license/leafstudiosDot/incogine-editor.svg)](https://github.com/leafstudiosDot/incogine-editor/blob/master/LICENSE)
+  [![incoedit](https://snapcraft.io/incoedit/badge.svg)](https://snapcraft.io/incoedit)
+  [![incoedit](https://snapcraft.io/incoedit/trending.svg?name=0)](https://snapcraft.io/incoedit)
   
 </div>
+
+## Stores
+Snap: 
+
+[![Get Incogine Editor from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/incoedit)
 
 ## Possible Ported Software Framework
 - Tauri (Rust, hoping for every Electron features)
