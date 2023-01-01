@@ -142,3 +142,8 @@
 [data-theme="light"] #settings-checkmark {
     background-color: #bebebe;
 }
+
+[data-theme="light"] .PDFReader {
+    background-color: #e6e6e6;
+    color: black;
+}
