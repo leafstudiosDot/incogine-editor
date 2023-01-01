@@ -75,7 +75,7 @@
   "build": {
     "appId": "com.leafstudiosdot.incogine.editor",
     "productName": "Incogine Editor",
-    "copyright": "© 2022 leafstudiosDot",
+    "copyright": "© 2023 leafstudiosDot",
     "win": {
       "icon": "./electron/icons/icon.ico",
       "publisherName": "leafstudiosDot"
