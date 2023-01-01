@@ -1,10 +1,10 @@
 {
   "name": "incogine-editor-oss",
   "description": "A multipurpose code editor",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "author": "leafstudiosDot",
-  "copyright": "© 2022 leafstudiosDot",
+  "copyright": "© 2023 leafstudiosDot",
   "main": "./public/electron.js",
   "homepage": ".",
   "dependencies": {
@@ -25,6 +25,7 @@
     "path": "^0.12.7",
     "react": "17.0.2",
     "react-dom": "17.0.2",
+    "react-pdf": "^4.2.0",
     "react-scripts": "4.0.3",
     "typescript": "^4.7.4",
     "update-electron-app": "^2.0.1",

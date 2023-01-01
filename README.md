@@ -37,6 +37,6 @@ Sponsor this project with GitHub Sponsors or donate via Ko-Fi
 
 ## License
 
-© 2022 leafstudiosDot. All rights reserved.
+© 2023 leafstudiosDot. All rights reserved.
 
 Licensed under the [MIT](LICENSE.md) license.

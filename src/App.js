@@ -6,14 +6,15 @@ import TitleBar from "./components/Title Bar/titlebar";
 import NotifyWindow from './components/Notifications/notify'
 import Settings from './components/Settings/settings'
 import VideoPlayer from "./components/Video Player/videoplayer";
+import PDFReader from './components/PDF Reader/pdfreader';
 
 import './App.dark.css';
 
-import { remote, ipcRenderer } from 'electron';
-import { dialog } from '@electron/remote'
-import  currentWindow from '@electron/remote'
-import fs from 'fs'
-import path from "path"
+const { remote, ipcRenderer } = require('electron');
+const { dialog } = require('@electron/remote')
+const currentWindow = require('@electron/remote')
+const fs = require('fs');
+var path = require("path");
 
 var titleMenuBarSpace = 25;
 
@@ -285,6 +286,10 @@ function App() {
             "name": "C++",
             "extensions": ["cpp", "cc", "C", "cxx", "h", "hpp", "hxx"],
           },
+          {
+            "name": "PDF File",
+            "extensions": ["pdf"]
+          }
         ], properties: ['openFile', 'showHiddenFiles', 'createDirectory']
       })
 
@@ -321,15 +326,24 @@ function App() {
         // 2 GB of File
         fs.readFile(paths[0], "base64", function (err, data) {
           if (!err) {
-            if (path.basename(paths[0]).split(".").pop() === "mp4" || path.basename(paths[0]).split(".").pop() === "avi" || path.basename(paths[0]).split(".").pop() === "mov") {
-              window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: "data:video/mp4;base64," + data, type: "media/video" })
+            switch(path.basename(paths[0]).split(".").pop()) {
+              case "mp4":
+              case "avi":
+              case "mov":
+                window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: "data:video/mp4;base64," + data, type: "media/video" })
+              break;
+              case "pdf":
+                window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: {file: "data:application/pdf;base64," + data, page: 1, totalpage: 1}, type: "document/pdf" })
+              break;
+              default:
+                console.error("File not opened: File unknown or can't read by Incogine Editor")
             }
           } else {
             console.error("File not opened: An error has occurred, " + err)
           }
         })
       } else {
-        console.error("File not opened: Too large")
+        console.error("File not opened: Too large or file can't read by Incogine Editor")
       }
     }
   }
@@ -363,8 +377,17 @@ function App() {
           } else if (file.size < ((1000000 * 1024) * 2)) {
             console.log(file)
             reader.onload = async function (event) {
-              if (file.name.split(".").pop() === "mp4" || file.name.split(".").pop() === "avi" || file.name.split(".").pop() === "mov") {
-                await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "media/video" })
+              switch(file.name.split(".").pop()) {
+                case "mp4":
+                case "avi":
+                case "mov":
+                  await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "media/video" })
+                  break;
+                case "pdf":
+                  await window.AddTab(true, { title: file.name, file: file.path, content: {file: event.target.result, page: 1, totalpage: 1}, type: "document/pdf" })
+                  break;
+                default:
+                console.error("File not opened: File unknown or can't read by Incogine Editor")
               }
             }
             await reader.readAsDataURL(file);
@@ -396,6 +419,7 @@ function App() {
         <article style={{ paddingTop: "36px", marginTop: titleMenuBarSpace }}>
           {docsState.docs[docsState.selected].type === "text/code" ? <TextArea docs={docsState} setDocs={setDocsState} /> : null}
           {docsState.docs[docsState.selected].type === "media/video" ? <VideoPlayer winsize={winsize} docsState={docsState} setDocs={setDocsState} /> : null}
+          {docsState.docs[docsState.selected].type === "document/pdf" ? <PDFReader winsize={winsize} docsState={docsState} setDocs={setDocsState} /> : null}
           {docsState.docs[docsState.selected].type === "settings" ? <Settings winsize={winsize} docs={docsState} setDocs={setDocsState} /> : null}
         </article>
       </section>
@@ -514,6 +538,7 @@ function Footer(props) {
     <footer className="footer">
       {props.docs.docs[props.docs.selected].type === "text/code" ? <span style={{ position: "absolute", right: "5px" }}>{inputLocationTextArea}</span> : null}
       {props.docs.docs[props.docs.selected].type === "settings" ? <span style={{ position: "absolute", left: "5px" }}></span> : null}
+      {props.docs.docs[props.docs.selected].type === "document/pdf" ? <span style={{ position: "absolute", left: "5px" }}>Page: {props.docs.docs[props.docs.selected].content.page}/{props.docs.docs[props.docs.selected].content.totalpage}</span> : null}
     </footer>
   )
 }
