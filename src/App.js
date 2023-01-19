@@ -7,6 +7,7 @@ import NotifyWindow from './components/Notifications/notify'
 import Settings from './components/Settings/settings'
 import VideoPlayer from "./components/Video Player/videoplayer";
 import PDFReader from './components/PDF Reader/pdfreader';
+import MarkdownEditor from './components/Markdown/editor';
 
 import './App.dark.css';
 
@@ -420,6 +421,7 @@ function App() {
           {docsState.docs[docsState.selected].type === "text/code" ? <TextArea docs={docsState} setDocs={setDocsState} /> : null}
           {docsState.docs[docsState.selected].type === "media/video" ? <VideoPlayer winsize={winsize} docsState={docsState} setDocs={setDocsState} /> : null}
           {docsState.docs[docsState.selected].type === "document/pdf" ? <PDFReader winsize={winsize} docsState={docsState} setDocs={setDocsState} /> : null}
+          {docsState.docs[docsState.selected].type === "markdown/edit" ? <MarkdownEditor winsize={winsize} docsState={docsState} setDocs={setDocsState} /> : null}
           {docsState.docs[docsState.selected].type === "settings" ? <Settings winsize={winsize} docs={docsState} setDocs={setDocsState} /> : null}
         </article>
       </section>
