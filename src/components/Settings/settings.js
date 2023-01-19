@@ -122,7 +122,7 @@ function SettingWindow(props) {
     // Misc
     function AboutPage() {
         return (<div>
-            <h1>Incogine Editor v0.1.4 Open Source</h1>
+            <h1>Incogine Editor v0.1.5 Open Source</h1>
             <span>© 2023 leafstudiosDot. All rights reserved</span><br />
             <span>Incogine Editor powered by <span onClick={() => ipcRenderer.send('openLink', 'https://www.electronjs.org/')}>Electron</span> and other open-source projects</span>
         </div>)
