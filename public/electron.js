@@ -41,7 +41,7 @@ function ReadExtensions(window) {
           if (!["", " ", ".DS_Store", ".git", ".gitignore", "user.json", "\n", "‎"].includes(extfile)) {
             command = require(incoeditExtensionsLocation + "/" + extensiondir + "/main.js")
             //window.webContents.executeJavaScript("")
-            
+
           }
         }
       }
@@ -100,15 +100,30 @@ const menuBar = [
     label: 'File',
     submenu: [
       {
-        label: 'New Text Tab',
-        accelerator: 'CmdOrCtrl+N',
-        click: () => {
-          if (currentWindow != null) {
-            currentWindow.webContents.executeJavaScript('window.AddTab(false)')
-          } else {
-            dialog.showMessageBox(null, { message: "Please create a new window to add tab." })
+        label: 'New Tab...',
+        submenu: [
+          {
+            label: 'Text',
+            accelerator: 'CmdOrCtrl+N',
+            click: () => {
+              if (currentWindow != null) {
+                currentWindow.webContents.executeJavaScript('window.AddTab(false)')
+              } else {
+                dialog.showMessageBox(null, { message: "Please create a new window to add tab." })
+              }
+            }
+          },
+          {
+            label: 'Markdown Text',
+            click: () => {
+              if (currentWindow != null) {
+                currentWindow.webContents.executeJavaScript('window.AddTab(true, { title: "Untitled.md", file: null, content: "", saved: true, type: "markdown/edit" })')
+              } else {
+                dialog.showMessageBox(null, { message: "Please create a new window to add tab." })
+              }
+            }
           }
-        }
+        ]
       },
       {
         label: 'New Window',
