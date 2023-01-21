@@ -141,7 +141,7 @@ function Header(props) {
       {props.docs.docs.map((doc, i) =>
         <span>
           <div onClick={() => props.setDocs({ selected: i, docs: [...props.docs.docs] })} className="tab-cont" id={i === props.docs.selected ? "tab-selected" : null}>
-            <span id="tab-title">{doc.title}{doc.saved ? null : <sup>*</sup>}</span>
+            <span id="tab-title">{doc.title}{doc.saved ? null : <sup style={{color: '#8d0000'}}>*</sup>}</span>
           </div>
           <span id={i === props.docs.selected ? "tab-close-selected" : "tab-close"} onClick={() => CloseTab(i)}>X</span>
         </span>
