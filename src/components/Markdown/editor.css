@@ -13,3 +13,19 @@
 #markdown-menubar {
     
 }
+
+#markdown-textarea {
+  font-family: 'Nunito';
+  resize: none;
+  background-color: #2a2a2a;
+  color: white;
+  font-size: 15px;
+  margin-left: 40px;
+  -webkit-overflow-scrolling: auto;
+  position: relative;
+  outline: none;
+  border: none;
+  white-space: pre;
+  overflow-wrap: normal;
+  overflow-x: scroll;
+}

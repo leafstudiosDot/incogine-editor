@@ -421,7 +421,7 @@ function App() {
           {docsState.docs[docsState.selected].type === "text/code" ? <TextArea docs={docsState} setDocs={setDocsState} /> : null}
           {docsState.docs[docsState.selected].type === "media/video" ? <VideoPlayer winsize={winsize} docsState={docsState} setDocs={setDocsState} /> : null}
           {docsState.docs[docsState.selected].type === "document/pdf" ? <PDFReader winsize={winsize} docsState={docsState} setDocs={setDocsState} /> : null}
-          {docsState.docs[docsState.selected].type === "markdown/edit" ? <MarkdownEditor winsize={winsize} docsState={docsState} setDocs={setDocsState} /> : null}
+          {docsState.docs[docsState.selected].type === "markdown/edit" ? <MarkdownEditor winsize={winsize} titleMenuBarSpace={titleMenuBarSpace} docsState={docsState} setDocs={setDocsState} /> : null}
           {docsState.docs[docsState.selected].type === "settings" ? <Settings winsize={winsize} docs={docsState} setDocs={setDocsState} /> : null}
         </article>
       </section>

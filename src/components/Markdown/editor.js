@@ -11,10 +11,16 @@ export default function MarkdownEdit(props) {
                 
             </div>
             <div id="markdown-textbox">
-
+                <textarea id="markdown-textarea" onChange={(e) => {}}
+                
+                style={{
+                    width: props.winsize.width - 46,
+                    height: props.winsize.height - 60 - props.titleMenuBarSpace
+                  }}
+                  />
             </div>
             <div id="markdown-preview">
-                
+
             </div>
         </div>
     )

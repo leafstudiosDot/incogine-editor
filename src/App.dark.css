@@ -101,6 +101,11 @@
     color: black;
 }
 
+[data-theme="light"] #markdown-textarea {
+    background-color: #e8e8e8;
+    color: black;
+}
+
 [data-theme="light"] .footer {
     background-color: #ffffff;
     color: black;
