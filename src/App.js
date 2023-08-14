@@ -269,7 +269,7 @@ function App() {
           },
           {
             "name": "Text File",
-            "extensions": ["txt", "text", "md", "markdown"]
+            "extensions": ["txt", "text"]
           },
           {
             "name": "Markdown File",
@@ -318,7 +318,17 @@ function App() {
         // 1 MB of File
         fs.readFile(paths[0], "utf-8", function (err, data) {
           if (!err) {
-            window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: data, type: "text/code" })
+            switch(path.basename(paths[0]).split(".").pop()) {
+              case "txt":
+                window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: data, type: "text/code" })
+                break;
+              case "md":
+              case "markdown":
+                window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: data, type: "markdown/edit" })
+                break;
+              default:
+                window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: data, type: "text/code" })
+            }
           } else {
             console.error("File not opened: An error has occurred, " + err)
           }
@@ -372,7 +382,17 @@ function App() {
           let file = files[i]
           if (file.size < 1000000) {
             reader.onload = async function (event) {
-              await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "text/code" })
+              switch(file.name.split(".").pop()) {
+                case "txt":
+                  window.AddTab(true, { title: path.basename(file.path), file: file.path, content: event.target.result, type: "text/code" })
+                  break;
+                case "md":
+                case "markdown":
+                  window.AddTab(true, { title: path.basename(file.path), file: file.path, content: event.target.result, type: "markdown/edit" })
+                  break;
+                default: 
+                  await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "text/code" })
+              }
             }
             await reader.readAsText(file, "UTF-8");
           } else if (file.size < ((1000000 * 1024) * 2)) {
