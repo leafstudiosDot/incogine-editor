@@ -501,6 +501,7 @@ function TextArea(props) {
         {Array(textline).fill(1).map((_, i) =>
           <div id="linecount-edit-num">{i + 1}</div>
         )}
+        <div id="linecount-edit-num">ㅤ</div>
       </div>
       <textarea
         style={{
