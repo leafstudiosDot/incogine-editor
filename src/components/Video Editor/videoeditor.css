@@ -1,0 +1,5 @@
+.videoEditor-container {
+    top: 25px;
+    position: absolute;
+    user-select: none;
+}

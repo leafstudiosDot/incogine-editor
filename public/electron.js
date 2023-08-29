@@ -9,6 +9,8 @@ const electron = require('electron'),
   Tray = electron.Tray,
   shell = electron.shell;
 
+const url = require('url');
+
 const Store = require('electron-store')
 const store = new Store();
 
@@ -41,7 +43,7 @@ function ReadExtensions(window) {
           if (!["", " ", ".DS_Store", ".git", ".gitignore", "user.json", "\n", "‎"].includes(extfile)) {
             command = require(incoeditExtensionsLocation + "/" + extensiondir + "/main.js")
             //window.webContents.executeJavaScript("")
-            
+
           }
         }
       }
@@ -112,8 +114,17 @@ const menuBar = [
       },
       {
         label: 'New Window',
-        accelerator: 'Shift+CmdOrCtrl+N',
-        click: () => { createWindow() }
+        submenu: [
+          {
+            label: 'New Text Window',
+            accelerator: 'Shift+CmdOrCtrl+N',
+            click: () => { createWindow() }
+          },
+          {
+            label: 'New Video Editing Window',
+            click: () => { createVideoEditingWindow() }
+          }
+        ]
       },
       { type: 'separator' },
       {
@@ -269,6 +280,52 @@ const createWindow = () => {
 
   windows.add(newWindow);
   return newWindow
+}
+
+// Create Video Editing Window
+const createVideoEditingWindow = () => {
+  currentWindow = BrowserWindow.getFocusedWindow();
+
+  const newVideoWindow = new BrowserWindow({
+    width: 1280,
+    height: 720,
+    minHeight: 720,
+    minWidth: 1280,
+    resizable: true,
+    icon: process.platform !== 'darwin' ? __dirname + `/icons/icon.icns` : __dirname + "/icons/icon.ico",
+    frame: false,
+    titleBarStyle: 'customButtonsOnHover',
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
+      preload: path.join(__dirname, 'preload.js'),
+      webSecurity: false
+    }
+  });
+  const appUrl = isDev ? 'http://localhost:3613/#/videdit' : `file://${path.join(__dirname, '../build/index.html/#/videdit')}`
+  Menu.setApplicationMenu(menu)
+  newVideoWindow.setTouchBar(touchBarDarwin)
+  newVideoWindow.loadURL(appUrl, { userAgent: 'IncogineEditor-Electron' });
+  newVideoWindow.maximize()
+
+  newVideoWindow.once('ready-to-show', () => {
+    newVideoWindow.show();
+  })
+
+  newVideoWindow.on('closed', () => {
+    windows.delete(newVideoWindow);
+    newWindow = null;
+  });
+
+  require("@electron/remote/main").enable(newVideoWindow.webContents);
+
+  // Extra Events
+
+  ReadExtensions(newVideoWindow)
+
+  windows.add(newVideoWindow);
+  return newVideoWindow
 }
 
 // URL Protocol incoedit://{whatever}

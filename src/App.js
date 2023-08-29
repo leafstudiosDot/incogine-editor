@@ -7,6 +7,7 @@ import NotifyWindow from './components/Notifications/notify'
 import Settings from './components/Settings/settings'
 import VideoPlayer from "./components/Video Player/videoplayer";
 import PDFReader from './components/PDF Reader/pdfreader';
+import VideoEditor from './components/Video Editor/videoeditor'
 
 import './App.dark.css';
 
@@ -351,70 +352,74 @@ function App() {
 
   useEffect(() => {
 
-    window.changeInputTextAreaLocation(0, 0)
+    if (window.location.href.endsWith("/#/videdit")) {
 
-    function saveKeyDown(e) {
-      if ((navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.keyCode === 83) {
-        e.preventDefault();
-        window.SaveFile();
+    } else {
+      window.changeInputTextAreaLocation(0, 0)
+
+      function saveKeyDown(e) {
+        if ((navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.keyCode === 83) {
+          e.preventDefault();
+          window.SaveFile();
+        }
       }
-    }
 
-    async function handleDropFile(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      let files = e.dataTransfer.files;
+      async function handleDropFile(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        let files = e.dataTransfer.files;
 
-      for (var i = 0; i < files.length; i++) {
-        if (e.dataTransfer.items[i].kind === "file") {
-          let reader = new FileReader();
-          let file = files[i]
-          if (file.size < 1000000) {
-            reader.onload = async function (event) {
-              await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "text/code" })
-            }
-            await reader.readAsText(file, "UTF-8");
-          } else if (file.size < ((1000000 * 1024) * 2)) {
-            console.log(file)
-            reader.onload = async function (event) {
-              switch (file.name.split(".").pop()) {
-                case "mp4":
-                case "avi":
-                case "mov":
-                  await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "media/video" })
-                  break;
-                case "pdf":
-                  await window.AddTab(true, { title: file.name, file: file.path, content: { file: event.target.result, page: 1, totalpage: 1 }, type: "document/pdf" })
-                  break;
-                default:
-                  console.error("File not opened: File unknown or can't read by Incogine Editor")
+        for (var i = 0; i < files.length; i++) {
+          if (e.dataTransfer.items[i].kind === "file") {
+            let reader = new FileReader();
+            let file = files[i]
+            if (file.size < 1000000) {
+              reader.onload = async function (event) {
+                await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "text/code" })
               }
+              await reader.readAsText(file, "UTF-8");
+            } else if (file.size < ((1000000 * 1024) * 2)) {
+              console.log(file)
+              reader.onload = async function (event) {
+                switch (file.name.split(".").pop()) {
+                  case "mp4":
+                  case "avi":
+                  case "mov":
+                    await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "media/video" })
+                    break;
+                  case "pdf":
+                    await window.AddTab(true, { title: file.name, file: file.path, content: { file: event.target.result, page: 1, totalpage: 1 }, type: "document/pdf" })
+                    break;
+                  default:
+                    console.error("File not opened: File unknown or can't read by Incogine Editor")
+                }
+              }
+              await reader.readAsDataURL(file);
+            } else {
+              console.error("File Too Large to Load, Maximum: 1MB (text) / 1GB (media)")
             }
-            await reader.readAsDataURL(file);
-          } else {
-            console.error("File Too Large to Load, Maximum: 1MB (text) / 1GB (media)")
           }
         }
       }
-    }
 
-    listen('file-drop', event => {
-      invoke('my_custom_command', { invokeMessage: event })
-    })
+      listen('file-drop', event => {
+        invoke('my_custom_command', { invokeMessage: event })
+      })
 
-    document.addEventListener("keydown", saveKeyDown);
-    document.addEventListener("drop", handleDropFile);
+      document.addEventListener("keydown", saveKeyDown);
+      document.addEventListener("drop", handleDropFile);
 
-    return function () {
-      document.removeEventListener("keydown", saveKeyDown);
-      document.removeEventListener("drop", handleDropFile);
+      return function () {
+        document.removeEventListener("keydown", saveKeyDown);
+        document.removeEventListener("drop", handleDropFile);
+      }
     }
   }, [docsState.docs, docsState.selected])
 
   function subwork() {
-    switch (window.location.href.split("/")[3]) {
-      case "videdit":
-        break;
+    switch (true) {
+      case window.location.href.endsWith("/#/videdit"):
+        return (<VideoEditor winsize={winsize} />)
       default:
         return (
           <>
