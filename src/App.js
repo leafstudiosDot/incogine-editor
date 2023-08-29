@@ -413,7 +413,7 @@ function App() {
 
   return (
     <div className="App">
-      <TitleBar winsize={winsize} titleMenuBarSpace={titleMenuBarSpace} />
+      <TitleBar winsize={winsize} titleMenuBarSpace={titleMenuBarSpace} name={"Incogine Editor"} />
       <Header winsize={winsize} docs={docsState} setDocs={setDocsState} />
       <section >
         <article style={{ paddingTop: "36px", marginTop: titleMenuBarSpace }}>

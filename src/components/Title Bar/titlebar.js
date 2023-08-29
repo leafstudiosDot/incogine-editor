@@ -30,5 +30,6 @@ export default function TitleBar(props) {
                 </div>
             </div>
         }
+        <div className="titleBar-title">{props.name}</div>
     </div>)
 }

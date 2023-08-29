@@ -11,6 +11,10 @@
     color: black;
 }
 
+[data-theme="light"] .titleBar-title {
+    color: black;
+}
+
 [data-theme="light"] .titleBar-onemenu {
     color: black;
 }
