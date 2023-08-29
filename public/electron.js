@@ -267,6 +267,10 @@ const createWindow = () => {
     newWindow.show();
   })
 
+  newWindow.on('focus', () => {
+    Menu.setApplicationMenu(menu)
+  })
+
   newWindow.on('closed', () => {
     windows.delete(newWindow);
     newWindow = null;
@@ -304,10 +308,28 @@ const createVideoEditingWindow = () => {
     }
   });
   const appUrl = isDev ? 'http://localhost:3613/#/videdit' : `file://${path.join(__dirname, '../build/index.html/#/videdit')}`
-  Menu.setApplicationMenu(menu)
+
+  var videoMenuBar = [
+    {
+      label: 'Video Editor',
+      submenu: [
+        {
+          label: 'New Video Window',
+          click: () => { createVideoEditingWindow() }
+        }
+      ]
+    }
+  ]
+
+  Menu.setApplicationMenu(Menu.buildFromTemplate([...menuBar, ...videoMenuBar]))
+
   newVideoWindow.setTouchBar(touchBarDarwin)
   newVideoWindow.loadURL(appUrl, { userAgent: 'IncogineEditor-Electron' });
   newVideoWindow.maximize()
+
+  newVideoWindow.on('focus', () => {
+    Menu.setApplicationMenu(Menu.buildFromTemplate([...menuBar, ...videoMenuBar]))
+  })
 
   newVideoWindow.once('ready-to-show', () => {
     newVideoWindow.show();
