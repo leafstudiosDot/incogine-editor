@@ -18,6 +18,11 @@ module.exports = function override(config, env) {
         use: [{ loader: require.resolve('wasm-loader'), options: {} }]
     });
 
+    config.module.rules.push({
+        test: /\.html$/,
+        use: 'raw-loader',
+    })
+
     config.target = 'electron-renderer'
     return config;
 }
