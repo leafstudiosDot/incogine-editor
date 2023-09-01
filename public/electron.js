@@ -402,7 +402,7 @@ app.whenReady().then(async () => {
 
   //await session.defaultSession.loadExtension(reactDevToolsPath)
 })
-app.on('ready', createVideoEditingWindow)
+app.on('ready', createWindow)
 app.on('window-all-closed', () => {
   // Follow OS convention on whether to quit app when
   // all windows are closed.
