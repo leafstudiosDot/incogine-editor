@@ -1,0 +1,4 @@
+[submodule "videoedit"]
+	path = src/components/Video Editor/videoedit
+	url = https://github.com/leafstudiosDot/incoedit-videoedit
+	branch = main
