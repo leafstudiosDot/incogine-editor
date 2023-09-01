@@ -3,3 +3,8 @@
     position: absolute;
     user-select: none;
 }
+
+.videoEditor-video {
+    right: 0;
+    position: absolute;
+}
