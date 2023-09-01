@@ -7,7 +7,7 @@ import NotifyWindow from './components/Notifications/notify'
 import Settings from './components/Settings/settings'
 import VideoPlayer from "./components/Video Player/videoplayer";
 import PDFReader from './components/PDF Reader/pdfreader';
-import VideoEditor from './components/Video Editor/videoeditor'
+import VideoEditor from './components/VideoEditor/videoeditor'
 
 import './App.dark.css';
 

@@ -36,7 +36,7 @@
     "webpack": "4.44.2"
   },
   "scripts": {
-    "start": "concurrently \"react-app-rewired --openssl-legacy-provider start\" \"./src/components/Video Editor/videoedit/runserver.sh\" ",
+    "start": "concurrently \"react-app-rewired --openssl-legacy-provider start\" \"./src/components/VideoEditor/videoedit/runserver.sh \" ",
     "build": "react-app-rewired --openssl-legacy-provider build",
     "test": "react-app-rewired --openssl-legacy-provider test",
     "eject": "react-scripts --openssl-legacy-provider eject",
