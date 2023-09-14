@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import './videoeditor.css'
-import videoeditorapp from './videoedit/index.html'
 
 export default function VideoEditor(props) {
 
