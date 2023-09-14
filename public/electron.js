@@ -41,7 +41,7 @@ function ReadExtensions(window) {
           if (!["", " ", ".DS_Store", ".git", ".gitignore", "user.json", "\n", "‎"].includes(extfile)) {
             command = require(incoeditExtensionsLocation + "/" + extensiondir + "/main.js")
             //window.webContents.executeJavaScript("")
-            
+
           }
         }
       }
@@ -112,8 +112,17 @@ const menuBar = [
       },
       {
         label: 'New Window',
-        accelerator: 'Shift+CmdOrCtrl+N',
-        click: () => { createWindow() }
+        submenu: [
+          {
+            label: 'New Text Window',
+            accelerator: 'Shift+CmdOrCtrl+N',
+            click: () => { createWindow() }
+          },
+          {
+            label: 'New Animation Window',
+            click: () => { createAnimationWindow() }
+          }
+        ]
       },
       { type: 'separator' },
       {
@@ -269,6 +278,53 @@ const createWindow = () => {
 
   windows.add(newWindow);
   return newWindow
+}
+
+
+// Create Animation Window
+const createAnimationWindow = () => {
+  currentWindow = BrowserWindow.getFocusedWindow();
+
+  const newAnimWindow = new BrowserWindow({
+    width: 1280,
+    height: 720,
+    minHeight: 720,
+    minWidth: 1280,
+    resizable: true,
+    icon: process.platform !== 'darwin' ? __dirname + `/icons/icon.icns` : __dirname + "/icons/icon.ico",
+    frame: false,
+    titleBarStyle: 'customButtonsOnHover',
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
+      preload: path.join(__dirname, 'preload.js'),
+      webSecurity: false
+    }
+  });
+  const appUrl = isDev ? 'http://localhost:3613/#/anim' : `file://${path.join(__dirname, '../build/index.html/#/anim')}`
+  Menu.setApplicationMenu(menu)
+  newAnimWindow.setTouchBar(touchBarDarwin)
+  newAnimWindow.loadURL(appUrl, { userAgent: 'IncogineEditor-Electron' });
+  newAnimWindow.maximize()
+
+  newAnimWindow.once('ready-to-show', () => {
+    newAnimWindow.show();
+  })
+
+  newAnimWindow.on('closed', () => {
+    windows.delete(newAnimWindow);
+    newWindow = null;
+  });
+
+  require("@electron/remote/main").enable(newAnimWindow.webContents);
+
+  // Extra Events
+
+  ReadExtensions(newAnimWindow)
+
+  windows.add(newAnimWindow);
+  return newAnimWindow
 }
 
 // URL Protocol incoedit://{whatever}

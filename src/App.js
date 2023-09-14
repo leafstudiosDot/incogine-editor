@@ -7,6 +7,7 @@ import NotifyWindow from './components/Notifications/notify'
 import Settings from './components/Settings/settings'
 import VideoPlayer from "./components/Video Player/videoplayer";
 import PDFReader from './components/PDF Reader/pdfreader';
+import Animation from './components/Animation/anim';
 
 import './App.dark.css';
 
@@ -141,7 +142,7 @@ function Header(props) {
       {props.docs.docs.map((doc, i) =>
         <span>
           <div onClick={() => props.setDocs({ selected: i, docs: [...props.docs.docs] })} className="tab-cont" id={i === props.docs.selected ? "tab-selected" : null}>
-            <span id="tab-title">{doc.title}{doc.saved ? null : <sup style={{color: '#8d0000'}}>*</sup>}</span>
+            <span id="tab-title">{doc.title}{doc.saved ? null : <sup style={{ color: '#8d0000' }}>*</sup>}</span>
           </div>
           <span id={i === props.docs.selected ? "tab-close-selected" : "tab-close"} onClick={() => CloseTab(i)}>X</span>
         </span>
@@ -326,15 +327,15 @@ function App() {
         // 2 GB of File
         fs.readFile(paths[0], "base64", function (err, data) {
           if (!err) {
-            switch(path.basename(paths[0]).split(".").pop()) {
+            switch (path.basename(paths[0]).split(".").pop()) {
               case "mp4":
               case "avi":
               case "mov":
                 window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: "data:video/mp4;base64," + data, type: "media/video" })
-              break;
+                break;
               case "pdf":
-                window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: {file: "data:application/pdf;base64," + data, page: 1, totalpage: 1}, type: "document/pdf" })
-              break;
+                window.AddTab(true, { title: path.basename(paths[0]), file: paths[0], content: { file: "data:application/pdf;base64," + data, page: 1, totalpage: 1 }, type: "document/pdf" })
+                break;
               default:
                 console.error("File not opened: File unknown or can't read by Incogine Editor")
             }
@@ -350,81 +351,98 @@ function App() {
   window.OpenFile = OpenFile;
 
   useEffect(() => {
+    if (window.location.href.endsWith("/#/anim")) {
 
-    window.changeInputTextAreaLocation(0, 0)
+    } else {
+      window.changeInputTextAreaLocation(0, 0)
 
-    function saveKeyDown(e) {
-      if ((navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.keyCode === 83) {
-        e.preventDefault();
-        window.SaveFile();
+      function saveKeyDown(e) {
+        if ((navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.keyCode === 83) {
+          e.preventDefault();
+          window.SaveFile();
+        }
       }
-    }
 
-    async function handleDropFile(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      let files = e.dataTransfer.files;
+      async function handleDropFile(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        let files = e.dataTransfer.files;
 
-      for (var i = 0; i < files.length; i++) {
-        if (e.dataTransfer.items[i].kind === "file") {
-          let reader = new FileReader();
-          let file = files[i]
-          if (file.size < 1000000) {
-            reader.onload = async function (event) {
-              await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "text/code" })
-            }
-            await reader.readAsText(file, "UTF-8");
-          } else if (file.size < ((1000000 * 1024) * 2)) {
-            console.log(file)
-            reader.onload = async function (event) {
-              switch(file.name.split(".").pop()) {
-                case "mp4":
-                case "avi":
-                case "mov":
-                  await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "media/video" })
-                  break;
-                case "pdf":
-                  await window.AddTab(true, { title: file.name, file: file.path, content: {file: event.target.result, page: 1, totalpage: 1}, type: "document/pdf" })
-                  break;
-                default:
-                console.error("File not opened: File unknown or can't read by Incogine Editor")
+        for (var i = 0; i < files.length; i++) {
+          if (e.dataTransfer.items[i].kind === "file") {
+            let reader = new FileReader();
+            let file = files[i]
+            if (file.size < 1000000) {
+              reader.onload = async function (event) {
+                await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "text/code" })
               }
+              await reader.readAsText(file, "UTF-8");
+            } else if (file.size < ((1000000 * 1024) * 2)) {
+              console.log(file)
+              reader.onload = async function (event) {
+                switch (file.name.split(".").pop()) {
+                  case "mp4":
+                  case "avi":
+                  case "mov":
+                    await window.AddTab(true, { title: file.name, file: file.path, content: event.target.result, type: "media/video" })
+                    break;
+                  case "pdf":
+                    await window.AddTab(true, { title: file.name, file: file.path, content: { file: event.target.result, page: 1, totalpage: 1 }, type: "document/pdf" })
+                    break;
+                  default:
+                    console.error("File not opened: File unknown or can't read by Incogine Editor")
+                }
+              }
+              await reader.readAsDataURL(file);
+            } else {
+              console.error("File Too Large to Load, Maximum: 1MB (text) / 1GB (media)")
             }
-            await reader.readAsDataURL(file);
-          } else {
-            console.error("File Too Large to Load, Maximum: 1MB (text) / 1GB (media)")
           }
         }
       }
-    }
 
-    listen('file-drop', event => {
-      invoke('my_custom_command', { invokeMessage: event })
-    })
+      listen('file-drop', event => {
+        invoke('my_custom_command', { invokeMessage: event })
+      })
 
-    document.addEventListener("keydown", saveKeyDown);
-    document.addEventListener("drop", handleDropFile);
+      document.addEventListener("keydown", saveKeyDown);
+      document.addEventListener("drop", handleDropFile);
 
-    return function () {
-      document.removeEventListener("keydown", saveKeyDown);
-      document.removeEventListener("drop", handleDropFile);
+      return function () {
+        document.removeEventListener("keydown", saveKeyDown);
+        document.removeEventListener("drop", handleDropFile);
+      }
     }
   }, [docsState.docs, docsState.selected])
+
+  function subwork() {
+    switch (true) {
+      case window.location.href.endsWith("/#/anim"):
+        return (<Animation winsize={winsize} />)
+      default:
+        return (
+          <>
+            <Header winsize={winsize} docs={docsState} setDocs={setDocsState} />
+            <section >
+              <article style={{ paddingTop: "36px", marginTop: titleMenuBarSpace }}>
+                {docsState.docs[docsState.selected].type === "text/code" ? <TextArea docs={docsState} setDocs={setDocsState} /> : null}
+                {docsState.docs[docsState.selected].type === "media/video" ? <VideoPlayer winsize={winsize} docsState={docsState} setDocs={setDocsState} /> : null}
+                {docsState.docs[docsState.selected].type === "document/pdf" ? <PDFReader winsize={winsize} docsState={docsState} setDocs={setDocsState} /> : null}
+                {docsState.docs[docsState.selected].type === "settings" ? <Settings winsize={winsize} docs={docsState} setDocs={setDocsState} /> : null}
+              </article>
+            </section>
+            {notifyNotTauri ? <NotifyWindow header={"You are using a browser version of Incogine Editor"} body={"Please switch to the application for more features"} accept={() => setnotifyNotTauri(false)} /> : null}
+            <Footer docs={docsState} />
+          </>
+        )
+    }
+
+  }
 
   return (
     <div className="App">
       <TitleBar winsize={winsize} titleMenuBarSpace={titleMenuBarSpace} name={"Incogine Editor"} />
-      <Header winsize={winsize} docs={docsState} setDocs={setDocsState} />
-      <section >
-        <article style={{ paddingTop: "36px", marginTop: titleMenuBarSpace }}>
-          {docsState.docs[docsState.selected].type === "text/code" ? <TextArea docs={docsState} setDocs={setDocsState} /> : null}
-          {docsState.docs[docsState.selected].type === "media/video" ? <VideoPlayer winsize={winsize} docsState={docsState} setDocs={setDocsState} /> : null}
-          {docsState.docs[docsState.selected].type === "document/pdf" ? <PDFReader winsize={winsize} docsState={docsState} setDocs={setDocsState} /> : null}
-          {docsState.docs[docsState.selected].type === "settings" ? <Settings winsize={winsize} docs={docsState} setDocs={setDocsState} /> : null}
-        </article>
-      </section>
-      {notifyNotTauri ? <NotifyWindow header={"You are using a browser version of Incogine Editor"} body={"Please switch to the application for more features"} accept={() => setnotifyNotTauri(false)} /> : null}
-      <Footer docs={docsState} />
+      {subwork()}
     </div>
   );
 }
