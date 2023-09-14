@@ -33,7 +33,7 @@
     "webpack": "4.44.2"
   },
   "scripts": {
-    "start": "react-app-rewired --openssl-legacy-provider start",
+    "start": "concurrently \"react-app-rewired --openssl-legacy-provider start\" \"./src/components/Animation/anim/runserver.sh\"",
     "build": "react-app-rewired --openssl-legacy-provider build",
     "test": "react-app-rewired --openssl-legacy-provider test",
     "eject": "react-scripts --openssl-legacy-provider eject",
