@@ -1,0 +1,3 @@
+[submodule "src/components/Animation/anim"]
+	path = src/components/Animation/anim
+	url = https://github.com/leafstudiosDot/incoedit-anim
